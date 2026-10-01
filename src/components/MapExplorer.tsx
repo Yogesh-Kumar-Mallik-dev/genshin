@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
-import { REGIONS_CONFIG, MAP_PINS, RegionMapConfig } from '@/data/mapData';
+import { REGIONS_CONFIG, MAP_PINS, TEYVAT_FULL_MAP_URL } from '@/data/mapData';
 import { LOCAL_SPECIALTIES } from '@/data/materials';
 import { MapPin as MapPinType, RegionType } from '@/types/genshin';
 import {
@@ -15,9 +15,6 @@ import {
   CheckCircle2,
   Circle,
   Search,
-  Filter,
-  Info,
-  Compass,
   Layers,
   ZoomIn,
   ZoomOut,
@@ -25,24 +22,15 @@ import {
   Move,
   Maximize2,
   Minimize2,
-  Crosshair
+  Crosshair,
+  Compass
 } from 'lucide-react';
 
 export interface CustomPin extends MapPinType {
   isCustom?: boolean;
 }
 
-export type MapRegionSelection = RegionType | 'All';
-
-const ALL_TEYVAT_CONFIG: RegionMapConfig = {
-  id: 'Mondstadt' as RegionType,
-  name: 'Teyvat (Full Continent)',
-  themeColor: '#f59e0b',
-  element: 'Omni',
-  bgGradient: 'from-amber-950/40 via-slate-900 to-cyan-950/30',
-  mapUrl: '/assets/map/regions/teyvat.jpg',
-  subregions: ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan']
-};
+export type MapRegionFilter = RegionType | 'All';
 
 const REGION_ELEMENT_ICONS: Record<string, string> = {
   Anemo: '/assets/elements/anemo.png',
@@ -50,8 +38,7 @@ const REGION_ELEMENT_ICONS: Record<string, string> = {
   Electro: '/assets/elements/electro.png',
   Dendro: '/assets/elements/dendro.png',
   Hydro: '/assets/elements/hydro.png',
-  Pyro: '/assets/elements/pyro.png',
-  Omni: '/assets/elements/anemo.png'
+  Pyro: '/assets/elements/pyro.png'
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string }> = {
@@ -63,7 +50,7 @@ const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string
   shrine: { bg: 'bg-purple-500/20', text: 'text-purple-300', border: 'border-purple-500/40', label: 'Shrine of Depths' }
 };
 
-const getPinIcon = (pin: MapPinType, region: MapRegionSelection): { iconUrl: string; label: string } => {
+const getPinIcon = (pin: MapPinType): { iconUrl: string; label: string } => {
   if (pin.category === 'teleport') {
     if (pin.name.toLowerCase().includes('statue')) {
       return { iconUrl: '/assets/map/pins/statue.png', label: 'Statue of the Seven' };
@@ -79,7 +66,7 @@ const getPinIcon = (pin: MapPinType, region: MapRegionSelection): { iconUrl: str
       Fontaine: '/assets/map/pins/hydroculus.png',
       Natlan: '/assets/map/pins/pyroculus.png'
     };
-    return { iconUrl: oculusMap[region] || '/assets/map/pins/anemoculus.png', label: 'Oculus' };
+    return { iconUrl: oculusMap[pin.region] || '/assets/map/pins/anemoculus.png', label: 'Oculus' };
   }
   if (pin.category === 'boss') {
     return { iconUrl: '/assets/map/pins/boss.png', label: 'Trounce Domain / Boss' };
@@ -104,7 +91,7 @@ const getPinIcon = (pin: MapPinType, region: MapRegionSelection): { iconUrl: str
 };
 
 export const MapExplorer: React.FC = () => {
-  const [selectedRegion, setSelectedRegion] = useState<MapRegionSelection>('Mondstadt');
+  const [selectedRegionFilter, setSelectedRegionFilter] = useState<MapRegionFilter>('All');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPin, setSelectedPin] = useState<CustomPin | null>(null);
@@ -123,14 +110,9 @@ export const MapExplorer: React.FC = () => {
   const [newPinCategory, setNewPinCategory] = useState<'specialty' | 'oculus' | 'boss' | 'ore' | 'teleport' | 'shrine'>('specialty');
   const [newPinCount, setNewPinCount] = useState<number>(1);
   const [newPinNotes, setNewPinNotes] = useState<string>('');
+  const [newPinRegion, setNewPinRegion] = useState<RegionType>('Mondstadt');
 
-  // Reset pan/zoom when switching regions
-  useEffect(() => {
-    transformRef.current?.resetTransform();
-    setSelectedPin(null);
-  }, [selectedRegion]);
-
-  // Lock background scroll when modal or fullscreen is open
+  // Lock background scroll when modal or fullscreen is active
   useEffect(() => {
     if (isFullscreen || showAddPinModal) {
       const prevBody = document.body.style.overflow;
@@ -144,7 +126,7 @@ export const MapExplorer: React.FC = () => {
     }
   }, [isFullscreen, showAddPinModal]);
 
-  // ESC key exits fullscreen or modal
+  // ESC key exits modal, pin placement, or fullscreen
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -162,7 +144,7 @@ export const MapExplorer: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFullscreen, showAddPinModal, isDroppingPin]);
 
-  // Load collected pins and custom pins from localStorage
+  // Load collected and custom pins from localStorage
   useEffect(() => {
     try {
       const savedCollected = localStorage.getItem('teyvat_collected_pins');
@@ -174,7 +156,7 @@ export const MapExplorer: React.FC = () => {
         setCustomPins(JSON.parse(savedCustom));
       }
     } catch {
-      // ignore storage errors
+      // ignore
     }
   }, []);
 
@@ -207,10 +189,10 @@ export const MapExplorer: React.FC = () => {
       id: `custom_${Date.now()}`,
       name: newPinName.trim(),
       category: newPinCategory,
-      region: (selectedRegion === 'All' ? 'Mondstadt' : selectedRegion) as RegionType,
+      region: newPinRegion,
       x: pendingCoords.x,
       y: pendingCoords.y,
-      description: newPinNotes.trim() || 'Custom user resource pin placed on map.',
+      description: newPinNotes.trim() || 'Custom user marker on Teyvat map.',
       count: newPinCount > 0 ? newPinCount : undefined,
       isCustom: true
     };
@@ -233,39 +215,59 @@ export const MapExplorer: React.FC = () => {
     }
   };
 
-  // Determine current region config
-  const currentRegionConfig = selectedRegion === 'All'
-    ? ALL_TEYVAT_CONFIG
-    : (REGIONS_CONFIG.find((r) => r.id === selectedRegion) || REGIONS_CONFIG[0]);
+  // Fly camera to region focus
+  const handleFlyToRegion = (regionId: MapRegionFilter) => {
+    setSelectedRegionFilter(regionId);
+    setSelectedPin(null);
+
+    if (regionId === 'All') {
+      transformRef.current?.resetTransform(400);
+      return;
+    }
+
+    const regConfig = REGIONS_CONFIG.find((r) => r.id === regionId);
+    if (regConfig && transformRef.current) {
+      // Calculate pan offset to center region on screen at 2.4x zoom
+      const scale = 2.4;
+      const targetX = -(regConfig.focusX * 60 - 500) * (scale / 2);
+      const targetY = -(regConfig.focusY * 44 - 350) * (scale / 2);
+      transformRef.current.setTransform(targetX, targetY, scale, 450, 'easeOut');
+    }
+  };
 
   // Combine standard pins with user custom pins
-  const regionPins: CustomPin[] = [
-    ...(selectedRegion === 'All'
-      ? MAP_PINS
-      : MAP_PINS.filter((p) => p.region === selectedRegion)),
-    ...(selectedRegion === 'All'
-      ? customPins
-      : customPins.filter((p) => p.region === selectedRegion))
-  ];
+  const allPins: CustomPin[] = [...MAP_PINS, ...customPins];
 
-  const filteredPins = regionPins.filter((pin) => {
+  // Filter pins
+  const filteredPins = allPins.filter((pin) => {
+    const matchesRegion = selectedRegionFilter === 'All' || pin.region === selectedRegionFilter;
     const matchesCategory = selectedCategory === 'all' || pin.category === selectedCategory;
     const matchesSearch =
       pin.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       pin.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
+    return matchesRegion && matchesCategory && matchesSearch;
   });
 
-  const collectedCountInRegion = regionPins.filter((p) => collectedPinIds.includes(p.id)).length;
+  const collectedCount = filteredPins.filter((p) => collectedPinIds.includes(p.id)).length;
 
-  // Handle clicking on map canvas to place pin
+  // Handle clicking on map surface to drop pin
   const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDroppingPin) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const rawX = ((e.clientX - rect.left) / rect.width) * 100;
     const rawY = ((e.clientY - rect.top) / rect.height) * 100;
-    const x = Math.max(1, Math.min(99, Math.round(rawX * 10) / 10));
-    const y = Math.max(1, Math.min(99, Math.round(rawY * 10) / 10));
+    const x = Math.max(1, Math.min(99, Math.round(rawX * 100) / 100));
+    const y = Math.max(1, Math.min(99, Math.round(rawY * 100) / 100));
+
+    // Guess region based on coordinate
+    let guessedRegion: RegionType = 'Mondstadt';
+    if (x > 80 && y > 70) guessedRegion = 'Inazuma';
+    else if (x < 42) guessedRegion = 'Natlan';
+    else if (y < 42 && x < 65) guessedRegion = 'Fontaine';
+    else if (y > 45 && x < 65) guessedRegion = 'Sumeru';
+    else if (y > 40 && x >= 65) guessedRegion = 'Liyue';
+
+    setNewPinRegion(guessedRegion);
     setPendingCoords({ x, y });
     setIsDroppingPin(false);
     setShowAddPinModal(true);
@@ -278,44 +280,44 @@ export const MapExplorer: React.FC = () => {
         <div className="max-w-3xl space-y-2">
           <div className="flex items-center space-x-2 text-cyan-400 text-xs font-semibold uppercase tracking-wider">
             <Compass className="w-4 h-4" />
-            <span>Tactical Map Explorer</span>
+            <span>Interactive Map of Teyvat</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
-            Teyvat Interactive Resource Map
+            High-Resolution Map of Teyvat
           </h2>
           <p className="text-sm text-slate-300">
-            Freely drag and zoom across the map of Teyvat. Pinpoint local specialties, oculi, mining hotspots, and drop your own custom markers anywhere.
+            Drag to pan smoothly across the entire continent, zoom in deep with your mouse wheel, and drop your own custom resource markers.
           </p>
         </div>
       </div>
 
-      {/* Nation Selector Bar */}
+      {/* Nation Navigation & Quick-Jump Bar */}
       <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
         <span className="text-xs text-slate-400 font-semibold px-2 flex items-center space-x-1">
           <Layers className="w-3.5 h-3.5" />
-          <span>Select Nation:</span>
+          <span>Jump to Nation:</span>
         </span>
 
         {/* All Teyvat Button */}
         <button
-          onClick={() => setSelectedRegion('All')}
+          onClick={() => handleFlyToRegion('All')}
           className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 ${
-            selectedRegion === 'All'
+            selectedRegionFilter === 'All'
               ? 'bg-amber-500 text-slate-950 shadow-md font-bold'
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }`}
         >
-          <span>All Teyvat (Continent)</span>
+          <span>All Teyvat (Full Map)</span>
         </button>
 
         {REGIONS_CONFIG.map((reg) => {
-          const isSelected = selectedRegion === reg.id;
+          const isSelected = selectedRegionFilter === reg.id;
           const iconUrl = REGION_ELEMENT_ICONS[reg.element];
 
           return (
             <button
               key={reg.id}
-              onClick={() => setSelectedRegion(reg.id)}
+              onClick={() => handleFlyToRegion(reg.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 ${
                 isSelected
                   ? 'bg-amber-500 text-slate-950 shadow-md font-bold'
@@ -333,7 +335,7 @@ export const MapExplorer: React.FC = () => {
                   />
                 </div>
               )}
-              <span>{reg.id}</span>
+              <span>{reg.name}</span>
             </button>
           );
         })}
@@ -351,10 +353,10 @@ export const MapExplorer: React.FC = () => {
                 : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
             }`}
           >
-            All Pins ({regionPins.length})
+            All Pins ({allPins.length})
           </button>
           {Object.entries(CATEGORY_COLORS).map(([catKey, catVal]) => {
-            const count = regionPins.filter((p) => p.category === catKey).length;
+            const count = allPins.filter((p) => p.category === catKey).length;
             const isSelected = selectedCategory === catKey;
 
             return (
@@ -436,17 +438,17 @@ export const MapExplorer: React.FC = () => {
           )}
 
           <div className={`relative w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl select-none group ${
-            isFullscreen ? 'flex-1 h-full' : 'aspect-[16/10] sm:aspect-[16/9] min-h-[500px]'
+            isFullscreen ? 'flex-1 h-full' : 'aspect-[16/10] sm:aspect-[16/9] min-h-[520px]'
           }`}>
             <TransformWrapper
               ref={transformRef}
               initialScale={1}
               minScale={0.7}
-              maxScale={4.5}
+              maxScale={6}
               centerOnInit={true}
-              wheel={{ step: 0.12 }}
+              wheel={{ step: 0.14 }}
               panning={{ velocityDisabled: false, excluded: ['button', 'input'] }}
-              doubleClick={{ mode: 'zoomIn', step: 0.5 }}
+              doubleClick={{ mode: 'zoomIn', step: 0.6 }}
             >
               {({ zoomIn, zoomOut, resetTransform }) => (
                 <>
@@ -469,7 +471,7 @@ export const MapExplorer: React.FC = () => {
                     <button
                       onClick={() => resetTransform()}
                       className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-lg transition"
-                      title="Reset View"
+                      title="Reset Full Continent View"
                     >
                       <RotateCcw className="w-4 h-4" />
                     </button>
@@ -482,15 +484,15 @@ export const MapExplorer: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Regional Details HUD in Top-Left */}
+                  {/* Continent HUD in Top-Left */}
                   <div className="absolute top-4 left-4 z-30 bg-slate-950/85 backdrop-blur-md border border-slate-700/80 px-3.5 py-2 rounded-xl text-xs text-slate-200 shadow-xl pointer-events-none">
                     <span className="text-sm sm:text-base font-black text-slate-100 block tracking-wide">
-                      {currentRegionConfig.name}
+                      {selectedRegionFilter === 'All' ? 'Continent of Teyvat' : `${selectedRegionFilter} Region`}
                     </span>
                     <div className="flex items-center space-x-2 text-[11px] text-amber-300 font-mono mt-0.5">
-                      <span>Pins: <strong className="text-emerald-400">{collectedCountInRegion}</strong> / {regionPins.length}</span>
+                      <span>Pins: <strong className="text-emerald-400">{collectedCount}</strong> / {filteredPins.length}</span>
                       <span>•</span>
-                      <span className="text-slate-400">{currentRegionConfig.subregions.slice(0, 3).join(', ')}</span>
+                      <span className="text-slate-400">Ver 5.2 Topography</span>
                     </div>
                   </div>
 
@@ -501,34 +503,24 @@ export const MapExplorer: React.FC = () => {
                   >
                     <div
                       onClick={handleMapClick}
-                      className="relative w-full h-full min-w-[700px] min-h-[460px] aspect-[16/10] sm:aspect-[16/9]"
+                      className="relative w-full h-full min-w-[750px] min-h-[500px] aspect-[1.355]"
                     >
-                      {/* Background Map Canvas with Authentic Genshin In-Game Topography */}
+                      {/* High-Resolution In-Game Stitched Map of Teyvat */}
                       <Image
-                        src={currentRegionConfig.mapUrl}
-                        alt={currentRegionConfig.name}
+                        src={TEYVAT_FULL_MAP_URL}
+                        alt="High-Resolution Map of Teyvat"
                         fill
-                        className="object-cover object-center opacity-90 select-none pointer-events-none"
+                        className="object-cover object-center select-none pointer-events-none"
                         priority
                         unoptimized
                       />
 
-                      {/* Subtle atmospheric coordinate grid overlay */}
-                      <div
-                        className="absolute inset-0 opacity-15 pointer-events-none"
-                        style={{
-                          backgroundImage: 'radial-gradient(circle, #f5c253 1px, transparent 1px)',
-                          backgroundSize: '32px 32px'
-                        }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/30 pointer-events-none" />
-
-                      {/* Render Pins on Percentage Coordinates */}
+                      {/* Render Pins on Exact Percentage Coordinates */}
                       {filteredPins.map((pin) => {
                         const isCollected = collectedPinIds.includes(pin.id);
                         const isSelected = selectedPin?.id === pin.id;
                         const catConfig = CATEGORY_COLORS[pin.category] || CATEGORY_COLORS.specialty;
-                        const pinIconInfo = getPinIcon(pin, selectedRegion);
+                        const pinIconInfo = getPinIcon(pin);
 
                         return (
                           <button
@@ -541,15 +533,15 @@ export const MapExplorer: React.FC = () => {
                             }}
                             style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
                             className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-transform duration-150 group/pin ${
-                              isSelected ? 'scale-125 z-40' : 'hover:scale-115'
+                              isSelected ? 'scale-130 z-40' : 'hover:scale-115'
                             }`}
                             title={`${pin.name} (${catConfig.label})`}
                           >
                             <div
-                              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-xl border transition-all p-1 ${
+                              className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center shadow-xl border transition-all p-1 ${
                                 isCollected
                                   ? 'bg-slate-950/85 border-slate-700 opacity-40 grayscale'
-                                  : `${catConfig.bg} ${catConfig.border} border-2 backdrop-blur-md bg-slate-950/75 shadow-black/80 hover:border-amber-400 hover:shadow-amber-500/20`
+                                  : `${catConfig.bg} ${catConfig.border} border-2 backdrop-blur-md bg-slate-950/85 shadow-black/80 hover:border-amber-400 hover:shadow-amber-500/20`
                               } ${isSelected ? 'ring-4 ring-amber-400 bg-slate-900 border-amber-400 shadow-amber-500/50' : ''}`}
                             >
                               <div className="relative w-full h-full flex items-center justify-center">
@@ -596,7 +588,7 @@ export const MapExplorer: React.FC = () => {
             <div className="bg-slate-900 border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
               <div className="flex items-start justify-between">
                 {(() => {
-                  const pinIconInfo = getPinIcon(selectedPin, selectedRegion);
+                  const pinIconInfo = getPinIcon(selectedPin);
                   const catConfig = CATEGORY_COLORS[selectedPin.category] || CATEGORY_COLORS.specialty;
                   return (
                     <div className="flex items-center space-x-3">
@@ -610,9 +602,14 @@ export const MapExplorer: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${catConfig.bg} ${catConfig.text} ${catConfig.border}`}>
-                          {catConfig.label}
-                        </span>
+                        <div className="flex items-center space-x-2">
+                          <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${catConfig.bg} ${catConfig.text} ${catConfig.border}`}>
+                            {catConfig.label}
+                          </span>
+                          <span className="text-[10px] font-semibold text-slate-400 bg-slate-800 px-2 py-0.5 rounded-full">
+                            {selectedPin.region}
+                          </span>
+                        </div>
                         <h3 className="text-base font-bold text-slate-100 leading-tight mt-1">
                           {selectedPin.name}
                         </h3>
@@ -692,15 +689,15 @@ export const MapExplorer: React.FC = () => {
             </div>
           )}
 
-          {/* Quick Region Pin Checklist */}
+          {/* Quick Pin Checklist */}
           <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-800">
               <span className="text-xs font-bold text-slate-200 flex items-center space-x-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>{selectedRegion} Pin Checklist</span>
+                <span>{selectedRegionFilter === 'All' ? 'Teyvat' : selectedRegionFilter} Pin Checklist</span>
               </span>
               <span className="text-[11px] text-slate-400 font-medium">
-                {collectedCountInRegion} / {regionPins.length}
+                {collectedCount} / {filteredPins.length}
               </span>
             </div>
 
@@ -719,7 +716,7 @@ export const MapExplorer: React.FC = () => {
                   >
                     <div className="flex items-center space-x-2 truncate">
                       {(() => {
-                        const pinIconInfo = getPinIcon(pin, selectedRegion);
+                        const pinIconInfo = getPinIcon(pin);
                         return (
                           <div className="relative w-4 h-4 flex-shrink-0">
                             <Image
@@ -771,7 +768,7 @@ export const MapExplorer: React.FC = () => {
                 <div>
                   <h3 className="text-base font-bold text-slate-100">Add Resource Pin</h3>
                   <span className="text-[11px] text-slate-400">
-                    Coords: X: {pendingCoords.x}%, Y: {pendingCoords.y}% on {selectedRegion}
+                    Location: X: {pendingCoords.x}%, Y: {pendingCoords.y}%
                   </span>
                 </div>
               </div>
@@ -823,17 +820,35 @@ export const MapExplorer: React.FC = () => {
 
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Spawn Count
+                    Region
                   </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="999"
-                    value={newPinCount}
-                    onChange={(e) => setNewPinCount(parseInt(e.target.value) || 1)}
+                  <select
+                    value={newPinRegion}
+                    onChange={(e) => setNewPinRegion(e.target.value as RegionType)}
                     className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-400"
-                  />
+                  >
+                    <option value="Mondstadt">Mondstadt</option>
+                    <option value="Liyue">Liyue</option>
+                    <option value="Inazuma">Inazuma</option>
+                    <option value="Sumeru">Sumeru</option>
+                    <option value="Fontaine">Fontaine</option>
+                    <option value="Natlan">Natlan</option>
+                  </select>
                 </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Spawn Count
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="999"
+                  value={newPinCount}
+                  onChange={(e) => setNewPinCount(parseInt(e.target.value) || 1)}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-400"
+                />
               </div>
 
               <div>

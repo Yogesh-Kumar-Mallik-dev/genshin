@@ -25,10 +25,13 @@ export const CharacterHub: React.FC = () => {
 
   useEffect(() => {
     if (activeCharacter) {
-      const originalStyle = document.body.style.overflow;
+      const originalBodyOverflow = document.body.style.overflow;
+      const originalHtmlOverflow = document.documentElement.style.overflow;
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
       return () => {
-        document.body.style.overflow = originalStyle;
+        document.body.style.overflow = originalBodyOverflow;
+        document.documentElement.style.overflow = originalHtmlOverflow;
       };
     }
   }, [activeCharacter]);
@@ -249,9 +252,9 @@ export const CharacterHub: React.FC = () => {
           onClick={(e) => {
             if (e.target === e.currentTarget) setActiveCharacter(null);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 bg-black/80 backdrop-blur-md overflow-y-auto overscroll-contain animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/80 backdrop-blur-md overflow-hidden animate-fadeIn"
         >
-          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[84vh] flex flex-col shadow-2xl overflow-hidden text-slate-200 my-auto">
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
             {/* Header Hero with Splash Art backdrop */}
             <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-5 sm:p-6 border-b border-slate-800 flex-shrink-0">
               {/* Ambient Splash Image */}

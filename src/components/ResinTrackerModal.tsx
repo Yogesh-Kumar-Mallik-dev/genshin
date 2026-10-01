@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image';
 import { X, Clock, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 
@@ -25,6 +25,16 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
   weeklyBossesDone,
   setWeeklyBossesDone
 }) => {
+  useEffect(() => {
+    if (isOpen) {
+      const originalStyle = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const minutesUntilCap = Math.max(0, (200 - resin) * 8);
@@ -39,7 +49,7 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 bg-black/80 backdrop-blur-md overflow-y-auto animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 bg-black/80 backdrop-blur-md overflow-y-auto overscroll-contain animate-fadeIn"
     >
       <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-lg max-h-[84vh] flex flex-col shadow-2xl overflow-hidden my-auto">
         {/* Header */}
@@ -64,7 +74,7 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
         </div>
 
         {/* Content with smooth scroll */}
-        <div className="p-6 space-y-6 overflow-y-auto flex-1">
+        <div className="p-6 space-y-6 overflow-y-auto overscroll-contain flex-1">
           {/* Main Resin Slider & Display */}
           <div className="bg-slate-950/70 p-4 rounded-2xl border border-sky-500/25 space-y-3">
             <div className="flex justify-between items-center">

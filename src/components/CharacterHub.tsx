@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { CHARACTERS_DATA } from '@/data/characters';
 import { CharacterBuild, ElementType } from '@/types/genshin';
@@ -22,6 +22,16 @@ export const CharacterHub: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCharacter, setActiveCharacter] = useState<CharacterBuild | null>(null);
+
+  useEffect(() => {
+    if (activeCharacter) {
+      const originalStyle = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+  }, [activeCharacter]);
 
   const elements: { id: string; label: string; element?: ElementType }[] = [
     { id: 'all', label: 'All Elements' },
@@ -239,7 +249,7 @@ export const CharacterHub: React.FC = () => {
           onClick={(e) => {
             if (e.target === e.currentTarget) setActiveCharacter(null);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 bg-black/80 backdrop-blur-md overflow-y-auto overscroll-contain animate-fadeIn"
         >
           <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[84vh] flex flex-col shadow-2xl overflow-hidden text-slate-200 my-auto">
             {/* Header Hero with Splash Art backdrop */}
@@ -312,7 +322,7 @@ export const CharacterHub: React.FC = () => {
             </div>
 
             {/* Modal Body with smooth internal scroll */}
-            <div className="p-5 sm:p-6 space-y-6 flex-1 overflow-y-auto">
+            <div className="p-5 sm:p-6 space-y-6 flex-1 overflow-y-auto overscroll-contain">
               {/* Description */}
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800">
                 {activeCharacter.description}

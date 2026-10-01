@@ -6,7 +6,7 @@ import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'reac
 import { REGIONS_CONFIG, MAP_PINS } from '@/data/mapData';
 import { LOCAL_SPECIALTIES } from '@/data/materials';
 import { MapPin as MapPinType, RegionType } from '@/types/genshin';
-import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers, ZoomIn, ZoomOut, RotateCcw, Move } from 'lucide-react';
+import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers, ZoomIn, ZoomOut, RotateCcw, Move, Globe, Maximize2, Minimize2, ExternalLink, RefreshCw } from 'lucide-react';
 
 const REGION_ELEMENT_ICONS: Record<string, string> = {
   Anemo: '/assets/elements/anemo.png',
@@ -74,9 +74,39 @@ export const MapExplorer: React.FC = () => {
   const [collectedPinIds, setCollectedPinIds] = useState<string[]>([]);
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
 
+  const [mapMode, setMapMode] = useState<'interactive' | 'tactical'>('interactive');
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+  const [iframeKey, setIframeKey] = useState<number>(0);
+
+  // Reset tactical pan/zoom when switching regions
   useEffect(() => {
     transformRef.current?.resetTransform();
   }, [selectedRegion]);
+
+  // Lock background scroll when in fullscreen interactive map
+  useEffect(() => {
+    if (isFullscreen) {
+      const prevBody = document.body.style.overflow;
+      const prevHtml = document.documentElement.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = prevBody;
+        document.documentElement.style.overflow = prevHtml;
+      };
+    }
+  }, [isFullscreen]);
+
+  // ESC key exits fullscreen
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreen) {
+        setIsFullscreen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFullscreen]);
 
   // Load collected pins from localStorage
   useEffect(() => {
@@ -134,8 +164,96 @@ export const MapExplorer: React.FC = () => {
         </div>
       </div>
 
-      {/* Region Selector Pills */}
-      <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+      {/* Mode Switcher Tabs */}
+      <div className="flex border-b border-slate-800 space-x-6">
+        <button
+          onClick={() => setMapMode('interactive')}
+          className={`flex items-center space-x-2 pb-3 text-sm font-bold border-b-2 transition ${
+            mapMode === 'interactive'
+              ? 'border-amber-400 text-amber-300'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <Globe className="w-4 h-4 text-amber-400" />
+          <span>Full Explorable Teyvat Interactive Map (Live Engine)</span>
+        </button>
+        <button
+          onClick={() => setMapMode('tactical')}
+          className={`flex items-center space-x-2 pb-3 text-sm font-bold border-b-2 transition ${
+            mapMode === 'tactical'
+              ? 'border-amber-400 text-amber-300'
+              : 'border-transparent text-slate-400 hover:text-slate-200'
+          }`}
+        >
+          <MapPin className="w-4 h-4 text-emerald-400" />
+          <span>Tactical Regional Checklist & Pin Inspector</span>
+        </button>
+      </div>
+
+      {/* MODE 1: LIVE EXPLORABLE TEYVAT INTERACTIVE MAP */}
+      {mapMode === 'interactive' && (
+        <div className={`space-y-4 ${isFullscreen ? 'fixed inset-0 z-50 p-3 sm:p-4 bg-slate-950/95 backdrop-blur-md flex flex-col' : ''}`}>
+          {/* Top Bar for Interactive Map */}
+          <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 flex-shrink-0 shadow-lg">
+            <div className="flex items-center space-x-2.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <div>
+                <span className="text-xs font-bold text-slate-100 block">
+                  Official Open-World Teyvat Map Engine
+                </span>
+                <span className="text-[11px] text-slate-400 hidden sm:inline">
+                  Seamless multi-layer exploration (Surface, Chasm, Enkanomiya, Fontaine underwater) with all official pins & filters
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => setIframeKey((prev) => prev + 1)}
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg flex items-center space-x-1.5 transition"
+                title="Reload Map"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Reload</span>
+              </button>
+              <button
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-lg flex items-center space-x-1.5 transition shadow-lg shadow-amber-500/20"
+              >
+                {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
+                <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
+              </button>
+              <a
+                href="https://act.hoyolab.com/ys/app/interactive-map/index.html?lang=en-us"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg flex items-center space-x-1.5 transition"
+                title="Open in new window"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">New Tab</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Map Embed Frame */}
+          <div className={`w-full rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl relative bg-slate-950 ${isFullscreen ? 'flex-1 h-full' : 'h-[78vh] min-h-[620px]'}`}>
+            <iframe
+              key={iframeKey}
+              src="https://act.hoyolab.com/ys/app/interactive-map/index.html?lang=en-us"
+              title="Official Teyvat Interactive Map"
+              className="w-full h-full border-0"
+              allow="fullscreen; geolocation"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* MODE 2: TACTICAL REGIONAL CHECKLIST & PIN INSPECTOR */}
+      {mapMode === 'tactical' && (
+        <div className="space-y-6">
+          {/* Region Selector Pills */}
+          <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
         <span className="text-xs text-slate-400 font-semibold px-2 flex items-center space-x-1">
           <Layers className="w-3.5 h-3.5" />
           <span>Select Nation:</span>
@@ -511,5 +629,9 @@ export const MapExplorer: React.FC = () => {
         </div>
       </div>
     </div>
+  )}
+</div>
+
   );
 };
+

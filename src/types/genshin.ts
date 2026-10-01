@@ -14,18 +14,23 @@ export interface CharacterBuild {
   region: RegionType;
   role: 'Main DPS' | 'Sub DPS' | 'Support' | 'Healer' | 'Buffer';
   icon: string;
+  avatarUrl?: string;
+  cardUrl?: string;
+  splashUrl?: string;
   description: string;
   signatureWeapon?: string;
   bestWeapons: {
     name: string;
     rarity: 3 | 4 | 5;
     description: string;
+    iconUrl?: string;
     isF2P?: boolean;
   }[];
   bestArtifacts: {
     name: string;
     count: number;
     description: string;
+    iconUrl?: string;
   }[];
   statPriorities: {
     sands: string;
@@ -60,6 +65,7 @@ export interface MaterialItem {
   category: 'specialty' | 'talent' | 'weapon' | 'boss' | 'weekly_boss' | 'mob';
   region: RegionType;
   icon: string;
+  iconUrl?: string;
   locationDetails: string;
   respawnTime: string;
   usedFor: string[];

@@ -1,9 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { REGIONS_CONFIG, MAP_PINS } from '@/data/mapData';
 import { MapPin as MapPinType, RegionType } from '@/types/genshin';
 import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers } from 'lucide-react';
+
+const REGION_ELEMENT_ICONS: Record<string, string> = {
+  Anemo: 'https://genshin.jmp.blue/elements/anemo/icon',
+  Geo: 'https://genshin.jmp.blue/elements/geo/icon',
+  Electro: 'https://genshin.jmp.blue/elements/electro/icon',
+  Dendro: 'https://genshin.jmp.blue/elements/dendro/icon',
+  Hydro: 'https://genshin.jmp.blue/elements/hydro/icon',
+  Pyro: 'https://genshin.jmp.blue/elements/pyro/icon'
+};
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string; icon: string }> = {
   specialty: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/40', label: 'Local Specialty', icon: '🌿' },
@@ -85,6 +95,8 @@ export const MapExplorer: React.FC = () => {
         </span>
         {REGIONS_CONFIG.map((reg) => {
           const isSelected = selectedRegion === reg.id;
+          const iconUrl = REGION_ELEMENT_ICONS[reg.element];
+
           return (
             <button
               key={reg.id}
@@ -98,10 +110,18 @@ export const MapExplorer: React.FC = () => {
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
               }`}
             >
+              {iconUrl && (
+                <div className="relative w-3.5 h-3.5">
+                  <Image
+                    src={iconUrl}
+                    alt={reg.element}
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
+              )}
               <span>{reg.name.split(' ')[0]}</span>
-              <span className={`text-[10px] opacity-75 font-normal ${isSelected ? 'text-slate-900' : 'text-slate-400'}`}>
-                ({reg.element})
-              </span>
             </button>
           );
         })}

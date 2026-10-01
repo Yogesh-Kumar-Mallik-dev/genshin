@@ -7,13 +7,13 @@ import { CharacterBuild, ElementType } from '@/types/genshin';
 import { Search, Star, Sword, Sparkles, Award, X, Flame, Droplet, Trees, Zap, Wind, Snowflake, Mountain } from 'lucide-react';
 
 const ELEMENT_DATA: Record<ElementType, { name: string; color: string; border: string; glow: string; iconUrl: string }> = {
-  pyro: { name: 'Pyro', color: 'text-red-400', border: 'border-red-500/40', glow: 'glow-pyro', iconUrl: 'https://genshin.jmp.blue/elements/pyro/icon' },
-  hydro: { name: 'Hydro', color: 'text-sky-400', border: 'border-sky-500/40', glow: 'glow-hydro', iconUrl: 'https://genshin.jmp.blue/elements/hydro/icon' },
-  dendro: { name: 'Dendro', color: 'text-emerald-400', border: 'border-emerald-500/40', glow: 'glow-dendro', iconUrl: 'https://genshin.jmp.blue/elements/dendro/icon' },
-  electro: { name: 'Electro', color: 'text-purple-400', border: 'border-purple-500/40', glow: 'glow-electro', iconUrl: 'https://genshin.jmp.blue/elements/electro/icon' },
-  anemo: { name: 'Anemo', color: 'text-teal-400', border: 'border-teal-500/40', glow: 'glow-anemo', iconUrl: 'https://genshin.jmp.blue/elements/anemo/icon' },
-  cryo: { name: 'Cryo', color: 'text-blue-300', border: 'border-blue-400/40', glow: 'glow-cryo', iconUrl: 'https://genshin.jmp.blue/elements/cryo/icon' },
-  geo: { name: 'Geo', color: 'text-amber-400', border: 'border-amber-500/40', glow: 'glow-geo', iconUrl: 'https://genshin.jmp.blue/elements/geo/icon' }
+  pyro: { name: 'Pyro', color: 'text-red-400', border: 'border-red-500/40', glow: 'glow-pyro', iconUrl: '/assets/elements/pyro.png' },
+  hydro: { name: 'Hydro', color: 'text-sky-400', border: 'border-sky-500/40', glow: 'glow-hydro', iconUrl: '/assets/elements/hydro.png' },
+  dendro: { name: 'Dendro', color: 'text-emerald-400', border: 'border-emerald-500/40', glow: 'glow-dendro', iconUrl: '/assets/elements/dendro.png' },
+  electro: { name: 'Electro', color: 'text-purple-400', border: 'border-purple-500/40', glow: 'glow-electro', iconUrl: '/assets/elements/electro.png' },
+  anemo: { name: 'Anemo', color: 'text-teal-400', border: 'border-teal-500/40', glow: 'glow-anemo', iconUrl: '/assets/elements/anemo.png' },
+  cryo: { name: 'Cryo', color: 'text-blue-300', border: 'border-blue-400/40', glow: 'glow-cryo', iconUrl: '/assets/elements/cryo.png' },
+  geo: { name: 'Geo', color: 'text-amber-400', border: 'border-amber-500/40', glow: 'glow-geo', iconUrl: '/assets/elements/geo.png' }
 };
 
 export const CharacterHub: React.FC = () => {

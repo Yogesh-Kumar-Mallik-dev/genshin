@@ -11,9 +11,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Fontaine',
     role: 'Sub DPS',
     icon: '💧',
-    avatarUrl: 'https://genshin.jmp.blue/characters/furina/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/furina/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/furina/gacha-splash',
+    avatarUrl: '/assets/characters/furina/icon.png',
+    cardUrl: '/assets/characters/furina/card.png',
+    splashUrl: '/assets/characters/furina/splash.png',
     description: 'Premier off-field Hydro sub-DPS and universal damage buffer who drains party HP to provide massive team-wide fanfare buffs.',
     signatureWeapon: 'Splendor of Tranquil Waters',
     bestWeapons: [
@@ -21,27 +21,21 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Splendor of Tranquil Waters',
         rarity: 5,
         description: 'BiS: Provides massive Crit DMG and boosts Skill DMG & HP whenever HP fluctuates.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/splendor-of-tranquil-waters/icon'
+        iconUrl: '/assets/weapons/splendor-of-tranquil-waters.png'
       },
       {
         name: 'Fleuve Cendre Ferryman (Pipe)',
         rarity: 4,
         description: 'Best F2P option: Free Fontaine fishing sword providing much needed ER% and Skill Crit Rate.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/fleuve-cendre-ferryman/icon'
+        iconUrl: '/assets/weapons/fleuve-cendre-ferryman.png'
       },
       {
         name: 'Favonius Sword',
         rarity: 4,
         description: 'Outstanding team battery option; significantly lowers team ER requirements.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/favonius-sword/icon'
-      },
-      {
-        name: 'Key of Khaj-Nisut',
-        rarity: 5,
-        description: 'Huge HP stat stick that transfers team-wide Elemental Mastery in reaction teams.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/key-of-khaj-nisut/icon'
+        iconUrl: '/assets/weapons/favonius-sword.png'
       }
     ],
     bestArtifacts: [
@@ -49,13 +43,13 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Golden Troupe',
         count: 4,
         description: 'Supreme BiS: Grants up to +70% Elemental Skill DMG when off-field.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/golden-troupe/flower-of-life'
+        iconUrl: '/assets/artifacts/golden-troupe.png'
       },
       {
-        name: 'Tenacity / Vourukasha',
+        name: 'Tenacity of the Millelith',
         count: 2,
-        description: '+20% HP / +20% HP (Early transition option before full Golden Troupe).',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/tenacity-of-the-millelith/flower-of-life'
+        description: '+20% HP (Early transition option before full Golden Troupe).',
+        iconUrl: '/assets/artifacts/tenacity-of-the-millelith.png'
       }
     ],
     statPriorities: {
@@ -77,11 +71,6 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Sunfire / National Furina',
         members: ['Furina', 'Xiangling', 'Bennett', 'Jean'],
         notes: 'Jean provides team-wide burst heal to maximize Fanfare while Bennett/Xiangling enable huge Vaporize hits.'
-      },
-      {
-        name: 'Noelle Mono-Geo Driver',
-        members: ['Noelle', 'Furina', 'Gorou', 'Chiori'],
-        notes: 'Noelle heals the entire team while dealing big Geo plunge/slash damage empowered by Furina.'
       }
     ],
     ascensionMaterials: {
@@ -110,9 +99,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Fontaine',
     role: 'Main DPS',
     icon: '🌊',
-    avatarUrl: 'https://genshin.jmp.blue/characters/neuvillette/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/neuvillette/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/neuvillette/gacha-splash',
+    avatarUrl: '/assets/characters/neuvillette/icon.png',
+    cardUrl: '/assets/characters/neuvillette/card.png',
+    splashUrl: '/assets/characters/neuvillette/splash.png',
     description: 'Iudex of Fontaine wielding devastating continuous Hydro beam Charged Attacks that self-sustain with Sourcewater Droplets.',
     signatureWeapon: 'Tome of the Eternal Flow',
     bestWeapons: [
@@ -120,26 +109,20 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Tome of the Eternal Flow',
         rarity: 5,
         description: 'BiS: High Crit DMG, HP% boost, and massive Charged Attack DMG buff.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/tome-of-the-eternal-flow/icon'
+        iconUrl: '/assets/weapons/tome-of-the-eternal-flow.png'
       },
       {
         name: 'Sacrificial Jade',
         rarity: 4,
         description: 'Battle Pass gem: Incredible Crit Rate and up to 64% Max HP buff at R5.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/sacrificial-jade/icon'
+        iconUrl: '/assets/weapons/sacrificial-jade.png'
       },
       {
         name: 'Prototype Amber',
         rarity: 4,
         description: 'Amazing F2P craftable: HP% sub, generates energy and team healing.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/prototype-amber/icon'
-      },
-      {
-        name: 'Lost Prayer',
-        rarity: 5,
-        description: 'Crit Rate stat stick with movement speed bonus.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/lost-prayer-to-the-sacred-winds/icon'
+        iconUrl: '/assets/weapons/prototype-amber.png'
       }
     ],
     bestArtifacts: [
@@ -147,13 +130,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Marechaussee Hunter',
         count: 4,
         description: 'Undisputed BiS: Grants +15% Normal/Charged DMG and +36% free Crit Rate from HP drains.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/marechaussee-hunter/flower-of-life'
-      },
-      {
-        name: 'Heart of Depth',
-        count: 4,
-        description: 'Strong alternative while farming Marechaussee Hunter.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/heart-of-depth/flower-of-life'
+        iconUrl: '/assets/artifacts/marechaussee-hunter.png'
       }
     ],
     statPriorities: {
@@ -203,9 +180,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Fontaine',
     role: 'Main DPS',
     icon: '🔥',
-    avatarUrl: 'https://genshin.jmp.blue/characters/arlecchino/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/arlecchino/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/arlecchino/gacha-splash',
+    avatarUrl: '/assets/characters/arlecchino/icon.png',
+    cardUrl: '/assets/characters/arlecchino/card.png',
+    splashUrl: '/assets/characters/arlecchino/splash.png',
     description: 'Fourth of the Fatui Harbingers. Converts the Bond of Life mechanic into blazing Pyro-infused Normal Attacks that shred enemies.',
     signatureWeapon: 'Crimson Moon’s Semblance',
     bestWeapons: [
@@ -213,20 +190,14 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Crimson Moon’s Semblance',
         rarity: 5,
         description: 'BiS: Grants scythe visual, heavy Crit Rate, and +36% DMG via Bond of Life.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/crimson-moons-semblance/icon'
-      },
-      {
-        name: 'Staff of Homa',
-        rarity: 5,
-        description: 'Massive Crit DMG and ATK boost, especially since Arlecchino often plays at mid-low HP.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/staff-of-homa/icon'
+        iconUrl: '/assets/weapons/crimson-moons-semblance.png'
       },
       {
         name: 'White Tassel',
         rarity: 3,
         description: 'Top F2P sleeper: +48% Normal Attack DMG at R5 with Crit Rate substat!',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/white-tassel/icon'
+        iconUrl: '/assets/weapons/white-tassel.png'
       }
     ],
     bestArtifacts: [
@@ -234,13 +205,13 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Harmonic Whimsy',
         count: 4,
         description: 'BiS: Grants up to +54% unconditional DMG increase as Bond of Life increases/decreases.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/fragment-of-harmonic-whimsy/flower-of-life'
+        iconUrl: '/assets/artifacts/fragment-of-harmonic-whimsy.png'
       },
       {
         name: 'Gladiator’s Finale',
         count: 4,
         description: 'Exceptional accessible alternative: +35% Normal Attack DMG and +18% ATK.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/gladiators-finale/flower-of-life'
+        iconUrl: '/assets/artifacts/gladiators-finale.png'
       }
     ],
     statPriorities: {
@@ -290,9 +261,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Inazuma',
     role: 'Buffer',
     icon: '🍃',
-    avatarUrl: 'https://genshin.jmp.blue/characters/kazuha/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/kazuha/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/kazuha/gacha-splash',
+    avatarUrl: '/assets/characters/kazuha/icon.png',
+    cardUrl: '/assets/characters/kazuha/card.png',
+    splashUrl: '/assets/characters/kazuha/splash.png',
     description: 'The golden standard of grouping, elemental shred, and elemental DMG boosting in Genshin Impact.',
     signatureWeapon: 'Freedom-Sworn',
     bestWeapons: [
@@ -300,27 +271,20 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Freedom-Sworn',
         rarity: 5,
         description: 'BiS: Massive EM and triggers team-wide Normal/Plunge DMG & ATK buffs.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/freedom-sworn/icon'
+        iconUrl: '/assets/weapons/freedom-sworn.png'
       },
       {
         name: 'Xiphos’ Moonlight',
         rarity: 4,
         description: 'Converts Kazuha’s high EM into Energy Recharge for himself and all teammates.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/xiphos-moonlight/icon'
+        iconUrl: '/assets/weapons/xiphos-moonlight.png'
       },
       {
         name: 'Favonius Sword',
         rarity: 4,
         description: 'Fixes ER requirements for both Kazuha and high-cost burst teammates.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/favonius-sword/icon'
-      },
-      {
-        name: 'Iron Sting',
-        rarity: 4,
-        description: 'Easy F2P craftable weapon with 165 Elemental Mastery.',
-        isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/iron-sting/icon'
+        iconUrl: '/assets/weapons/favonius-sword.png'
       }
     ],
     bestArtifacts: [
@@ -328,7 +292,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Viridescent Venerer (VV)',
         count: 4,
         description: 'Absolute non-negotiable: Shreds 40% Elemental RES of the swirled element for 10 seconds.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/viridescent-venerer/flower-of-life'
+        iconUrl: '/assets/artifacts/viridescent-venerer.png'
       }
     ],
     statPriorities: {
@@ -373,9 +337,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Sumeru',
     role: 'Sub DPS',
     icon: '🌱',
-    avatarUrl: 'https://genshin.jmp.blue/characters/nahida/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/nahida/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/nahida/gacha-splash',
+    avatarUrl: '/assets/characters/nahida/icon.png',
+    cardUrl: '/assets/characters/nahida/card.png',
+    splashUrl: '/assets/characters/nahida/splash.png',
     description: 'The Dendro Archon. Delivers continuous, high-damage Tri-Karma purification ticks and up to 250 team EM buff inside her Shrine of Maya.',
     signatureWeapon: 'A Thousand Floating Dreams',
     bestWeapons: [
@@ -383,21 +347,14 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'A Thousand Floating Dreams',
         rarity: 5,
         description: 'BiS: High EM, party EM buffs, and personal Dendro DMG bonus.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/a-thousand-floating-dreams/icon'
+        iconUrl: '/assets/weapons/a-thousand-floating-dreams.png'
       },
       {
         name: 'Sacrificial Fragments',
         rarity: 4,
         description: 'Huge 221 EM substat and resets skill cooldown.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/sacrificial-fragments/icon'
-      },
-      {
-        name: 'Magic Guide',
-        rarity: 3,
-        description: 'Remarkably strong 3-star F2P weapon with high EM and bonus damage to Hydro/Electro.',
-        isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/magic-guide/icon'
+        iconUrl: '/assets/weapons/sacrificial-fragments.png'
       }
     ],
     bestArtifacts: [
@@ -405,13 +362,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Deepwood Memories',
         count: 4,
         description: 'Core BiS: -30% Dendro RES shred to enemies, boosting both Nahida and Bloom/Hyperbloom reactions.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/deepwood-memories/flower-of-life'
-      },
-      {
-        name: 'Gilded Dreams',
-        count: 4,
-        description: 'Great choice if another character (like Kuki or Baizhu) already wears Deepwood.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/gilded-dreams/flower-of-life'
+        iconUrl: '/assets/artifacts/deepwood-memories.png'
       }
     ],
     statPriorities: {
@@ -461,9 +412,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Inazuma',
     role: 'Sub DPS',
     icon: '⚡',
-    avatarUrl: 'https://genshin.jmp.blue/characters/raiden/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/raiden/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/raiden/gacha-splash',
+    avatarUrl: '/assets/characters/raiden/icon.png',
+    cardUrl: '/assets/characters/raiden/card.png',
+    splashUrl: '/assets/characters/raiden/splash.png',
     description: 'The Electro Archon. Recharges entire team Bursts while dishing out devastating Musou no Hitotachi slashes, or triggers 35k+ Hyperblooms.',
     signatureWeapon: 'Engulfing Lightning',
     bestWeapons: [
@@ -471,21 +422,14 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Engulfing Lightning',
         rarity: 5,
         description: 'BiS: Converts ER% directly into ATK% and boosts ER after Burst.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/engulfing-lightning/icon'
+        iconUrl: '/assets/weapons/engulfing-lightning.png'
       },
       {
         name: 'The Catch',
         rarity: 4,
         description: 'Unquestionably the best F2P weapon in Genshin! +32% Burst DMG and +12% Burst Crit Rate at R5.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/the-catch/icon'
-      },
-      {
-        name: 'Dragon’s Bane',
-        rarity: 4,
-        description: 'BiS for Hyperbloom trigger builds (maximum Elemental Mastery).',
-        isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/dragons-bane/icon'
+        iconUrl: '/assets/weapons/the-catch.png'
       }
     ],
     bestArtifacts: [
@@ -493,13 +437,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Emblem of Severed Fate',
         count: 4,
         description: 'Supreme BiS for DPS/Battery: Converts up to 75% of ER into Elemental Burst DMG.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/emblem-of-severed-fate/flower-of-life'
-      },
-      {
-        name: 'Flower of Paradise Lost',
-        count: 4,
-        description: 'Best for pure Hyperbloom trigger builds (Full EM).',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/flower-of-paradise-lost/flower-of-life'
+        iconUrl: '/assets/artifacts/emblem-of-severed-fate.png'
       }
     ],
     statPriorities: {
@@ -549,9 +487,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Liyue',
     role: 'Support',
     icon: '🪨',
-    avatarUrl: 'https://genshin.jmp.blue/characters/zhongli/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/zhongli/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/zhongli/gacha-splash',
+    avatarUrl: '/assets/characters/zhongli/icon.png',
+    cardUrl: '/assets/characters/zhongli/card.png',
+    splashUrl: '/assets/characters/zhongli/splash.png',
     description: 'The Geo Archon. Bestows the unbreakable Jade Shield with 100% uptime, petrifies enemies, and shreds all elemental and physical resistances.',
     signatureWeapon: 'Vortex Vanquisher',
     bestWeapons: [
@@ -560,20 +498,14 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         rarity: 3,
         description: 'Premier 3-star F2P BiS for shielders: Gives massive 46.9% HP at level 90!',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/black-tassel/icon'
+        iconUrl: '/assets/weapons/black-tassel.png'
       },
       {
         name: 'Favonius Lance',
         rarity: 4,
         description: 'Generates white energy particles on Crit to fuel party bursts.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/favonius-lance/icon'
-      },
-      {
-        name: 'Staff of Homa',
-        rarity: 5,
-        description: 'For hybrid burst-DPS Zhongli who drops 100k+ meatball comets.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/staff-of-homa/icon'
+        iconUrl: '/assets/weapons/favonius-lance.png'
       }
     ],
     bestArtifacts: [
@@ -581,13 +513,13 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Tenacity of the Millelith',
         count: 4,
         description: '+20% HP and grants +20% team ATK and +30% shield strength when Stele pulses hit.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/tenacity-of-the-millelith/flower-of-life'
+        iconUrl: '/assets/artifacts/tenacity-of-the-millelith.png'
       },
       {
         name: 'Noblesse Oblige',
         count: 4,
         description: 'Alternative team ATK buffer on Burst cast.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/noblesse-oblige/flower-of-life'
+        iconUrl: '/assets/artifacts/noblesse-oblige.png'
       }
     ],
     statPriorities: {
@@ -632,9 +564,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Fontaine',
     role: 'Main DPS',
     icon: '💛',
-    avatarUrl: 'https://genshin.jmp.blue/characters/navia/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/navia/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/navia/gacha-splash',
+    avatarUrl: '/assets/characters/navia/icon.png',
+    cardUrl: '/assets/characters/navia/card.png',
+    splashUrl: '/assets/characters/navia/splash.png',
     description: 'President of the Spina di Rosula. Loads Crystallize shards into her gunbrella to blast enemies with astronomical burst shotgun damage.',
     signatureWeapon: 'Verdict',
     bestWeapons: [
@@ -642,35 +574,15 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Verdict',
         rarity: 5,
         description: 'BiS: High base ATK, Crit Rate, and +36% Elemental Skill DMG boost via Crystallize.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/verdict/icon'
-      },
-      {
-        name: 'Serpent Spine',
-        rarity: 4,
-        description: 'Supreme 4-star option: Grants up to +50% all DMG and Crit Rate.',
-        isF2P: false,
-        iconUrl: 'https://genshin.jmp.blue/weapons/serpent-spine/icon'
-      },
-      {
-        name: 'Ultimate Overlord’s Mega Magic Sword',
-        rarity: 4,
-        description: 'Free event claymore: High ER% and massive flat ATK% from Melusine quests.',
-        isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/ultimate-overlords-mega-magic-sword/icon'
+        iconUrl: '/assets/weapons/verdict.png'
       }
     ],
     bestArtifacts: [
       {
-        name: 'Nighttime Whispers in the Echoing Woods',
-        count: 4,
-        description: 'BiS: +18% ATK and up to +50% Geo DMG Bonus upon obtaining a Crystallize shield.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/nighttime-whispers-in-the-echoing-woods/flower-of-life'
-      },
-      {
         name: 'Golden Troupe',
         count: 4,
         description: 'Excellent alternative for quickswap shotgun nuke playstyles (+70% Skill DMG).',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/golden-troupe/flower-of-life'
+        iconUrl: '/assets/artifacts/golden-troupe.png'
       }
     ],
     statPriorities: {
@@ -687,11 +599,6 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Navia Double Pyro / Furina',
         members: ['Navia', 'Furina', 'Bennett', 'Zhongli'],
         notes: 'Bennett and Furina push Navia gunbrella shotguns beyond 300,000+ damage per blast.'
-      },
-      {
-        name: 'Chiori Double Geo Core',
-        members: ['Navia', 'Chiori', 'Xiangling', 'Bennett'],
-        notes: 'Chiori puppets attack coordinated with Navia while generating Crystallize shards rapidly.'
       }
     ],
     ascensionMaterials: {
@@ -720,31 +627,25 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Mondstadt',
     role: 'Buffer',
     icon: '🔥',
-    avatarUrl: 'https://genshin.jmp.blue/characters/bennett/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/bennett/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/bennett/gacha-splash',
+    avatarUrl: '/assets/characters/bennett/icon.png',
+    cardUrl: '/assets/characters/bennett/card.png',
+    splashUrl: '/assets/characters/bennett/splash.png',
     description: 'The premier 6-star honorary support. Fantastic Voyage provides unmatched flat ATK buffs and rapid tick healing.',
     signatureWeapon: 'Aquila Favonia',
     bestWeapons: [
-      {
-        name: 'Aquila Favonia / Mistsplitter',
-        rarity: 5,
-        description: 'Highest base ATK (674) to maximize Bennett’s flat ATK buff scaling.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/aquila-favonia/icon'
-      },
       {
         name: 'Sapwood Blade',
         rarity: 4,
         description: 'Best craftable F2P: High base ATK (565), ER% substat, and Leaf of Consciousness buff.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/sapwood-blade/icon'
+        iconUrl: '/assets/weapons/sapwood-blade.png'
       },
       {
         name: 'Favonius Sword',
         rarity: 4,
         description: 'Solves all team Energy problems with ease.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/favonius-sword/icon'
+        iconUrl: '/assets/weapons/favonius-sword.png'
       }
     ],
     bestArtifacts: [
@@ -752,7 +653,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Noblesse Oblige',
         count: 4,
         description: 'Absolute non-negotiable BiS: +20% team ATK for 12 seconds after Burst cast.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/noblesse-oblige/flower-of-life'
+        iconUrl: '/assets/artifacts/noblesse-oblige.png'
       }
     ],
     statPriorities: {
@@ -797,24 +698,18 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Liyue',
     role: 'Sub DPS',
     icon: '🥘',
-    avatarUrl: 'https://genshin.jmp.blue/characters/xiangling/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/xiangling/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/xiangling/gacha-splash',
+    avatarUrl: '/assets/characters/xiangling/icon.png',
+    cardUrl: '/assets/characters/xiangling/card.png',
+    splashUrl: '/assets/characters/xiangling/splash.png',
     description: 'The queen of off-field Pyro damage. Pyronado has zero internal cooldown (ICD), vaporizing every single spinning hit.',
-    signatureWeapon: 'Staff of the Scarlet Sands',
+    signatureWeapon: 'The Catch',
     bestWeapons: [
       {
         name: 'The Catch',
         rarity: 4,
         description: 'BiS F2P weapon: +32% Burst DMG, +12% Burst Crit Rate, and high ER%.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/the-catch/icon'
-      },
-      {
-        name: 'Staff of the Scarlet Sands',
-        rarity: 5,
-        description: 'Converts EM into raw ATK with massive Crit Rate.',
-        iconUrl: 'https://genshin.jmp.blue/weapons/staff-of-the-scarlet-sands/icon'
+        iconUrl: '/assets/weapons/the-catch.png'
       }
     ],
     bestArtifacts: [
@@ -822,7 +717,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Emblem of Severed Fate',
         count: 4,
         description: 'Undisputed BiS: Translates her mandatory high ER into raw Pyronado damage.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/emblem-of-severed-fate/flower-of-life'
+        iconUrl: '/assets/artifacts/emblem-of-severed-fate.png'
       }
     ],
     statPriorities: {
@@ -867,9 +762,9 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     region: 'Liyue',
     role: 'Sub DPS',
     icon: '🗡️',
-    avatarUrl: 'https://genshin.jmp.blue/characters/xingqiu/icon',
-    cardUrl: 'https://genshin.jmp.blue/characters/xingqiu/card',
-    splashUrl: 'https://genshin.jmp.blue/characters/xingqiu/gacha-splash',
+    avatarUrl: '/assets/characters/xingqiu/icon.png',
+    cardUrl: '/assets/characters/xingqiu/card.png',
+    splashUrl: '/assets/characters/xingqiu/splash.png',
     description: 'The cornerstone of Hydro application, damage reduction, and interruption resistance in Genshin Impact.',
     signatureWeapon: 'Sacrificial Sword',
     bestWeapons: [
@@ -878,14 +773,14 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         rarity: 4,
         description: 'Golden standard BiS: Resets his long 21s Skill cooldown and generates 10 Hydro particles.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/sacrificial-sword/icon'
+        iconUrl: '/assets/weapons/sacrificial-sword.png'
       },
       {
         name: 'Favonius Sword',
         rarity: 4,
         description: 'Great battery alternative if Sacrificial Sword refinement is low.',
         isF2P: true,
-        iconUrl: 'https://genshin.jmp.blue/weapons/favonius-sword/icon'
+        iconUrl: '/assets/weapons/favonius-sword.png'
       }
     ],
     bestArtifacts: [
@@ -893,7 +788,7 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
         name: 'Emblem of Severed Fate',
         count: 4,
         description: 'BiS: Provides ER and directly amplifies Raincutter sword damage.',
-        iconUrl: 'https://genshin.jmp.blue/artifacts/emblem-of-severed-fate/flower-of-life'
+        iconUrl: '/assets/artifacts/emblem-of-severed-fate.png'
       }
     ],
     statPriorities: {

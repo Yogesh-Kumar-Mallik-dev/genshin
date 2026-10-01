@@ -7,12 +7,12 @@ import { MapPin as MapPinType, RegionType } from '@/types/genshin';
 import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers } from 'lucide-react';
 
 const REGION_ELEMENT_ICONS: Record<string, string> = {
-  Anemo: 'https://genshin.jmp.blue/elements/anemo/icon',
-  Geo: 'https://genshin.jmp.blue/elements/geo/icon',
-  Electro: 'https://genshin.jmp.blue/elements/electro/icon',
-  Dendro: 'https://genshin.jmp.blue/elements/dendro/icon',
-  Hydro: 'https://genshin.jmp.blue/elements/hydro/icon',
-  Pyro: 'https://genshin.jmp.blue/elements/pyro/icon'
+  Anemo: '/assets/elements/anemo.png',
+  Geo: '/assets/elements/geo.png',
+  Electro: '/assets/elements/electro.png',
+  Dendro: '/assets/elements/dendro.png',
+  Hydro: '/assets/elements/hydro.png',
+  Pyro: '/assets/elements/pyro.png'
 };
 
 const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string; icon: string }> = {

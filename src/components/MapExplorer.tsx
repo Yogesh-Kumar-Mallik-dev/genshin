@@ -3,10 +3,46 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
-import { REGIONS_CONFIG, MAP_PINS } from '@/data/mapData';
+import { REGIONS_CONFIG, MAP_PINS, RegionMapConfig } from '@/data/mapData';
 import { LOCAL_SPECIALTIES } from '@/data/materials';
 import { MapPin as MapPinType, RegionType } from '@/types/genshin';
-import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers, ZoomIn, ZoomOut, RotateCcw, Move, Globe, Maximize2, Minimize2, ExternalLink, RefreshCw } from 'lucide-react';
+import {
+  MapPin,
+  Plus,
+  Trash2,
+  X,
+  Check,
+  CheckCircle2,
+  Circle,
+  Search,
+  Filter,
+  Info,
+  Compass,
+  Layers,
+  ZoomIn,
+  ZoomOut,
+  RotateCcw,
+  Move,
+  Maximize2,
+  Minimize2,
+  Crosshair
+} from 'lucide-react';
+
+export interface CustomPin extends MapPinType {
+  isCustom?: boolean;
+}
+
+export type MapRegionSelection = RegionType | 'All';
+
+const ALL_TEYVAT_CONFIG: RegionMapConfig = {
+  id: 'Mondstadt' as RegionType,
+  name: 'Teyvat (Full Continent)',
+  themeColor: '#f59e0b',
+  element: 'Omni',
+  bgGradient: 'from-amber-950/40 via-slate-900 to-cyan-950/30',
+  mapUrl: '/assets/map/regions/teyvat.jpg',
+  subregions: ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan']
+};
 
 const REGION_ELEMENT_ICONS: Record<string, string> = {
   Anemo: '/assets/elements/anemo.png',
@@ -14,19 +50,20 @@ const REGION_ELEMENT_ICONS: Record<string, string> = {
   Electro: '/assets/elements/electro.png',
   Dendro: '/assets/elements/dendro.png',
   Hydro: '/assets/elements/hydro.png',
-  Pyro: '/assets/elements/pyro.png'
+  Pyro: '/assets/elements/pyro.png',
+  Omni: '/assets/elements/anemo.png'
 };
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string; iconUrl: string }> = {
-  specialty: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/40', label: 'Local Specialty', iconUrl: '/assets/materials/specialties/cecilia.png' },
-  teleport: { bg: 'bg-sky-500/20', text: 'text-sky-300', border: 'border-sky-500/40', label: 'Teleport / Statue', iconUrl: '/assets/map/pins/teleport.png' },
-  oculus: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', label: 'Oculus', iconUrl: '/assets/map/pins/anemoculus.png' },
-  boss: { bg: 'bg-rose-500/20', text: 'text-rose-300', border: 'border-rose-500/40', label: 'Trounce Boss', iconUrl: '/assets/map/pins/boss.png' },
-  ore: { bg: 'bg-blue-400/20', text: 'text-blue-200', border: 'border-blue-400/40', label: 'Mining Hotspot', iconUrl: '/assets/map/pins/ore.svg' },
-  shrine: { bg: 'bg-purple-500/20', text: 'text-purple-300', border: 'border-purple-500/40', label: 'Shrine of Depths', iconUrl: '/assets/map/pins/shrine.png' }
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string }> = {
+  specialty: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/40', label: 'Local Specialty' },
+  teleport: { bg: 'bg-sky-500/20', text: 'text-sky-300', border: 'border-sky-500/40', label: 'Teleport / Statue' },
+  oculus: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', label: 'Oculus' },
+  boss: { bg: 'bg-rose-500/20', text: 'text-rose-300', border: 'border-rose-500/40', label: 'Trounce Boss' },
+  ore: { bg: 'bg-blue-400/20', text: 'text-blue-200', border: 'border-blue-400/40', label: 'Mining Hotspot' },
+  shrine: { bg: 'bg-purple-500/20', text: 'text-purple-300', border: 'border-purple-500/40', label: 'Shrine of Depths' }
 };
 
-const getPinIcon = (pin: MapPinType, region: RegionType): { iconUrl: string; label: string } => {
+const getPinIcon = (pin: MapPinType, region: MapRegionSelection): { iconUrl: string; label: string } => {
   if (pin.category === 'teleport') {
     if (pin.name.toLowerCase().includes('statue')) {
       return { iconUrl: '/assets/map/pins/statue.png', label: 'Statue of the Seven' };
@@ -67,25 +104,35 @@ const getPinIcon = (pin: MapPinType, region: RegionType): { iconUrl: string; lab
 };
 
 export const MapExplorer: React.FC = () => {
-  const [selectedRegion, setSelectedRegion] = useState<RegionType>('Mondstadt');
+  const [selectedRegion, setSelectedRegion] = useState<MapRegionSelection>('Mondstadt');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedPin, setSelectedPin] = useState<MapPinType | null>(null);
+  const [selectedPin, setSelectedPin] = useState<CustomPin | null>(null);
   const [collectedPinIds, setCollectedPinIds] = useState<string[]>([]);
+  const [customPins, setCustomPins] = useState<CustomPin[]>([]);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
 
-  const [mapMode, setMapMode] = useState<'interactive' | 'tactical'>('interactive');
-  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
-  const [iframeKey, setIframeKey] = useState<number>(0);
+  // Pin placement states
+  const [isDroppingPin, setIsDroppingPin] = useState<boolean>(false);
+  const [pendingCoords, setPendingCoords] = useState<{ x: number; y: number } | null>(null);
+  const [showAddPinModal, setShowAddPinModal] = useState<boolean>(false);
 
-  // Reset tactical pan/zoom when switching regions
+  // Form states for new pin
+  const [newPinName, setNewPinName] = useState<string>('');
+  const [newPinCategory, setNewPinCategory] = useState<'specialty' | 'oculus' | 'boss' | 'ore' | 'teleport' | 'shrine'>('specialty');
+  const [newPinCount, setNewPinCount] = useState<number>(1);
+  const [newPinNotes, setNewPinNotes] = useState<string>('');
+
+  // Reset pan/zoom when switching regions
   useEffect(() => {
     transformRef.current?.resetTransform();
+    setSelectedPin(null);
   }, [selectedRegion]);
 
-  // Lock background scroll when in fullscreen interactive map
+  // Lock background scroll when modal or fullscreen is open
   useEffect(() => {
-    if (isFullscreen) {
+    if (isFullscreen || showAddPinModal) {
       const prevBody = document.body.style.overflow;
       const prevHtml = document.documentElement.style.overflow;
       document.body.style.overflow = 'hidden';
@@ -95,28 +142,39 @@ export const MapExplorer: React.FC = () => {
         document.documentElement.style.overflow = prevHtml;
       };
     }
-  }, [isFullscreen]);
+  }, [isFullscreen, showAddPinModal]);
 
-  // ESC key exits fullscreen
+  // ESC key exits fullscreen or modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isFullscreen) {
-        setIsFullscreen(false);
+      if (e.key === 'Escape') {
+        if (showAddPinModal) {
+          setShowAddPinModal(false);
+          setPendingCoords(null);
+        } else if (isDroppingPin) {
+          setIsDroppingPin(false);
+        } else if (isFullscreen) {
+          setIsFullscreen(false);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isFullscreen]);
+  }, [isFullscreen, showAddPinModal, isDroppingPin]);
 
-  // Load collected pins from localStorage
+  // Load collected pins and custom pins from localStorage
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('teyvat_collected_pins');
-      if (saved) {
-        setCollectedPinIds(JSON.parse(saved));
+      const savedCollected = localStorage.getItem('teyvat_collected_pins');
+      if (savedCollected) {
+        setCollectedPinIds(JSON.parse(savedCollected));
+      }
+      const savedCustom = localStorage.getItem('teyvat_custom_pins');
+      if (savedCustom) {
+        setCustomPins(JSON.parse(savedCustom));
       }
     } catch {
-      // ignore
+      // ignore storage errors
     }
   }, []);
 
@@ -132,9 +190,63 @@ export const MapExplorer: React.FC = () => {
     }
   };
 
-  const currentRegionConfig = REGIONS_CONFIG.find((r) => r.id === selectedRegion) || REGIONS_CONFIG[0];
+  const saveCustomPinsToStorage = (updated: CustomPin[]) => {
+    setCustomPins(updated);
+    try {
+      localStorage.setItem('teyvat_custom_pins', JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
 
-  const regionPins = MAP_PINS.filter((p) => p.region === selectedRegion);
+  const handleCreateCustomPin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPinName.trim() || !pendingCoords) return;
+
+    const newPin: CustomPin = {
+      id: `custom_${Date.now()}`,
+      name: newPinName.trim(),
+      category: newPinCategory,
+      region: (selectedRegion === 'All' ? 'Mondstadt' : selectedRegion) as RegionType,
+      x: pendingCoords.x,
+      y: pendingCoords.y,
+      description: newPinNotes.trim() || 'Custom user resource pin placed on map.',
+      count: newPinCount > 0 ? newPinCount : undefined,
+      isCustom: true
+    };
+
+    const updated = [...customPins, newPin];
+    saveCustomPinsToStorage(updated);
+    setSelectedPin(newPin);
+    setShowAddPinModal(false);
+    setPendingCoords(null);
+    setNewPinName('');
+    setNewPinNotes('');
+    setNewPinCount(1);
+  };
+
+  const handleDeleteCustomPin = (pinId: string) => {
+    const updated = customPins.filter((p) => p.id !== pinId);
+    saveCustomPinsToStorage(updated);
+    if (selectedPin?.id === pinId) {
+      setSelectedPin(null);
+    }
+  };
+
+  // Determine current region config
+  const currentRegionConfig = selectedRegion === 'All'
+    ? ALL_TEYVAT_CONFIG
+    : (REGIONS_CONFIG.find((r) => r.id === selectedRegion) || REGIONS_CONFIG[0]);
+
+  // Combine standard pins with user custom pins
+  const regionPins: CustomPin[] = [
+    ...(selectedRegion === 'All'
+      ? MAP_PINS
+      : MAP_PINS.filter((p) => p.region === selectedRegion)),
+    ...(selectedRegion === 'All'
+      ? customPins
+      : customPins.filter((p) => p.region === selectedRegion))
+  ];
 
   const filteredPins = regionPins.filter((pin) => {
     const matchesCategory = selectedCategory === 'all' || pin.category === selectedCategory;
@@ -146,6 +258,19 @@ export const MapExplorer: React.FC = () => {
 
   const collectedCountInRegion = regionPins.filter((p) => collectedPinIds.includes(p.id)).length;
 
+  // Handle clicking on map canvas to place pin
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDroppingPin) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const rawX = ((e.clientX - rect.left) / rect.width) * 100;
+    const rawY = ((e.clientY - rect.top) / rect.height) * 100;
+    const x = Math.max(1, Math.min(99, Math.round(rawX * 10) / 10));
+    const y = Math.max(1, Math.min(99, Math.round(rawY * 10) / 10));
+    setPendingCoords({ x, y });
+    setIsDroppingPin(false);
+    setShowAddPinModal(true);
+  };
+
   return (
     <div className="space-y-6">
       {/* Banner */}
@@ -153,111 +278,36 @@ export const MapExplorer: React.FC = () => {
         <div className="max-w-3xl space-y-2">
           <div className="flex items-center space-x-2 text-cyan-400 text-xs font-semibold uppercase tracking-wider">
             <Compass className="w-4 h-4" />
-            <span>Interactive Resource Locator</span>
+            <span>Tactical Map Explorer</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
             Teyvat Interactive Resource Map
           </h2>
           <p className="text-sm text-slate-300">
-            Pinpoint all regional specialties, oculi, ore veins, and weekly trounce bosses. Track your collection progress locally with zero account login required.
+            Freely drag and zoom across the map of Teyvat. Pinpoint local specialties, oculi, mining hotspots, and drop your own custom markers anywhere.
           </p>
         </div>
       </div>
 
-      {/* Mode Switcher Tabs */}
-      <div className="flex border-b border-slate-800 space-x-6">
-        <button
-          onClick={() => setMapMode('interactive')}
-          className={`flex items-center space-x-2 pb-3 text-sm font-bold border-b-2 transition ${
-            mapMode === 'interactive'
-              ? 'border-amber-400 text-amber-300'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <Globe className="w-4 h-4 text-amber-400" />
-          <span>Full Explorable Teyvat Interactive Map (Live Engine)</span>
-        </button>
-        <button
-          onClick={() => setMapMode('tactical')}
-          className={`flex items-center space-x-2 pb-3 text-sm font-bold border-b-2 transition ${
-            mapMode === 'tactical'
-              ? 'border-amber-400 text-amber-300'
-              : 'border-transparent text-slate-400 hover:text-slate-200'
-          }`}
-        >
-          <MapPin className="w-4 h-4 text-emerald-400" />
-          <span>Tactical Regional Checklist & Pin Inspector</span>
-        </button>
-      </div>
-
-      {/* MODE 1: LIVE EXPLORABLE TEYVAT INTERACTIVE MAP */}
-      {mapMode === 'interactive' && (
-        <div className={`space-y-4 ${isFullscreen ? 'fixed inset-0 z-50 p-3 sm:p-4 bg-slate-950/95 backdrop-blur-md flex flex-col' : ''}`}>
-          {/* Top Bar for Interactive Map */}
-          <div className="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl flex flex-wrap items-center justify-between gap-3 flex-shrink-0 shadow-lg">
-            <div className="flex items-center space-x-2.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <div>
-                <span className="text-xs font-bold text-slate-100 block">
-                  Official Open-World Teyvat Map Engine
-                </span>
-                <span className="text-[11px] text-slate-400 hidden sm:inline">
-                  Seamless multi-layer exploration (Surface, Chasm, Enkanomiya, Fontaine underwater) with all official pins & filters
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setIframeKey((prev) => prev + 1)}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg flex items-center space-x-1.5 transition"
-                title="Reload Map"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Reload</span>
-              </button>
-              <button
-                onClick={() => setIsFullscreen(!isFullscreen)}
-                className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-lg flex items-center space-x-1.5 transition shadow-lg shadow-amber-500/20"
-              >
-                {isFullscreen ? <Minimize2 className="w-3.5 h-3.5" /> : <Maximize2 className="w-3.5 h-3.5" />}
-                <span>{isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
-              </button>
-              <a
-                href="https://act.hoyolab.com/ys/app/interactive-map/index.html?lang=en-us"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg flex items-center space-x-1.5 transition"
-                title="Open in new window"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">New Tab</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Map Embed Frame */}
-          <div className={`w-full rounded-2xl overflow-hidden border border-amber-500/30 shadow-2xl relative bg-slate-950 ${isFullscreen ? 'flex-1 h-full' : 'h-[78vh] min-h-[620px]'}`}>
-            <iframe
-              key={iframeKey}
-              src="https://act.hoyolab.com/ys/app/interactive-map/index.html?lang=en-us"
-              title="Official Teyvat Interactive Map"
-              className="w-full h-full border-0"
-              allow="fullscreen; geolocation"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* MODE 2: TACTICAL REGIONAL CHECKLIST & PIN INSPECTOR */}
-      {mapMode === 'tactical' && (
-        <div className="space-y-6">
-          {/* Region Selector Pills */}
-          <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
+      {/* Nation Selector Bar */}
+      <div className="flex flex-wrap items-center gap-2 bg-slate-900/90 p-3 rounded-2xl border border-slate-800">
         <span className="text-xs text-slate-400 font-semibold px-2 flex items-center space-x-1">
           <Layers className="w-3.5 h-3.5" />
           <span>Select Nation:</span>
         </span>
+
+        {/* All Teyvat Button */}
+        <button
+          onClick={() => setSelectedRegion('All')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 ${
+            selectedRegion === 'All'
+              ? 'bg-amber-500 text-slate-950 shadow-md font-bold'
+              : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+          }`}
+        >
+          <span>All Teyvat (Continent)</span>
+        </button>
+
         {REGIONS_CONFIG.map((reg) => {
           const isSelected = selectedRegion === reg.id;
           const iconUrl = REGION_ELEMENT_ICONS[reg.element];
@@ -265,10 +315,7 @@ export const MapExplorer: React.FC = () => {
           return (
             <button
               key={reg.id}
-              onClick={() => {
-                setSelectedRegion(reg.id);
-                setSelectedPin(null);
-              }}
+              onClick={() => setSelectedRegion(reg.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition flex items-center space-x-1.5 ${
                 isSelected
                   ? 'bg-amber-500 text-slate-950 shadow-md font-bold'
@@ -286,82 +333,119 @@ export const MapExplorer: React.FC = () => {
                   />
                 </div>
               )}
-              <span>{reg.name.split(' ')[0]}</span>
+              <span>{reg.id}</span>
             </button>
           );
         })}
       </div>
 
-      {/* Map Controls & Filters */}
-      <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      {/* Filter and Search Bar */}
+      <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
         {/* Category Pills */}
         <div className="flex flex-wrap items-center gap-1.5">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
               selectedCategory === 'all'
-                ? 'bg-amber-500 text-slate-950 font-bold'
-                : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                ? 'bg-amber-500 text-slate-950 shadow-md'
+                : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
             }`}
           >
             All Pins ({regionPins.length})
           </button>
-          {Object.entries(CATEGORY_COLORS).map(([key, config]) => {
-            const count = regionPins.filter((p) => p.category === key).length;
-            if (count === 0) return null;
-            const isSelected = selectedCategory === key;
+          {Object.entries(CATEGORY_COLORS).map(([catKey, catVal]) => {
+            const count = regionPins.filter((p) => p.category === catKey).length;
+            const isSelected = selectedCategory === catKey;
+
             return (
               <button
-                key={key}
-                onClick={() => setSelectedCategory(key)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center space-x-1.5 ${
+                key={catKey}
+                onClick={() => setSelectedCategory(catKey)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 ${
                   isSelected
-                    ? `${config.bg} ${config.text} ${config.border} border font-bold shadow-sm`
+                    ? 'bg-amber-500 text-slate-950 shadow-md'
                     : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
                 }`}
               >
-                <div className="relative w-3.5 h-3.5 flex-shrink-0">
-                  <Image
-                    src={config.iconUrl}
-                    alt={config.label}
-                    fill
-                    className="object-contain"
-                    unoptimized
-                  />
-                </div>
-                <span>{config.label}</span>
-                <span className="text-[10px] text-slate-400">({count})</span>
+                <span>{catVal.label}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                  isSelected ? 'bg-slate-950/40 text-slate-900' : 'bg-slate-950/60 text-slate-400'
+                }`}>
+                  {count}
+                </span>
               </button>
             );
           })}
         </div>
 
-        {/* Search */}
-        <div className="relative min-w-[220px]">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search pin name or spot..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-amber-400"
-          />
+        {/* Pin Actions & Search */}
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
+          {/* Add Custom Pin Toggle Button */}
+          <button
+            onClick={() => setIsDroppingPin(!isDroppingPin)}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+              isDroppingPin
+                ? 'bg-rose-500 text-white animate-pulse shadow-lg shadow-rose-500/30'
+                : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20'
+            }`}
+          >
+            {isDroppingPin ? (
+              <>
+                <X className="w-3.5 h-3.5" />
+                <span>Cancel Placement</span>
+              </>
+            ) : (
+              <>
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Custom Pin</span>
+              </>
+            )}
+          </button>
+
+          <div className="relative min-w-[200px] flex-1 sm:flex-initial">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search pin name or notes..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-amber-400"
+            />
+          </div>
         </div>
       </div>
 
       {/* Main Map Viewer Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className={`grid grid-cols-1 lg:grid-cols-3 gap-6 ${isFullscreen ? 'fixed inset-0 z-50 p-4 bg-slate-950/95 backdrop-blur-md overflow-hidden' : ''}`}>
         {/* Interactive Map Visual Area (2 Cols on lg) */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl select-none group">
+        <div className={`lg:col-span-2 space-y-4 ${isFullscreen ? 'h-full flex flex-col' : ''}`}>
+          {/* Active Pin Placement Banner */}
+          {isDroppingPin && (
+            <div className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 px-4 py-2 rounded-xl text-xs flex items-center justify-between">
+              <span className="flex items-center space-x-2 font-medium">
+                <Crosshair className="w-4 h-4 animate-spin text-emerald-400" />
+                <span><strong>Pin Placement Mode Active:</strong> Click anywhere on the map surface below to drop a custom resource pin.</span>
+              </span>
+              <button
+                onClick={() => setIsDroppingPin(false)}
+                className="text-slate-400 hover:text-slate-100 p-1"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
+          <div className={`relative w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl select-none group ${
+            isFullscreen ? 'flex-1 h-full' : 'aspect-[16/10] sm:aspect-[16/9] min-h-[500px]'
+          }`}>
             <TransformWrapper
               ref={transformRef}
               initialScale={1}
               minScale={0.7}
-              maxScale={4}
+              maxScale={4.5}
               centerOnInit={true}
               wheel={{ step: 0.12 }}
-              panning={{ velocityDisabled: false, excluded: ['button'] }}
+              panning={{ velocityDisabled: false, excluded: ['button', 'input'] }}
               doubleClick={{ mode: 'zoomIn', step: 0.5 }}
             >
               {({ zoomIn, zoomOut, resetTransform }) => (
@@ -370,24 +454,31 @@ export const MapExplorer: React.FC = () => {
                   <div className="absolute top-4 right-4 z-30 flex flex-col space-y-1.5 bg-slate-950/85 backdrop-blur-md p-1.5 rounded-xl border border-slate-700/80 shadow-2xl">
                     <button
                       onClick={() => zoomIn()}
-                      className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition shadow"
-                      title="Zoom In (+)"
+                      className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-lg transition"
+                      title="Zoom In"
                     >
                       <ZoomIn className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => zoomOut()}
-                      className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition shadow"
-                      title="Zoom Out (-)"
+                      className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-lg transition"
+                      title="Zoom Out"
                     >
                       <ZoomOut className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => resetTransform()}
-                      className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition shadow"
+                      className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-lg transition"
                       title="Reset View"
                     >
                       <RotateCcw className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setIsFullscreen(!isFullscreen)}
+                      className="p-2 bg-slate-800/80 hover:bg-slate-700 text-amber-400 rounded-lg transition"
+                      title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen Map'}
+                    >
+                      {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
                     </button>
                   </div>
 
@@ -399,34 +490,38 @@ export const MapExplorer: React.FC = () => {
                     <div className="flex items-center space-x-2 text-[11px] text-amber-300 font-mono mt-0.5">
                       <span>Pins: <strong className="text-emerald-400">{collectedCountInRegion}</strong> / {regionPins.length}</span>
                       <span>•</span>
-                      <span className="text-slate-400">{currentRegionConfig.subregions.slice(0, 2).join(', ')}</span>
+                      <span className="text-slate-400">{currentRegionConfig.subregions.slice(0, 3).join(', ')}</span>
                     </div>
                   </div>
 
                   {/* Interactive Pan/Zoom Map Surface */}
                   <TransformComponent
-                    wrapperClass="!w-full !h-full cursor-grab active:cursor-grabbing overflow-hidden"
+                    wrapperClass={`!w-full !h-full ${isDroppingPin ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'} overflow-hidden`}
                     contentClass="!w-full !h-full"
                   >
-                    <div className="relative w-full h-full min-w-[650px] min-h-[420px] aspect-[16/10] sm:aspect-[16/9]">
+                    <div
+                      onClick={handleMapClick}
+                      className="relative w-full h-full min-w-[700px] min-h-[460px] aspect-[16/10] sm:aspect-[16/9]"
+                    >
                       {/* Background Map Canvas with Authentic Genshin In-Game Topography */}
                       <Image
                         src={currentRegionConfig.mapUrl}
                         alt={currentRegionConfig.name}
                         fill
-                        className="object-cover object-center opacity-85 select-none pointer-events-none"
+                        className="object-cover object-center opacity-90 select-none pointer-events-none"
                         priority
                         unoptimized
                       />
-                      {/* Subtle atmospheric vignette and coordinate grid overlay */}
+
+                      {/* Subtle atmospheric coordinate grid overlay */}
                       <div
                         className="absolute inset-0 opacity-15 pointer-events-none"
                         style={{
                           backgroundImage: 'radial-gradient(circle, #f5c253 1px, transparent 1px)',
-                          backgroundSize: '28px 28px'
+                          backgroundSize: '32px 32px'
                         }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 pointer-events-none" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/30 pointer-events-none" />
 
                       {/* Render Pins on Percentage Coordinates */}
                       {filteredPins.map((pin) => {
@@ -440,7 +535,9 @@ export const MapExplorer: React.FC = () => {
                             key={pin.id}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedPin(pin);
+                              if (!isDroppingPin) {
+                                setSelectedPin(pin);
+                              }
                             }}
                             style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
                             className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-transform duration-150 group/pin ${
@@ -480,9 +577,11 @@ export const MapExplorer: React.FC = () => {
                   <div className="absolute bottom-3 left-4 right-4 z-30 flex items-center justify-between text-[11px] text-slate-400 pointer-events-none bg-slate-950/75 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-800/80 shadow-lg">
                     <span className="flex items-center space-x-1.5">
                       <Move className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Drag to pan • Mouse wheel to zoom in/out • Double-click to zoom</span>
+                      <span>Drag to pan • Mouse wheel to zoom • Click pin to inspect</span>
                     </span>
-                    <span className="font-mono text-[10px] text-slate-500 hidden sm:inline">{filteredPins.length} markers</span>
+                    <span className="font-mono text-[10px] text-slate-500 hidden sm:inline">
+                      {filteredPins.length} markers visible
+                    </span>
                   </div>
                 </>
               )}
@@ -491,16 +590,17 @@ export const MapExplorer: React.FC = () => {
         </div>
 
         {/* Right Sidebar: Selected Pin Details & Pin Checklist */}
-        <div className="space-y-4">
+        <div className={`space-y-4 ${isFullscreen ? 'max-h-full overflow-y-auto' : ''}`}>
           {/* Selected Pin Details Box */}
           {selectedPin ? (
             <div className="bg-slate-900 border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
               <div className="flex items-start justify-between">
                 {(() => {
                   const pinIconInfo = getPinIcon(selectedPin, selectedRegion);
+                  const catConfig = CATEGORY_COLORS[selectedPin.category] || CATEGORY_COLORS.specialty;
                   return (
                     <div className="flex items-center space-x-3">
-                      <div className="relative w-12 h-12 rounded-xl bg-slate-950 border border-slate-700/80 p-1 flex-shrink-0 flex items-center justify-center shadow-inner">
+                      <div className="relative w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center p-2 shadow-inner">
                         <Image
                           src={pinIconInfo.iconUrl}
                           alt={selectedPin.name}
@@ -510,13 +610,42 @@ export const MapExplorer: React.FC = () => {
                         />
                       </div>
                       <div>
-                        <h4 className="font-bold text-base text-slate-100">{selectedPin.name}</h4>
-                        <span className="text-xs text-amber-400 font-medium">
-                          {CATEGORY_COLORS[selectedPin.category]?.label}
+                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${catConfig.bg} ${catConfig.text} ${catConfig.border}`}>
+                          {catConfig.label}
                         </span>
+                        <h3 className="text-base font-bold text-slate-100 leading-tight mt-1">
+                          {selectedPin.name}
+                        </h3>
                       </div>
                     </div>
                   );
+                })()}
+
+                {selectedPin.isCustom && (
+                  <button
+                    onClick={() => handleDeleteCustomPin(selectedPin.id)}
+                    className="p-1.5 text-slate-500 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition"
+                    title="Delete Custom Pin"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center space-x-2">
+                {(() => {
+                  const matchSpecialty = LOCAL_SPECIALTIES.find(
+                    (s) => s.name.toLowerCase() === selectedPin.name.toLowerCase() ||
+                           selectedPin.name.toLowerCase().includes(s.name.toLowerCase())
+                  );
+                  if (matchSpecialty && matchSpecialty.usedFor.length > 0) {
+                    return (
+                      <span className="text-xs bg-slate-800/80 text-amber-300 border border-slate-700 px-2 py-0.5 rounded-full">
+                        Used for: {matchSpecialty.usedFor.join(', ')}
+                      </span>
+                    );
+                  }
+                  return null;
                 })()}
                 {selectedPin.count && (
                   <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
@@ -628,10 +757,120 @@ export const MapExplorer: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
-  )}
-</div>
 
+      {/* Add Custom Pin Modal */}
+      {showAddPinModal && pendingCoords && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header */}
+            <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+              <div className="flex items-center space-x-2.5">
+                <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-100">Add Resource Pin</h3>
+                  <span className="text-[11px] text-slate-400">
+                    Coords: X: {pendingCoords.x}%, Y: {pendingCoords.y}% on {selectedRegion}
+                  </span>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setShowAddPinModal(false);
+                  setPendingCoords(null);
+                }}
+                className="p-1.5 text-slate-400 hover:text-slate-100 rounded-lg hover:bg-slate-800 transition"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Modal Body Form */}
+            <form onSubmit={handleCreateCustomPin} className="p-5 overflow-y-auto space-y-4 flex-1">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Resource or Pin Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Cecilia, Crystal Chunk, Anemoculus..."
+                  value={newPinName}
+                  onChange={(e) => setNewPinName(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Category
+                  </label>
+                  <select
+                    value={newPinCategory}
+                    onChange={(e) => setNewPinCategory(e.target.value as any)}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-400"
+                  >
+                    <option value="specialty">Local Specialty</option>
+                    <option value="oculus">Oculus</option>
+                    <option value="ore">Mining Hotspot</option>
+                    <option value="boss">Trounce Boss</option>
+                    <option value="teleport">Teleport / Waypoint</option>
+                    <option value="shrine">Shrine of Depths</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Spawn Count
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="999"
+                    value={newPinCount}
+                    onChange={(e) => setNewPinCount(parseInt(e.target.value) || 1)}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Location Tips & Notes
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="e.g. Found on the upper cliff ledge next to two torches..."
+                  value={newPinNotes}
+                  onChange={(e) => setNewPinNotes(e.target.value)}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-100 focus:outline-none focus:border-amber-400 resize-none"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAddPinModal(false);
+                    setPendingCoords(null);
+                  }}
+                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-xl shadow-lg shadow-amber-500/20 transition"
+                >
+                  Save Pin to Map
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
-

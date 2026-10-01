@@ -1,26 +1,71 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #090d16;
+  --foreground: #f1f5f9;
+  --card-bg: rgba(15, 23, 42, 0.75);
+  --card-border: rgba(245, 194, 83, 0.15);
+  --accent-gold: #f5c253;
+  --pyro: #ef4444;
+  --hydro: #0284c7;
+  --dendro: #22c55e;
+  --electro: #a855f7;
+  --anemo: #2dd4bf;
+  --cryo: #93c5fd;
+  --geo: #eab308;
 }
 
 body {
-  background: var(--background);
+  background: radial-gradient(circle at 50% 0%, #172554 0%, #090d16 55%, #030712 100%);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+.glow-gold {
+  box-shadow: 0 0 20px -5px rgba(245, 194, 83, 0.35);
+}
+
+.glow-pyro {
+  box-shadow: 0 0 20px -5px rgba(239, 68, 68, 0.4);
+}
+
+.glow-hydro {
+  box-shadow: 0 0 20px -5px rgba(2, 132, 199, 0.4);
+}
+
+.glow-dendro {
+  box-shadow: 0 0 20px -5px rgba(34, 197, 94, 0.4);
+}
+
+.glow-electro {
+  box-shadow: 0 0 20px -5px rgba(168, 85, 247, 0.4);
+}
+
+.glow-anemo {
+  box-shadow: 0 0 20px -5px rgba(45, 212, 191, 0.4);
+}
+
+.glow-cryo {
+  box-shadow: 0 0 20px -5px rgba(147, 197, 253, 0.4);
+}
+
+.glow-geo {
+  box-shadow: 0 0 20px -5px rgba(234, 179, 8, 0.4);
 }

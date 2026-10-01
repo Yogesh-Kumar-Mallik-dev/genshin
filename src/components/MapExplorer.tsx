@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
+import { TransformWrapper, TransformComponent, ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { REGIONS_CONFIG, MAP_PINS } from '@/data/mapData';
 import { LOCAL_SPECIALTIES } from '@/data/materials';
 import { MapPin as MapPinType, RegionType } from '@/types/genshin';
-import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers } from 'lucide-react';
+import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers, ZoomIn, ZoomOut, RotateCcw, Move } from 'lucide-react';
 
 const REGION_ELEMENT_ICONS: Record<string, string> = {
   Anemo: '/assets/elements/anemo.png',
@@ -71,6 +72,11 @@ export const MapExplorer: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedPin, setSelectedPin] = useState<MapPinType | null>(null);
   const [collectedPinIds, setCollectedPinIds] = useState<string[]>([]);
+  const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
+
+  useEffect(() => {
+    transformRef.current?.resetTransform();
+  }, [selectedRegion]);
 
   // Load collected pins from localStorage
   useEffect(() => {
@@ -229,94 +235,140 @@ export const MapExplorer: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Interactive Map Visual Area (2 Cols on lg) */}
         <div className="lg:col-span-2 space-y-4">
-          <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl group select-none">
-            {/* Background Map Canvas with Authentic Genshin In-Game Topography */}
-            <div className="absolute inset-0 bg-slate-950 overflow-hidden">
-              <Image
-                src={currentRegionConfig.mapUrl}
-                alt={currentRegionConfig.name}
-                fill
-                className="object-cover object-center opacity-85 transition-all duration-700 select-none pointer-events-none"
-                priority
-                unoptimized
-              />
-              {/* Subtle atmospheric vignette and coordinate grid overlay */}
-              <div
-                className="absolute inset-0 opacity-15 pointer-events-none"
-                style={{
-                  backgroundImage: 'radial-gradient(circle, #f5c253 1px, transparent 1px)',
-                  backgroundSize: '28px 28px'
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 pointer-events-none" />
-            </div>
+          <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl select-none group">
+            <TransformWrapper
+              ref={transformRef}
+              initialScale={1}
+              minScale={0.7}
+              maxScale={4}
+              centerOnInit={true}
+              wheel={{ step: 0.12 }}
+              panning={{ velocityDisabled: false, excluded: ['button'] }}
+              doubleClick={{ mode: 'zoomIn', step: 0.5 }}
+            >
+              {({ zoomIn, zoomOut, resetTransform }) => (
+                <>
+                  {/* Floating Zoom / Pan HUD Controls */}
+                  <div className="absolute top-4 right-4 z-30 flex flex-col space-y-1.5 bg-slate-950/85 backdrop-blur-md p-1.5 rounded-xl border border-slate-700/80 shadow-2xl">
+                    <button
+                      onClick={() => zoomIn()}
+                      className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition shadow"
+                      title="Zoom In (+)"
+                    >
+                      <ZoomIn className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => zoomOut()}
+                      className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition shadow"
+                      title="Zoom Out (-)"
+                    >
+                      <ZoomOut className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => resetTransform()}
+                      className="p-1.5 rounded-lg bg-slate-800/80 hover:bg-amber-500 hover:text-slate-950 text-slate-200 transition shadow"
+                      title="Reset View"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
+                  </div>
 
-            {/* Regional Watermark & Details */}
-            <div className="absolute top-4 left-4 z-10 pointer-events-none">
-              <span className="text-xl sm:text-2xl font-black text-slate-100/90 tracking-wide block drop-shadow-md">
-                {currentRegionConfig.name}
-              </span>
-              <span className="text-xs text-amber-300 font-mono drop-shadow">
-                {currentRegionConfig.subregions.slice(0, 3).join(' • ')}
-              </span>
-            </div>
-
-            {/* Progress indicator badge on map */}
-            <div className="absolute top-4 right-4 z-10 bg-slate-950/85 backdrop-blur-sm border border-slate-700 px-3 py-1 rounded-lg text-xs text-slate-200 shadow-md">
-              Pins Found: <strong className="text-emerald-400">{collectedCountInRegion}</strong> / {regionPins.length}
-            </div>
-
-            {/* Render Pins on Percentage Coordinates */}
-            {filteredPins.map((pin) => {
-              const isCollected = collectedPinIds.includes(pin.id);
-              const isSelected = selectedPin?.id === pin.id;
-              const catConfig = CATEGORY_COLORS[pin.category] || CATEGORY_COLORS.specialty;
-              const pinIconInfo = getPinIcon(pin, selectedRegion);
-
-              return (
-                <button
-                  key={pin.id}
-                  onClick={() => setSelectedPin(pin)}
-                  style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
-                  className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-200 group/pin ${
-                    isSelected ? 'scale-125 z-30' : 'hover:scale-115'
-                  }`}
-                  title={`${pin.name} (${catConfig.label})`}
-                >
-                  <div
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-xl border transition-all p-1 ${
-                      isCollected
-                        ? 'bg-slate-950/85 border-slate-700 opacity-40 grayscale'
-                        : `${catConfig.bg} ${catConfig.border} border-2 backdrop-blur-md bg-slate-950/75 shadow-black/80 hover:border-amber-400 hover:shadow-amber-500/20`
-                    } ${isSelected ? 'ring-4 ring-amber-400 bg-slate-900 border-amber-400 shadow-amber-500/50' : ''}`}
-                  >
-                    <div className="relative w-full h-full flex items-center justify-center">
-                      <Image
-                        src={pinIconInfo.iconUrl}
-                        alt={pin.name}
-                        fill
-                        className="object-contain drop-shadow"
-                        unoptimized
-                      />
+                  {/* Regional Details HUD in Top-Left */}
+                  <div className="absolute top-4 left-4 z-30 bg-slate-950/85 backdrop-blur-md border border-slate-700/80 px-3.5 py-2 rounded-xl text-xs text-slate-200 shadow-xl pointer-events-none">
+                    <span className="text-sm sm:text-base font-black text-slate-100 block tracking-wide">
+                      {currentRegionConfig.name}
+                    </span>
+                    <div className="flex items-center space-x-2 text-[11px] text-amber-300 font-mono mt-0.5">
+                      <span>Pins: <strong className="text-emerald-400">{collectedCountInRegion}</strong> / {regionPins.length}</span>
+                      <span>•</span>
+                      <span className="text-slate-400">{currentRegionConfig.subregions.slice(0, 2).join(', ')}</span>
                     </div>
                   </div>
 
-                  {/* Hover tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 hidden group-hover/pin:block whitespace-nowrap bg-slate-950/95 text-slate-100 text-[10px] px-2 py-0.5 rounded border border-amber-500/40 shadow-xl pointer-events-none z-40 font-semibold">
-                    {pin.name} {pin.count ? `(${pin.count}x)` : ''}
-                  </div>
-                </button>
-              );
-            })}
+                  {/* Interactive Pan/Zoom Map Surface */}
+                  <TransformComponent
+                    wrapperClass="!w-full !h-full cursor-grab active:cursor-grabbing overflow-hidden"
+                    contentClass="!w-full !h-full"
+                  >
+                    <div className="relative w-full h-full min-w-[650px] min-h-[420px] aspect-[16/10] sm:aspect-[16/9]">
+                      {/* Background Map Canvas with Authentic Genshin In-Game Topography */}
+                      <Image
+                        src={currentRegionConfig.mapUrl}
+                        alt={currentRegionConfig.name}
+                        fill
+                        className="object-cover object-center opacity-85 select-none pointer-events-none"
+                        priority
+                        unoptimized
+                      />
+                      {/* Subtle atmospheric vignette and coordinate grid overlay */}
+                      <div
+                        className="absolute inset-0 opacity-15 pointer-events-none"
+                        style={{
+                          backgroundImage: 'radial-gradient(circle, #f5c253 1px, transparent 1px)',
+                          backgroundSize: '28px 28px'
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 pointer-events-none" />
 
-            {/* Map Controls Helper at bottom */}
-            <div className="absolute bottom-3 left-4 right-4 z-10 flex items-center justify-between text-[11px] text-slate-400 pointer-events-none bg-slate-950/60 px-3 py-1.5 rounded-lg border border-slate-800/60">
-              <span className="flex items-center space-x-1">
-                <Info className="w-3.5 h-3.5 text-amber-400" />
-                <span>Click any pin marker to view exact details and toggle collected status.</span>
-              </span>
-              <span className="font-mono text-[10px] text-slate-500">{filteredPins.length} markers visible</span>
-            </div>
+                      {/* Render Pins on Percentage Coordinates */}
+                      {filteredPins.map((pin) => {
+                        const isCollected = collectedPinIds.includes(pin.id);
+                        const isSelected = selectedPin?.id === pin.id;
+                        const catConfig = CATEGORY_COLORS[pin.category] || CATEGORY_COLORS.specialty;
+                        const pinIconInfo = getPinIcon(pin, selectedRegion);
+
+                        return (
+                          <button
+                            key={pin.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedPin(pin);
+                            }}
+                            style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+                            className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-transform duration-150 group/pin ${
+                              isSelected ? 'scale-125 z-40' : 'hover:scale-115'
+                            }`}
+                            title={`${pin.name} (${catConfig.label})`}
+                          >
+                            <div
+                              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-xl border transition-all p-1 ${
+                                isCollected
+                                  ? 'bg-slate-950/85 border-slate-700 opacity-40 grayscale'
+                                  : `${catConfig.bg} ${catConfig.border} border-2 backdrop-blur-md bg-slate-950/75 shadow-black/80 hover:border-amber-400 hover:shadow-amber-500/20`
+                              } ${isSelected ? 'ring-4 ring-amber-400 bg-slate-900 border-amber-400 shadow-amber-500/50' : ''}`}
+                            >
+                              <div className="relative w-full h-full flex items-center justify-center">
+                                <Image
+                                  src={pinIconInfo.iconUrl}
+                                  alt={pin.name}
+                                  fill
+                                  className="object-contain drop-shadow"
+                                  unoptimized
+                                />
+                              </div>
+                            </div>
+
+                            {/* Hover tooltip */}
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 hidden group-hover/pin:block whitespace-nowrap bg-slate-950/95 text-slate-100 text-[10px] px-2 py-0.5 rounded border border-amber-500/40 shadow-xl pointer-events-none z-40 font-semibold">
+                              {pin.name} {pin.count ? `(${pin.count}x)` : ''}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </TransformComponent>
+
+                  {/* Map Navigation Helper Bar at bottom */}
+                  <div className="absolute bottom-3 left-4 right-4 z-30 flex items-center justify-between text-[11px] text-slate-400 pointer-events-none bg-slate-950/75 backdrop-blur-md px-3 py-1.5 rounded-lg border border-slate-800/80 shadow-lg">
+                    <span className="flex items-center space-x-1.5">
+                      <Move className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Drag to pan • Mouse wheel to zoom in/out • Double-click to zoom</span>
+                    </span>
+                    <span className="font-mono text-[10px] text-slate-500 hidden sm:inline">{filteredPins.length} markers</span>
+                  </div>
+                </>
+              )}
+            </TransformWrapper>
           </div>
         </div>
 

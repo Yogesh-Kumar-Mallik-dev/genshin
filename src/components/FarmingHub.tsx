@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { FARMING_STRATEGIES, DAILY_ARTIFACT_ROUTE_SPOTS } from '@/data/farming';
-import { BookOpen, Calculator, Coins, Zap, ShieldAlert, CheckCircle2, TrendingUp, Sparkles, MapPin } from 'lucide-react';
+import { Calculator, CheckCircle2, TrendingUp, MapPin } from 'lucide-react';
 
 export const FarmingHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'calculator' | 'mora' | 'books' | 'resin' | 'route'>('calculator');
@@ -12,7 +13,6 @@ export const FarmingHub: React.FC = () => {
   const [targetAr, setTargetAr] = useState<number>(45);
 
   // Approximate EXP lookup table between AR tiers
-  // Rough cumulative EXP needed
   const arExpTable: Record<number, number> = {
     1: 0, 5: 1500, 10: 4500, 15: 9000, 20: 16000,
     25: 27000, 30: 42000, 35: 65000, 40: 100000,
@@ -20,7 +20,6 @@ export const FarmingHub: React.FC = () => {
   };
 
   const getCumulativeExp = (rank: number) => {
-    // Interpolate or snap
     const keys = Object.keys(arExpTable).map(Number).sort((a, b) => a - b);
     for (let i = 0; i < keys.length - 1; i++) {
       if (rank >= keys[i] && rank <= keys[i + 1]) {
@@ -32,8 +31,15 @@ export const FarmingHub: React.FC = () => {
   };
 
   const expNeeded = Math.max(0, getCumulativeExp(targetAr) - getCumulativeExp(currentAr));
-  // Daily yield: 1500 from commissions + 900 from 180 resin = 2400 EXP / day
   const daysNeeded = Math.ceil(expNeeded / 2400);
+
+  const tabs: { id: string; label: string; iconSrc?: string; lucideIcon?: React.ReactNode }[] = [
+    { id: 'calculator', label: 'AR Calculator & Speedrun', lucideIcon: <Calculator className="w-4 h-4" /> },
+    { id: 'mora', label: 'Mora Farming (Infinite Mora)', iconSrc: '/assets/ui/mora.png' },
+    { id: 'books', label: 'EXP Books & Level 80/90 Rule', iconSrc: '/assets/ui/heros-wit.png' },
+    { id: 'route', label: 'Daily 15-Min Artifact Route', iconSrc: '/assets/ui/map.png' },
+    { id: 'resin', label: 'Resin Golden Rules', iconSrc: '/assets/ui/resin.png' }
+  ];
 
   return (
     <div className="space-y-6">
@@ -55,13 +61,7 @@ export const FarmingHub: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex flex-wrap border-b border-slate-800 gap-2 sm:gap-4">
-        {[
-          { id: 'calculator', label: 'AR Calculator & Speedrun', icon: <Calculator className="w-4 h-4" /> },
-          { id: 'mora', label: 'Mora Farming (Infinite Mora)', icon: <Coins className="w-4 h-4" /> },
-          { id: 'books', label: 'EXP Books & Level 80/90 Rule', icon: <BookOpen className="w-4 h-4" /> },
-          { id: 'route', label: 'Daily 15-Min Artifact Route', icon: <MapPin className="w-4 h-4" /> },
-          { id: 'resin', label: 'Resin Golden Rules', icon: <Zap className="w-4 h-4" /> }
-        ].map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
@@ -71,7 +71,13 @@ export const FarmingHub: React.FC = () => {
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            {tab.icon}
+            {tab.iconSrc ? (
+              <div className="relative w-4 h-4 flex-shrink-0">
+                <Image src={tab.iconSrc} alt="" fill className="object-contain" />
+              </div>
+            ) : (
+              tab.lucideIcon
+            )}
             <span>{tab.label}</span>
           </button>
         ))}

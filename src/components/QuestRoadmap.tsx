@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { QUEST_ROADMAP } from '@/data/quests';
 import { QuestStep } from '@/types/genshin';
-import { Compass, CheckCircle2, Circle, Sparkles, AlertCircle, Search, Trophy, Key, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Circle, Search, Trophy, Key, ArrowRight } from 'lucide-react';
 
 export const QuestRoadmap: React.FC = () => {
   const [completedQuestIds, setCompletedQuestIds] = useState<string[]>([]);
@@ -59,7 +60,9 @@ export const QuestRoadmap: React.FC = () => {
       <div className="rounded-2xl bg-gradient-to-r from-slate-900 via-sky-950/40 to-slate-900 border border-sky-500/20 p-6 md:p-8">
         <div className="max-w-3xl space-y-2">
           <div className="flex items-center space-x-2 text-sky-400 text-xs font-semibold uppercase tracking-wider">
-            <Compass className="w-4 h-4" />
+            <div className="relative w-4 h-4">
+              <Image src="/assets/ui/quest.png" alt="Quest" fill className="object-contain" />
+            </div>
             <span>New Player Progression Roadmap</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
@@ -97,7 +100,9 @@ export const QuestRoadmap: React.FC = () => {
         <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="font-semibold text-slate-300 flex items-center space-x-1.5">
-              <Sparkles className="w-4 h-4 text-sky-400" />
+              <div className="relative w-4 h-4">
+                <Image src="/assets/ui/primogem.png" alt="Primogem" fill className="object-contain" />
+              </div>
               <span>Roadmap Primogems</span>
             </span>
             <span className="font-bold text-sky-300">{earnedPrimos} / {totalPrimosAvailable}</span>
@@ -210,9 +215,11 @@ export const QuestRoadmap: React.FC = () => {
                 </div>
 
                 <div className="flex items-center space-x-2 text-xs">
-                  <span className="bg-sky-950/60 text-sky-300 border border-sky-500/30 px-2 py-1 rounded font-medium flex items-center space-x-1">
-                    <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-                    <span>+{quest.primogems} Primos</span>
+                  <span className="bg-sky-950/80 text-sky-300 border border-sky-500/40 px-2.5 py-1 rounded-lg font-bold flex items-center space-x-1.5 shadow">
+                    <div className="relative w-4 h-4 flex-shrink-0">
+                      <Image src="/assets/ui/primogem.png" alt="Primogem" fill className="object-contain" />
+                    </div>
+                    <span>+{quest.primogems}</span>
                   </span>
                 </div>
               </div>

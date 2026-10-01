@@ -35,10 +35,15 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
   const formattedFullTime = fullTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-      <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 bg-black/80 backdrop-blur-md overflow-y-auto animate-fadeIn"
+    >
+      <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-lg max-h-[84vh] flex flex-col shadow-2xl overflow-hidden my-auto">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80">
+        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 flex-shrink-0">
           <div className="flex items-center space-x-2.5">
             <div className="relative w-6 h-6 flex-shrink-0">
               <Image
@@ -58,8 +63,8 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
           </button>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
+        {/* Content with smooth scroll */}
+        <div className="p-6 space-y-6 overflow-y-auto flex-1">
           {/* Main Resin Slider & Display */}
           <div className="bg-slate-950/70 p-4 rounded-2xl border border-sky-500/25 space-y-3">
             <div className="flex justify-between items-center">
@@ -235,7 +240,7 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex justify-end">
+        <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex justify-end flex-shrink-0">
           <button
             onClick={onClose}
             className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs rounded-xl transition shadow-lg shadow-amber-500/20"

@@ -235,10 +235,15 @@ export const CharacterHub: React.FC = () => {
 
       {/* Character Build Inspector Modal (Enka / KQM style) */}
       {activeCharacter && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto animate-fadeIn">
-          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl my-6 shadow-2xl overflow-hidden text-slate-200">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setActiveCharacter(null);
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center py-8 sm:py-12 md:py-16 px-4 sm:px-6 bg-black/80 backdrop-blur-md overflow-y-auto animate-fadeIn"
+        >
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[84vh] flex flex-col shadow-2xl overflow-hidden text-slate-200 my-auto">
             {/* Header Hero with Splash Art backdrop */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-6 sm:p-8 border-b border-slate-800">
+            <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-5 sm:p-6 border-b border-slate-800 flex-shrink-0">
               {/* Ambient Splash Image */}
               {activeCharacter.splashUrl && (
                 <div className="absolute right-0 -top-10 -bottom-10 w-2/3 opacity-30 pointer-events-none overflow-hidden mask-gradient-to-l">
@@ -306,8 +311,8 @@ export const CharacterHub: React.FC = () => {
               </div>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto">
+            {/* Modal Body with smooth internal scroll */}
+            <div className="p-5 sm:p-6 space-y-6 flex-1 overflow-y-auto">
               {/* Description */}
               <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800">
                 {activeCharacter.description}
@@ -514,7 +519,7 @@ export const CharacterHub: React.FC = () => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex justify-end">
+            <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex justify-end flex-shrink-0">
               <button
                 onClick={() => setActiveCharacter(null)}
                 className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition"

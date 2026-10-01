@@ -16,13 +16,53 @@ const REGION_ELEMENT_ICONS: Record<string, string> = {
   Pyro: '/assets/elements/pyro.png'
 };
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string; icon: string }> = {
-  specialty: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/40', label: 'Local Specialty', icon: '🌿' },
-  teleport: { bg: 'bg-sky-500/20', text: 'text-sky-300', border: 'border-sky-500/40', label: 'Teleport / Statue', icon: '📍' },
-  oculus: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', label: 'Oculus', icon: '💎' },
-  boss: { bg: 'bg-rose-500/20', text: 'text-rose-300', border: 'border-rose-500/40', label: 'Trounce Boss', icon: '💀' },
-  ore: { bg: 'bg-blue-400/20', text: 'text-blue-200', border: 'border-blue-400/40', label: 'Mining Hotspot', icon: '⛏️' },
-  shrine: { bg: 'bg-purple-500/20', text: 'text-purple-300', border: 'border-purple-500/40', label: 'Shrine of Depths', icon: '⛩️' }
+const CATEGORY_COLORS: Record<string, { bg: string; text: string; border: string; label: string; iconUrl: string }> = {
+  specialty: { bg: 'bg-emerald-500/20', text: 'text-emerald-300', border: 'border-emerald-500/40', label: 'Local Specialty', iconUrl: '/assets/materials/specialties/cecilia.png' },
+  teleport: { bg: 'bg-sky-500/20', text: 'text-sky-300', border: 'border-sky-500/40', label: 'Teleport / Statue', iconUrl: '/assets/map/pins/teleport.png' },
+  oculus: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40', label: 'Oculus', iconUrl: '/assets/map/pins/anemoculus.png' },
+  boss: { bg: 'bg-rose-500/20', text: 'text-rose-300', border: 'border-rose-500/40', label: 'Trounce Boss', iconUrl: '/assets/map/pins/boss.png' },
+  ore: { bg: 'bg-blue-400/20', text: 'text-blue-200', border: 'border-blue-400/40', label: 'Mining Hotspot', iconUrl: '/assets/map/pins/ore.svg' },
+  shrine: { bg: 'bg-purple-500/20', text: 'text-purple-300', border: 'border-purple-500/40', label: 'Shrine of Depths', iconUrl: '/assets/map/pins/shrine.png' }
+};
+
+const getPinIcon = (pin: MapPinType, region: RegionType): { iconUrl: string; label: string } => {
+  if (pin.category === 'teleport') {
+    if (pin.name.toLowerCase().includes('statue')) {
+      return { iconUrl: '/assets/map/pins/statue.png', label: 'Statue of the Seven' };
+    }
+    return { iconUrl: '/assets/map/pins/teleport.png', label: 'Teleport Waypoint' };
+  }
+  if (pin.category === 'oculus') {
+    const oculusMap: Record<string, string> = {
+      Mondstadt: '/assets/map/pins/anemoculus.png',
+      Liyue: '/assets/map/pins/geoculus.png',
+      Inazuma: '/assets/map/pins/electroculus.png',
+      Sumeru: '/assets/map/pins/dendroculus.png',
+      Fontaine: '/assets/map/pins/hydroculus.png',
+      Natlan: '/assets/map/pins/pyroculus.png'
+    };
+    return { iconUrl: oculusMap[region] || '/assets/map/pins/anemoculus.png', label: 'Oculus' };
+  }
+  if (pin.category === 'boss') {
+    return { iconUrl: '/assets/map/pins/boss.png', label: 'Trounce Domain / Boss' };
+  }
+  if (pin.category === 'shrine') {
+    return { iconUrl: '/assets/map/pins/shrine.png', label: 'Shrine of Depths' };
+  }
+  if (pin.category === 'ore') {
+    return { iconUrl: '/assets/map/pins/ore.svg', label: 'Mining Outcrop' };
+  }
+  if (pin.category === 'specialty') {
+    const match = LOCAL_SPECIALTIES.find(
+      (s) => s.name.toLowerCase() === pin.name.toLowerCase() ||
+             pin.name.toLowerCase().includes(s.name.toLowerCase())
+    );
+    if (match?.iconUrl) {
+      return { iconUrl: match.iconUrl, label: match.name };
+    }
+    return { iconUrl: '/assets/materials/specialties/cecilia.png', label: 'Specialty' };
+  }
+  return { iconUrl: '/assets/map/pins/teleport.png', label: pin.name };
 };
 
 export const MapExplorer: React.FC = () => {
@@ -150,13 +190,21 @@ export const MapExplorer: React.FC = () => {
               <button
                 key={key}
                 onClick={() => setSelectedCategory(key)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center space-x-1 ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition flex items-center space-x-1.5 ${
                   isSelected
                     ? `${config.bg} ${config.text} ${config.border} border font-bold shadow-sm`
                     : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
                 }`}
               >
-                <span>{config.icon}</span>
+                <div className="relative w-3.5 h-3.5 flex-shrink-0">
+                  <Image
+                    src={config.iconUrl}
+                    alt={config.label}
+                    fill
+                    className="object-contain"
+                    unoptimized
+                  />
+                </div>
                 <span>{config.label}</span>
                 <span className="text-[10px] text-slate-400">({count})</span>
               </button>
@@ -182,30 +230,39 @@ export const MapExplorer: React.FC = () => {
         {/* Interactive Map Visual Area (2 Cols on lg) */}
         <div className="lg:col-span-2 space-y-4">
           <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl group select-none">
-            {/* Background Map Canvas / Thematic Terrain Art */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${currentRegionConfig.bgGradient} opacity-90`} />
-
-            {/* Subtle Map Grid lines */}
-            <div
-              className="absolute inset-0 opacity-15"
-              style={{
-                backgroundImage: 'radial-gradient(circle, #f5c253 1px, transparent 1px)',
-                backgroundSize: '24px 24px'
-              }}
-            />
+            {/* Background Map Canvas with Authentic Genshin In-Game Topography */}
+            <div className="absolute inset-0 bg-slate-950 overflow-hidden">
+              <Image
+                src={currentRegionConfig.mapUrl}
+                alt={currentRegionConfig.name}
+                fill
+                className="object-cover object-center opacity-85 transition-all duration-700 select-none pointer-events-none"
+                priority
+                unoptimized
+              />
+              {/* Subtle atmospheric vignette and coordinate grid overlay */}
+              <div
+                className="absolute inset-0 opacity-15 pointer-events-none"
+                style={{
+                  backgroundImage: 'radial-gradient(circle, #f5c253 1px, transparent 1px)',
+                  backgroundSize: '28px 28px'
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/40 pointer-events-none" />
+            </div>
 
             {/* Regional Watermark & Details */}
             <div className="absolute top-4 left-4 z-10 pointer-events-none">
-              <span className="text-xl sm:text-2xl font-black text-slate-100/90 tracking-wide block">
+              <span className="text-xl sm:text-2xl font-black text-slate-100/90 tracking-wide block drop-shadow-md">
                 {currentRegionConfig.name}
               </span>
-              <span className="text-xs text-amber-300/80 font-mono">
+              <span className="text-xs text-amber-300 font-mono drop-shadow">
                 {currentRegionConfig.subregions.slice(0, 3).join(' • ')}
               </span>
             </div>
 
             {/* Progress indicator badge on map */}
-            <div className="absolute top-4 right-4 z-10 bg-slate-950/80 backdrop-blur-sm border border-slate-700 px-3 py-1 rounded-lg text-xs text-slate-200">
+            <div className="absolute top-4 right-4 z-10 bg-slate-950/85 backdrop-blur-sm border border-slate-700 px-3 py-1 rounded-lg text-xs text-slate-200 shadow-md">
               Pins Found: <strong className="text-emerald-400">{collectedCountInRegion}</strong> / {regionPins.length}
             </div>
 
@@ -214,6 +271,7 @@ export const MapExplorer: React.FC = () => {
               const isCollected = collectedPinIds.includes(pin.id);
               const isSelected = selectedPin?.id === pin.id;
               const catConfig = CATEGORY_COLORS[pin.category] || CATEGORY_COLORS.specialty;
+              const pinIconInfo = getPinIcon(pin, selectedRegion);
 
               return (
                 <button
@@ -221,22 +279,30 @@ export const MapExplorer: React.FC = () => {
                   onClick={() => setSelectedPin(pin)}
                   style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
                   className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-all duration-200 group/pin ${
-                    isSelected ? 'scale-125 z-30' : 'hover:scale-110'
+                    isSelected ? 'scale-125 z-30' : 'hover:scale-115'
                   }`}
                   title={`${pin.name} (${catConfig.label})`}
                 >
                   <div
-                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-lg border text-sm transition-all ${
+                    className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center shadow-xl border transition-all p-1 ${
                       isCollected
-                        ? 'bg-slate-900/90 border-slate-700 opacity-50 grayscale'
-                        : `${catConfig.bg} ${catConfig.border} border-2 backdrop-blur-sm text-white`
-                    } ${isSelected ? 'ring-4 ring-amber-400/60 shadow-amber-500/50' : ''}`}
+                        ? 'bg-slate-950/85 border-slate-700 opacity-40 grayscale'
+                        : `${catConfig.bg} ${catConfig.border} border-2 backdrop-blur-md bg-slate-950/75 shadow-black/80 hover:border-amber-400 hover:shadow-amber-500/20`
+                    } ${isSelected ? 'ring-4 ring-amber-400 bg-slate-900 border-amber-400 shadow-amber-500/50' : ''}`}
                   >
-                    <span>{catConfig.icon}</span>
+                    <div className="relative w-full h-full flex items-center justify-center">
+                      <Image
+                        src={pinIconInfo.iconUrl}
+                        alt={pin.name}
+                        fill
+                        className="object-contain drop-shadow"
+                        unoptimized
+                      />
+                    </div>
                   </div>
 
                   {/* Hover tooltip */}
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 hidden group-hover/pin:block whitespace-nowrap bg-slate-950/95 text-slate-100 text-[10px] px-2 py-0.5 rounded border border-slate-700 shadow-md pointer-events-none z-40">
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1.5 hidden group-hover/pin:block whitespace-nowrap bg-slate-950/95 text-slate-100 text-[10px] px-2 py-0.5 rounded border border-amber-500/40 shadow-xl pointer-events-none z-40 font-semibold">
                     {pin.name} {pin.count ? `(${pin.count}x)` : ''}
                   </div>
                 </button>
@@ -261,24 +327,17 @@ export const MapExplorer: React.FC = () => {
             <div className="bg-slate-900 border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
               <div className="flex items-start justify-between">
                 {(() => {
-                  const match = LOCAL_SPECIALTIES.find(
-                    (s) => s.name.toLowerCase() === selectedPin.name.toLowerCase() ||
-                           selectedPin.name.toLowerCase().includes(s.name.toLowerCase())
-                  );
+                  const pinIconInfo = getPinIcon(selectedPin, selectedRegion);
                   return (
                     <div className="flex items-center space-x-3">
                       <div className="relative w-12 h-12 rounded-xl bg-slate-950 border border-slate-700/80 p-1 flex-shrink-0 flex items-center justify-center shadow-inner">
-                        {match?.iconUrl ? (
-                          <Image
-                            src={match.iconUrl}
-                            alt={selectedPin.name}
-                            fill
-                            className="object-contain p-1"
-                            unoptimized
-                          />
-                        ) : (
-                          <span className="text-2xl">{CATEGORY_COLORS[selectedPin.category]?.icon}</span>
-                        )}
+                        <Image
+                          src={pinIconInfo.iconUrl}
+                          alt={selectedPin.name}
+                          fill
+                          className="object-contain p-1"
+                          unoptimized
+                        />
                       </div>
                       <div>
                         <h4 className="font-bold text-base text-slate-100">{selectedPin.name}</h4>
@@ -361,24 +420,18 @@ export const MapExplorer: React.FC = () => {
                   >
                     <div className="flex items-center space-x-2 truncate">
                       {(() => {
-                        const match = LOCAL_SPECIALTIES.find(
-                          (s) => s.name.toLowerCase() === pin.name.toLowerCase() ||
-                                 pin.name.toLowerCase().includes(s.name.toLowerCase())
+                        const pinIconInfo = getPinIcon(pin, selectedRegion);
+                        return (
+                          <div className="relative w-4 h-4 flex-shrink-0">
+                            <Image
+                              src={pinIconInfo.iconUrl}
+                              alt={pin.name}
+                              fill
+                              className="object-contain"
+                              unoptimized
+                            />
+                          </div>
                         );
-                        if (match?.iconUrl) {
-                          return (
-                            <div className="relative w-4 h-4 flex-shrink-0">
-                              <Image
-                                src={match.iconUrl}
-                                alt={pin.name}
-                                fill
-                                className="object-contain"
-                                unoptimized
-                              />
-                            </div>
-                          );
-                        }
-                        return <span className="text-xs">{CATEGORY_COLORS[pin.category]?.icon}</span>;
                       })()}
                       <span className={`truncate ${isCollected ? 'line-through text-slate-500' : 'text-slate-200'}`}>
                         {pin.name}

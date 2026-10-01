@@ -6,6 +6,7 @@ export interface RegionMapConfig {
   themeColor: string;
   element: string;
   bgGradient: string;
+  mapUrl: string;
   subregions: string[];
 }
 
@@ -16,6 +17,7 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     themeColor: '#48d1cc',
     element: 'Anemo',
     bgGradient: 'from-emerald-950/40 via-cyan-950/30 to-slate-900',
+    mapUrl: '/assets/map/regions/mondstadt.jpg',
     subregions: ['Starfell Valley', 'Galesong Hill', 'Windwail Highland', 'Brightcrown Mountains', 'Dragonspine']
   },
   {
@@ -24,6 +26,7 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     themeColor: '#eab308',
     element: 'Geo',
     bgGradient: 'from-amber-950/40 via-yellow-950/30 to-slate-900',
+    mapUrl: '/assets/map/regions/liyue.jpg',
     subregions: ['Bishui Plain', 'Qiongji Estuary', 'Minlin', 'Sea of Clouds', 'The Chasm', 'Chenyu Vale']
   },
   {
@@ -32,6 +35,7 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     themeColor: '#a855f7',
     element: 'Electro',
     bgGradient: 'from-purple-950/40 via-violet-950/30 to-slate-900',
+    mapUrl: '/assets/map/regions/inazuma.jpg',
     subregions: ['Narukami Island', 'Kannazuka', 'Yashiori Island', 'Watatsumi Island', 'Seirai Island', 'Tsurumi Island']
   },
   {
@@ -40,6 +44,7 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     themeColor: '#22c55e',
     element: 'Dendro',
     bgGradient: 'from-green-950/40 via-emerald-950/30 to-slate-900',
+    mapUrl: '/assets/map/regions/sumeru.jpg',
     subregions: ['Avidya Forest', 'Lokapala Jungle', 'Ashavan Realm', 'Hypostyle Desert', 'Desert of Hadramaveth']
   },
   {
@@ -48,6 +53,7 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     themeColor: '#0ea5e9',
     element: 'Hydro',
     bgGradient: 'from-blue-950/40 via-cyan-950/30 to-slate-900',
+    mapUrl: '/assets/map/regions/fontaine.jpg',
     subregions: ['Court of Fontaine', 'Beryl Region', 'Belleau Region', 'Liffey Region', 'Erinnyes Forest', 'Sea of Bygone Eras']
   },
   {
@@ -56,6 +62,7 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     themeColor: '#f97316',
     element: 'Pyro',
     bgGradient: 'from-orange-950/40 via-red-950/30 to-slate-900',
+    mapUrl: '/assets/map/regions/natlan.png',
     subregions: ['Basin of Unnumbered Flames', 'Coatepec Mountain', 'Tequenemecan Valley', 'Ochkanatlan']
   }
 ];

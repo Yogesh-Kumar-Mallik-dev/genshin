@@ -23,7 +23,8 @@ import {
   Maximize2,
   Minimize2,
   Crosshair,
-  Compass
+  Compass,
+  CheckSquare
 } from 'lucide-react';
 
 export interface CustomPin extends MapPinType {
@@ -98,7 +99,10 @@ export const MapExplorer: React.FC = () => {
   const [collectedPinIds, setCollectedPinIds] = useState<string[]>([]);
   const [customPins, setCustomPins] = useState<CustomPin[]>([]);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
   const transformRef = useRef<ReactZoomPanPinchRef | null>(null);
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapSurfaceRef = useRef<HTMLDivElement | null>(null);
 
   // Pin placement states
   const [isDroppingPin, setIsDroppingPin] = useState<boolean>(false);
@@ -215,7 +219,7 @@ export const MapExplorer: React.FC = () => {
     }
   };
 
-  // Fly camera to region focus
+  // Mathematically calibrated camera fly to nation
   const handleFlyToRegion = (regionId: MapRegionFilter) => {
     setSelectedRegionFilter(regionId);
     setSelectedPin(null);
@@ -226,12 +230,22 @@ export const MapExplorer: React.FC = () => {
     }
 
     const regConfig = REGIONS_CONFIG.find((r) => r.id === regionId);
-    if (regConfig && transformRef.current) {
-      // Calculate pan offset to center region on screen at 2.4x zoom
-      const scale = 2.4;
-      const targetX = -(regConfig.focusX * 60 - 500) * (scale / 2);
-      const targetY = -(regConfig.focusY * 44 - 350) * (scale / 2);
-      transformRef.current.setTransform(targetX, targetY, scale, 450, 'easeOut');
+    if (regConfig && transformRef.current && mapContainerRef.current) {
+      const container = mapContainerRef.current;
+      const cW = container.clientWidth;
+      const cH = container.clientHeight;
+
+      const mapW = mapSurfaceRef.current?.clientWidth || cW;
+      const mapH = mapSurfaceRef.current?.clientHeight || cH;
+
+      const targetScale = 2.6;
+      const focusPxX = (regConfig.focusX / 100) * mapW;
+      const focusPxY = (regConfig.focusY / 100) * mapH;
+
+      const targetX = (cW / 2) - (focusPxX * targetScale);
+      const targetY = (cH / 2) - (focusPxY * targetScale);
+
+      transformRef.current.setTransform(targetX, targetY, targetScale, 450, 'easeOut');
     }
   };
 
@@ -286,7 +300,7 @@ export const MapExplorer: React.FC = () => {
             High-Resolution Map of Teyvat
           </h2>
           <p className="text-sm text-slate-300">
-            Drag to pan smoothly across the entire continent, zoom in deep with your mouse wheel, and drop your own custom resource markers.
+            Drag to pan smoothly across the entire continent, zoom in deep with your mouse wheel, and track all character ascension materials and resource spawns.
           </p>
         </div>
       </div>
@@ -307,7 +321,7 @@ export const MapExplorer: React.FC = () => {
               : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
           }`}
         >
-          <span>All Teyvat (Full Map)</span>
+          <span>All Teyvat</span>
         </button>
 
         {REGIONS_CONFIG.map((reg) => {
@@ -437,16 +451,31 @@ export const MapExplorer: React.FC = () => {
             </div>
           )}
 
-          <div className={`relative w-full bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl select-none group ${
-            isFullscreen ? 'flex-1 h-full' : 'aspect-[16/10] sm:aspect-[16/9] min-h-[520px]'
-          }`}>
+          {/* Map Viewport Container with Authentic Genshin Deep Ocean Water Styling */}
+          <div
+            ref={mapContainerRef}
+            className={`relative w-full rounded-2xl border border-sky-900/50 overflow-hidden shadow-2xl select-none group ${
+              isFullscreen ? 'flex-1 h-full' : 'h-[560px] sm:h-[640px]'
+            }`}
+            style={{
+              backgroundColor: '#0a1d33',
+              backgroundImage: `
+                radial-gradient(ellipse at 50% 50%, rgba(13, 37, 62, 0.7) 0%, rgba(6, 17, 29, 0.95) 100%),
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
+              `,
+              backgroundSize: '100% 100%, 40px 40px, 40px 40px'
+            }}
+          >
             <TransformWrapper
               ref={transformRef}
-              initialScale={1}
-              minScale={0.7}
-              maxScale={6}
+              initialScale={1.0}
+              minScale={1.0}
+              maxScale={7.0}
+              limitToBounds={true}
               centerOnInit={true}
-              wheel={{ step: 0.14 }}
+              smooth={true}
+              wheel={{ step: 0.15 }}
               panning={{ velocityDisabled: false, excluded: ['button', 'input'] }}
               doubleClick={{ mode: 'zoomIn', step: 0.6 }}
             >
@@ -469,7 +498,10 @@ export const MapExplorer: React.FC = () => {
                       <ZoomOut className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => resetTransform()}
+                      onClick={() => {
+                        setSelectedRegionFilter('All');
+                        resetTransform();
+                      }}
                       className="p-2 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded-lg transition"
                       title="Reset Full Continent View"
                     >
@@ -499,9 +531,10 @@ export const MapExplorer: React.FC = () => {
                   {/* Interactive Pan/Zoom Map Surface */}
                   <TransformComponent
                     wrapperClass={`!w-full !h-full ${isDroppingPin ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'} overflow-hidden`}
-                    contentClass="!w-full !h-full"
+                    contentClass="!w-full !h-full flex items-center justify-center"
                   >
                     <div
+                      ref={mapSurfaceRef}
                       onClick={handleMapClick}
                       className="relative w-full h-full min-w-[750px] min-h-[500px] aspect-[1.355]"
                     >
@@ -533,7 +566,7 @@ export const MapExplorer: React.FC = () => {
                             }}
                             style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
                             className={`absolute transform -translate-x-1/2 -translate-y-1/2 z-20 transition-transform duration-150 group/pin ${
-                              isSelected ? 'scale-130 z-40' : 'hover:scale-115'
+                              isSelected ? 'scale-135 z-40' : 'hover:scale-115'
                             }`}
                             title={`${pin.name} (${catConfig.label})`}
                           >
@@ -693,7 +726,7 @@ export const MapExplorer: React.FC = () => {
           <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
             <div className="flex items-center justify-between pb-2 border-b border-slate-800">
               <span className="text-xs font-bold text-slate-200 flex items-center space-x-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckSquare className="w-4 h-4 text-emerald-400" />
                 <span>{selectedRegionFilter === 'All' ? 'Teyvat' : selectedRegionFilter} Pin Checklist</span>
               </span>
               <span className="text-[11px] text-slate-400 font-medium">
@@ -701,7 +734,7 @@ export const MapExplorer: React.FC = () => {
               </span>
             </div>
 
-            <div className="max-h-[300px] overflow-y-auto space-y-1.5 pr-1">
+            <div className="max-h-[340px] overflow-y-auto space-y-1.5 pr-1">
               {filteredPins.map((pin) => {
                 const isCollected = collectedPinIds.includes(pin.id);
                 return (
@@ -757,7 +790,7 @@ export const MapExplorer: React.FC = () => {
 
       {/* Add Custom Pin Modal */}
       {showAddPinModal && pendingCoords && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center py-8 sm:py-12 px-4 sm:px-6 overflow-hidden">
           <div className="bg-slate-900 border border-amber-500/40 rounded-3xl max-w-md w-full shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">

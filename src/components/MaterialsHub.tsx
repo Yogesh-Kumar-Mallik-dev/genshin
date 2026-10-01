@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { LOCAL_SPECIALTIES, TALENT_SCHEDULES, ESSENTIAL_MOB_DROPS } from '@/data/materials';
 import { RegionType } from '@/types/genshin';
 import { Calendar, MapPin, Sparkles, Clock, ShieldCheck, Skull, ChevronRight } from 'lucide-react';
@@ -152,14 +153,27 @@ export const MaterialsHub: React.FC = () => {
 
                 <div className="space-y-3">
                   {domain.availableItems.map((item, iIdx) => (
-                    <div key={iIdx} className="bg-slate-950/70 p-3 rounded-lg border border-slate-800/80 space-y-1.5">
+                    <div key={iIdx} className="bg-slate-950/70 p-3 rounded-lg border border-slate-800/80 space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-emerald-400">
-                          Teachings of {item.name}
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          {item.days.join(', ')}
-                        </span>
+                        <div className="flex items-center space-x-2.5">
+                          <div className="relative w-8 h-8 rounded-lg bg-slate-900 border border-slate-700/60 p-0.5 flex-shrink-0">
+                            <Image
+                              src={item.iconUrl}
+                              alt={item.name}
+                              fill
+                              className="object-contain"
+                              unoptimized
+                            />
+                          </div>
+                          <div>
+                            <span className="text-xs font-bold text-emerald-400 block leading-tight">
+                              Philosophies of {item.name}
+                            </span>
+                            <span className="text-[10px] text-slate-400">
+                              {item.days.join(', ')}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                       <div className="text-[11px] text-slate-300">
                         <span className="text-slate-500 font-medium">Used for:</span>
@@ -218,10 +232,22 @@ export const MaterialsHub: React.FC = () => {
                 <div className="space-y-2.5">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-2.5">
-                      <span className="text-2xl p-1 bg-slate-950 rounded-lg border border-slate-800">{spec.icon}</span>
+                      <div className="relative w-12 h-12 rounded-xl bg-slate-950/90 border border-amber-500/30 p-1 flex-shrink-0 shadow-md flex items-center justify-center">
+                        {spec.iconUrl ? (
+                          <Image
+                            src={spec.iconUrl}
+                            alt={spec.name}
+                            fill
+                            className="object-contain p-1"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="text-2xl">{spec.icon}</span>
+                        )}
+                      </div>
                       <div>
                         <h4 className="font-bold text-sm text-slate-100">{spec.name}</h4>
-                        <span className="text-[11px] text-amber-400">{spec.region} Specialty</span>
+                        <span className="text-[11px] text-amber-400 font-medium">{spec.region} Specialty</span>
                       </div>
                     </div>
                     <span className="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full flex items-center space-x-1">
@@ -265,9 +291,20 @@ export const MaterialsHub: React.FC = () => {
             {ESSENTIAL_MOB_DROPS.map((mob, idx) => (
               <div key={idx} className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 space-y-3">
                 <div className="flex items-start justify-between">
-                  <div>
-                    <h4 className="font-bold text-base text-slate-100">{mob.name}</h4>
-                    <span className="text-xs text-rose-400 font-medium">Dropped by: {mob.enemy}</span>
+                  <div className="flex items-center space-x-3">
+                    <div className="relative w-12 h-12 rounded-xl bg-slate-950/90 border border-rose-500/30 p-1 flex-shrink-0 shadow-md">
+                      <Image
+                        src={mob.iconUrl}
+                        alt={mob.name}
+                        fill
+                        className="object-contain p-1"
+                        unoptimized
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-base text-slate-100">{mob.name}</h4>
+                      <span className="text-xs text-rose-400 font-medium">Dropped by: {mob.enemy}</span>
+                    </div>
                   </div>
                   <span className="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-300">
                     Daily Respawn

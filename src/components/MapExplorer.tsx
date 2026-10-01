@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { REGIONS_CONFIG, MAP_PINS } from '@/data/mapData';
+import { LOCAL_SPECIALTIES } from '@/data/materials';
 import { MapPin as MapPinType, RegionType } from '@/types/genshin';
 import { MapPin, Navigation, Sparkles, Check, CheckCircle2, Circle, Search, Eye, Filter, Info, Compass, Layers } from 'lucide-react';
 
@@ -259,17 +260,35 @@ export const MapExplorer: React.FC = () => {
           {selectedPin ? (
             <div className="bg-slate-900 border border-amber-500/40 rounded-2xl p-5 space-y-4 shadow-xl">
               <div className="flex items-start justify-between">
-                <div className="flex items-center space-x-2.5">
-                  <span className="text-2xl p-2 bg-slate-950 rounded-xl border border-slate-800">
-                    {CATEGORY_COLORS[selectedPin.category]?.icon}
-                  </span>
-                  <div>
-                    <h4 className="font-bold text-base text-slate-100">{selectedPin.name}</h4>
-                    <span className="text-xs text-amber-400 font-medium">
-                      {CATEGORY_COLORS[selectedPin.category]?.label}
-                    </span>
-                  </div>
-                </div>
+                {(() => {
+                  const match = LOCAL_SPECIALTIES.find(
+                    (s) => s.name.toLowerCase() === selectedPin.name.toLowerCase() ||
+                           selectedPin.name.toLowerCase().includes(s.name.toLowerCase())
+                  );
+                  return (
+                    <div className="flex items-center space-x-3">
+                      <div className="relative w-12 h-12 rounded-xl bg-slate-950 border border-slate-700/80 p-1 flex-shrink-0 flex items-center justify-center shadow-inner">
+                        {match?.iconUrl ? (
+                          <Image
+                            src={match.iconUrl}
+                            alt={selectedPin.name}
+                            fill
+                            className="object-contain p-1"
+                            unoptimized
+                          />
+                        ) : (
+                          <span className="text-2xl">{CATEGORY_COLORS[selectedPin.category]?.icon}</span>
+                        )}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-base text-slate-100">{selectedPin.name}</h4>
+                        <span className="text-xs text-amber-400 font-medium">
+                          {CATEGORY_COLORS[selectedPin.category]?.label}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })()}
                 {selectedPin.count && (
                   <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-bold">
                     {selectedPin.count}x Total
@@ -341,7 +360,26 @@ export const MapExplorer: React.FC = () => {
                     }`}
                   >
                     <div className="flex items-center space-x-2 truncate">
-                      <span className="text-xs">{CATEGORY_COLORS[pin.category]?.icon}</span>
+                      {(() => {
+                        const match = LOCAL_SPECIALTIES.find(
+                          (s) => s.name.toLowerCase() === pin.name.toLowerCase() ||
+                                 pin.name.toLowerCase().includes(s.name.toLowerCase())
+                        );
+                        if (match?.iconUrl) {
+                          return (
+                            <div className="relative w-4 h-4 flex-shrink-0">
+                              <Image
+                                src={match.iconUrl}
+                                alt={pin.name}
+                                fill
+                                className="object-contain"
+                                unoptimized
+                              />
+                            </div>
+                          );
+                        }
+                        return <span className="text-xs">{CATEGORY_COLORS[pin.category]?.icon}</span>;
+                      })()}
                       <span className={`truncate ${isCollected ? 'line-through text-slate-500' : 'text-slate-200'}`}>
                         {pin.name}
                       </span>

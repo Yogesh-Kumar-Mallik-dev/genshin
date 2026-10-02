@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Image from 'next/image';
-import { X, Clock, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Clock, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 
 interface ResinTrackerModalProps {
   isOpen: boolean;
@@ -68,12 +68,6 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
             </div>
             <h3 className="text-base font-bold text-slate-100">Original Resin & Reset Planner</h3>
           </div>
-          <button
-            onClick={onClose}
-            className="p-1 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
 
         {/* Content with smooth scroll */}

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CHARACTERS_DATA } from '@/data/characters';
 import { WEAPONS_DATA } from '@/data/weapons';
 import { CharacterBuild, ElementType, WeaponItem } from '@/types/genshin';
-import { Search, Star, Sword, Sparkles, Award, X, Users, Shield, BookOpen, Image as ImageIcon, Eye } from 'lucide-react';
+import { Search, Star, Sword, Sparkles, Award, Users, Shield, BookOpen } from 'lucide-react';
 
 const ELEMENT_DATA: Record<ElementType, { name: string; color: string; border: string; glow: string; iconUrl: string }> = {
   pyro: { name: 'Pyro', color: 'text-red-400', border: 'border-red-500/40', glow: 'glow-pyro', iconUrl: '/assets/elements/pyro.png' },
@@ -25,14 +25,9 @@ const WEAPON_TYPE_INFO: Record<string, { label: string; icon: string }> = {
   catalyst: { label: 'Catalyst', icon: '📖' }
 };
 
-const CharacterCardVisual: React.FC<{ char: CharacterBuild; artMode?: 'splash' | 'portrait' }> = ({
-  char,
-  artMode = 'splash'
-}) => {
+const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
   const [hasError, setHasError] = useState(false);
-  const src = artMode === 'splash'
-    ? (char.splashUrl || char.cardUrl || char.avatarUrl)
-    : (char.avatarUrl || char.cardUrl || char.splashUrl);
+  const src = char.splashUrl || char.cardUrl || char.avatarUrl;
 
   if (hasError || !src) {
     return (
@@ -49,9 +44,7 @@ const CharacterCardVisual: React.FC<{ char: CharacterBuild; artMode?: 'splash' |
       src={src}
       alt={char.name}
       fill
-      className={`transition-transform duration-500 ease-out group-hover:scale-110 ${
-        artMode === 'splash' ? 'object-cover object-center' : 'object-cover object-top'
-      }`}
+      className="object-cover object-center group-hover:scale-110 transition-transform duration-500 ease-out"
       unoptimized
       onError={() => setHasError(true)}
     />
@@ -136,7 +129,6 @@ export const CharacterHub: React.FC = () => {
   const [viewMode, setViewMode] = useState<'characters' | 'weapons'>('characters');
 
   // Character filters & display settings
-  const [cardArtMode, setCardArtMode] = useState<'splash' | 'portrait'>('splash');
   const [characterModalTab, setCharacterModalTab] = useState<'build' | 'splash'>('build');
   const [selectedElement, setSelectedElement] = useState<string>('all');
   const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
@@ -291,47 +283,15 @@ export const CharacterHub: React.FC = () => {
         <div className="space-y-6">
           {/* Filter and Search Bar */}
           <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl p-4 space-y-4">
-            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
-                <input
-                  type="text"
-                  placeholder="Search characters by name, title, or region (e.g. Furina, Neuvillette, Inazuma)..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 transition"
-                />
-              </div>
-
-              {/* Card Style Switcher (Splash Art vs Portrait) */}
-              <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 self-start sm:self-auto flex-shrink-0">
-                <span className="text-[11px] font-semibold text-slate-400 px-2 flex items-center space-x-1">
-                  <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Display:</span>
-                </span>
-                <button
-                  onClick={() => setCardArtMode('splash')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
-                    cardArtMode === 'splash'
-                      ? 'bg-amber-500 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-                >
-                  <Sparkles className="w-3 h-3" />
-                  <span>Splash Art</span>
-                </button>
-                <button
-                  onClick={() => setCardArtMode('portrait')}
-                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
-                    cardArtMode === 'portrait'
-                      ? 'bg-amber-500 text-slate-950 shadow-md'
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                  }`}
-                >
-                  <Eye className="w-3 h-3" />
-                  <span>Portrait</span>
-                </button>
-              </div>
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search characters by name, title, or region (e.g. Furina, Neuvillette, Inazuma)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 transition"
+              />
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -458,9 +418,9 @@ export const CharacterHub: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Character Visual (Splash Art or Portrait) */}
+                    {/* Character Visual (Official Splash Art) */}
                     <div className="relative w-full h-full">
-                      <CharacterCardVisual char={char} artMode={cardArtMode} />
+                      <CharacterCardVisual char={char} />
                     </div>
 
                     {/* Stars overlay at bottom of artwork */}
@@ -742,13 +702,6 @@ export const CharacterHub: React.FC = () => {
                       <span>Splash Art</span>
                     </button>
                   </div>
-
-                  <button
-                    onClick={() => setActiveCharacter(null)}
-                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -1062,13 +1015,6 @@ export const CharacterHub: React.FC = () => {
                     </div>
                   </div>
                 </div>
-
-                <button
-                  onClick={() => setActiveWeapon(null)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                >
-                  <X className="w-5 h-5" />
-                </button>
               </div>
             </div>
 

@@ -17,12 +17,12 @@ const ELEMENT_DATA: Record<ElementType, { name: string; color: string; border: s
   geo: { name: 'Geo', color: 'text-amber-400', border: 'border-amber-500/40', glow: 'glow-geo', iconUrl: '/assets/elements/geo.png' }
 };
 
-const WEAPON_TYPE_INFO: Record<string, { label: string; icon: string }> = {
-  sword: { label: 'Sword', icon: '⚔️' },
-  claymore: { label: 'Claymore', icon: '🗡️' },
-  polearm: { label: 'Polearm', icon: '🔱' },
-  bow: { label: 'Bow', icon: '🏹' },
-  catalyst: { label: 'Catalyst', icon: '📖' }
+const WEAPON_TYPE_INFO: Record<string, { label: string; iconUrl: string }> = {
+  sword: { label: 'Sword', iconUrl: '/assets/weapons/classes/sword.png' },
+  claymore: { label: 'Claymore', iconUrl: '/assets/weapons/classes/claymore.png' },
+  polearm: { label: 'Polearm', iconUrl: '/assets/weapons/classes/polearm.png' },
+  bow: { label: 'Bow', iconUrl: '/assets/weapons/classes/bow.png' },
+  catalyst: { label: 'Catalyst', iconUrl: '/assets/weapons/classes/catalyst.png' }
 };
 
 const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
@@ -80,9 +80,16 @@ const WeaponCardVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
   const src = weapon.iconUrl;
 
   if (hasError || !src) {
+    const classIcon = WEAPON_TYPE_INFO[weapon.type]?.iconUrl;
     return (
       <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent select-none">
-        <span className="text-3xl filter drop-shadow mb-1">🗡️</span>
+        {classIcon ? (
+          <div className="relative w-10 h-10 mb-1">
+            <Image src={classIcon} alt={weapon.type} fill className="object-contain" unoptimized />
+          </div>
+        ) : (
+          <Sword className="w-8 h-8 text-amber-400/80 mb-1" />
+        )}
         <span className="text-[11px] font-bold text-slate-100 tracking-wide line-clamp-1">{weapon.name}</span>
         <span className="text-[9px] font-semibold text-amber-400/90 capitalize">{weapon.type}</span>
       </div>
@@ -106,9 +113,16 @@ const WeaponModalVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
   const src = weapon.iconUrl;
 
   if (hasError || !src) {
+    const classIcon = WEAPON_TYPE_INFO[weapon.type]?.iconUrl;
     return (
-      <div className="w-full h-full flex items-center justify-center text-4xl">
-        🗡️
+      <div className="w-full h-full flex items-center justify-center p-2">
+        {classIcon ? (
+          <div className="relative w-12 h-12">
+            <Image src={classIcon} alt={weapon.type} fill className="object-contain" unoptimized />
+          </div>
+        ) : (
+          <Sword className="w-10 h-10 text-amber-400/80" />
+        )}
       </div>
     );
   }
@@ -442,7 +456,20 @@ export const CharacterHub: React.FC = () => {
                     <div className="flex items-center justify-center space-x-1.5 text-[10px] text-slate-400">
                       <span className="capitalize">{char.role}</span>
                       <span>•</span>
-                      <span>{char.region}</span>
+                      <span className="inline-flex items-center space-x-1">
+                        {WEAPON_TYPE_INFO[char.weapon]?.iconUrl && (
+                          <span className="relative inline-block w-3 h-3 mr-0.5">
+                            <Image
+                              src={WEAPON_TYPE_INFO[char.weapon].iconUrl}
+                              alt={char.weapon}
+                              fill
+                              className="object-contain opacity-80"
+                              unoptimized
+                            />
+                          </span>
+                        )}
+                        <span>{char.region}</span>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -470,16 +497,16 @@ export const CharacterHub: React.FC = () => {
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Weapon Class Pills */}
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Weapon Class Pills with official Genshin weapon art */}
               <div className="flex flex-wrap gap-1.5 mr-2">
                 {[
-                  { id: 'all', label: 'All Classes', icon: '⚔️' },
-                  { id: 'sword', label: 'Swords', icon: '⚔️' },
-                  { id: 'claymore', label: 'Claymores', icon: '🗡️' },
-                  { id: 'polearm', label: 'Polearms', icon: '🔱' },
-                  { id: 'bow', label: 'Bows', icon: '🏹' },
-                  { id: 'catalyst', label: 'Catalysts', icon: '📖' }
+                  { id: 'all', label: 'All Classes' },
+                  { id: 'sword', label: 'Swords', iconUrl: '/assets/weapons/classes/sword.png' },
+                  { id: 'claymore', label: 'Claymores', iconUrl: '/assets/weapons/classes/claymore.png' },
+                  { id: 'polearm', label: 'Polearms', iconUrl: '/assets/weapons/classes/polearm.png' },
+                  { id: 'bow', label: 'Bows', iconUrl: '/assets/weapons/classes/bow.png' },
+                  { id: 'catalyst', label: 'Catalysts', iconUrl: '/assets/weapons/classes/catalyst.png' }
                 ].map((w) => {
                   const isActive = selectedWeaponClass === w.id;
                   return (
@@ -492,7 +519,17 @@ export const CharacterHub: React.FC = () => {
                           : 'bg-slate-800/90 text-slate-300 hover:bg-slate-700 hover:text-white'
                       }`}
                     >
-                      <span>{w.icon}</span>
+                      {w.iconUrl && (
+                        <div className="relative w-4 h-4 flex-shrink-0">
+                          <Image
+                            src={w.iconUrl}
+                            alt={w.label}
+                            fill
+                            className={`object-contain ${isActive ? 'brightness-0' : 'brightness-100'}`}
+                            unoptimized
+                          />
+                        </div>
+                      )}
                       <span>{w.label}</span>
                     </button>
                   );
@@ -571,9 +608,19 @@ export const CharacterHub: React.FC = () => {
                         : 'bg-gradient-to-b from-[#4a5568] via-[#718096] to-[#2d3748]'
                     }`}
                   >
-                    {/* Weapon Type Pill in Top-Left */}
-                    <div className="absolute top-2 left-2 z-20 px-1.5 py-0.5 rounded-md bg-slate-950/70 backdrop-blur-sm border border-white/20 text-[10px] font-bold text-slate-200 flex items-center space-x-1 shadow">
-                      <span>{WEAPON_TYPE_INFO[weapon.type]?.icon || '⚔️'}</span>
+                    {/* Weapon Type Pill in Top-Left with official weapon icon */}
+                    <div className="absolute top-2 left-2 z-20 px-2 py-0.5 rounded-md bg-slate-950/80 backdrop-blur-sm border border-white/20 text-[10px] font-bold text-slate-200 flex items-center space-x-1.5 shadow">
+                      {WEAPON_TYPE_INFO[weapon.type]?.iconUrl && (
+                        <div className="relative w-3.5 h-3.5 flex-shrink-0">
+                          <Image
+                            src={WEAPON_TYPE_INFO[weapon.type].iconUrl}
+                            alt={weapon.type}
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
+                      )}
                       <span className="capitalize">{weapon.type}</span>
                     </div>
 
@@ -669,7 +716,20 @@ export const CharacterHub: React.FC = () => {
                     <div className="flex items-center space-x-3 text-xs text-slate-400 mt-1">
                       <span>{activeCharacter.region}</span>
                       <span>•</span>
-                      <span className="capitalize">{activeCharacter.weapon}</span>
+                      <span className="capitalize flex items-center space-x-1.5">
+                        {WEAPON_TYPE_INFO[activeCharacter.weapon]?.iconUrl && (
+                          <span className="relative inline-block w-4 h-4">
+                            <Image
+                              src={WEAPON_TYPE_INFO[activeCharacter.weapon].iconUrl}
+                              alt={activeCharacter.weapon}
+                              fill
+                              className="object-contain"
+                              unoptimized
+                            />
+                          </span>
+                        )}
+                        <span>{activeCharacter.weapon}</span>
+                      </span>
                       <span>•</span>
                       <span className="text-amber-400 font-bold">{activeCharacter.role}</span>
                     </div>
@@ -742,8 +802,18 @@ export const CharacterHub: React.FC = () => {
                                 className="object-contain p-0.5"
                                 unoptimized
                               />
+                            ) : WEAPON_TYPE_INFO[activeCharacter.weapon]?.iconUrl ? (
+                              <div className="relative w-6 h-6 m-auto">
+                                <Image
+                                  src={WEAPON_TYPE_INFO[activeCharacter.weapon].iconUrl}
+                                  alt={activeCharacter.weapon}
+                                  fill
+                                  className="object-contain"
+                                  unoptimized
+                                />
+                              </div>
                             ) : (
-                              <span className="text-lg flex items-center justify-center h-full">🗡️</span>
+                              <Sword className="w-5 h-5 text-amber-400 m-auto" />
                             )}
                           </div>
 
@@ -1008,7 +1078,18 @@ export const CharacterHub: React.FC = () => {
                         <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
                       ))}
                     </div>
-                    <div className="flex items-center space-x-3 text-xs text-slate-400 mt-1.5">
+                    <div className="flex items-center space-x-2 text-xs text-slate-400 mt-1.5">
+                      {WEAPON_TYPE_INFO[activeWeapon.type]?.iconUrl && (
+                        <div className="relative w-4 h-4 flex-shrink-0">
+                          <Image
+                            src={WEAPON_TYPE_INFO[activeWeapon.type].iconUrl}
+                            alt={activeWeapon.type}
+                            fill
+                            className="object-contain"
+                            unoptimized
+                          />
+                        </div>
+                      )}
                       <span className="capitalize">{activeWeapon.type}</span>
                       <span>•</span>
                       <span className="text-amber-400 font-bold">{activeWeapon.rarity}★ Weapon</span>

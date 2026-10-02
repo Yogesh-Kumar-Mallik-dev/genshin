@@ -129,13 +129,13 @@ export const QuestRoadmap: React.FC = () => {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center space-x-2">
+      <div className="bg-slate-900/80 p-3.5 sm:p-4 rounded-xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           {['all', 'Archon', 'System Unlock', 'World'].map((cat) => (
             <button
               key={cat}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
                 categoryFilter === cat
                   ? 'bg-amber-500 text-slate-950 font-bold'
                   : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
@@ -146,7 +146,7 @@ export const QuestRoadmap: React.FC = () => {
           ))}
         </div>
 
-        <div className="relative min-w-[240px]">
+        <div className="relative w-full sm:w-64 min-w-[200px]">
           <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"

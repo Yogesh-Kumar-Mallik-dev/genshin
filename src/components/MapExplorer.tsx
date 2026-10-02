@@ -264,7 +264,7 @@ export const MapExplorer: React.FC = () => {
       {/* Main 2-Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Specialty Cards List (4 cols) */}
-        <div className="lg:col-span-4 space-y-3 max-h-[750px] overflow-y-auto pr-1">
+        <div className="lg:col-span-4 space-y-3 max-h-[380px] lg:max-h-[750px] overflow-y-auto pr-1">
           {filteredProfiles.map((profile) => {
             const isSelected = profile.id === activeSpecialty.id;
             const userCount = userCollectedCounts[profile.id] || 0;
@@ -342,10 +342,10 @@ export const MapExplorer: React.FC = () => {
         {/* Right Column: Active Route Navigator & Waypoint Steps (8 cols) */}
         <div className="lg:col-span-8 space-y-6">
           {/* Active Specialty Cockpit Header */}
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-5">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center space-x-4">
-                <div className="relative w-16 h-16 rounded-2xl bg-slate-950 border border-amber-500/30 flex items-center justify-center p-2 flex-shrink-0 shadow-lg shadow-amber-500/10">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-950 border border-amber-500/30 flex items-center justify-center p-2 flex-shrink-0 shadow-lg shadow-amber-500/10">
                   <Image
                     src={activeSpecialty.iconUrl}
                     alt={activeSpecialty.name}
@@ -363,7 +363,7 @@ export const MapExplorer: React.FC = () => {
                       {activeSpecialty.totalWorldSpawns}x World Total
                     </span>
                   </div>
-                  <h3 className="text-2xl font-black text-slate-100 tracking-tight mt-0.5">
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-100 tracking-tight mt-0.5">
                     {activeSpecialty.name}
                   </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
@@ -376,7 +376,7 @@ export const MapExplorer: React.FC = () => {
               <div className="flex flex-col items-start sm:items-end space-y-1.5">
                 <button
                   onClick={() => handleStartRespawnTimer(activeSpecialty.id)}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center space-x-2 transition ${
+                  className={`w-full sm:w-auto px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition ${
                     timerInfo?.ready === false
                       ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500/30'
                       : 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20'
@@ -396,7 +396,7 @@ export const MapExplorer: React.FC = () => {
             </div>
 
             {/* Ascension Progress Bar */}
-            <div className="bg-slate-950/70 p-4 rounded-2xl border border-slate-800/80 space-y-2">
+            <div className="bg-slate-950/70 p-3.5 sm:p-4 rounded-2xl border border-slate-800/80 space-y-2">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-semibold text-slate-300 flex items-center space-x-1.5">
                   <TrendingUp className="w-3.5 h-3.5 text-amber-400" />
@@ -414,27 +414,27 @@ export const MapExplorer: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-1">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
                 <span className="text-[11px] text-slate-400">
                   Remaining to Farm: <strong>{Math.max(0, 168 - currentCount)}x</strong>
                 </span>
 
-                <div className="flex items-center space-x-1.5">
+                <div className="flex items-center space-x-1.5 flex-wrap">
                   <button
                     onClick={() => handleUpdateCount(activeSpecialty.id, -5)}
-                    className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] rounded-lg transition"
+                    className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition"
                   >
                     -5
                   </button>
                   <button
                     onClick={() => handleUpdateCount(activeSpecialty.id, 5)}
-                    className="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] rounded-lg transition"
+                    className="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition"
                   >
                     +5
                   </button>
                   <button
                     onClick={() => handleUpdateCount(activeSpecialty.id, activeRoute.yieldCount)}
-                    className="px-2.5 py-0.5 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold rounded-lg transition"
+                    className="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold rounded-lg transition"
                   >
                     + Add Route Yield (+{activeRoute.yieldCount})
                   </button>

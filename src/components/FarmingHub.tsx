@@ -70,12 +70,12 @@ export const FarmingHub: React.FC = () => {
       </div>
 
       {/* Tabs */}
-      <div className="flex flex-wrap border-b border-slate-800 gap-2 sm:gap-4">
+      <div className="flex border-b border-slate-800 space-x-3 sm:space-x-4 overflow-x-auto no-scrollbar whitespace-nowrap pb-0.5">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`pb-3 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition border-b-2 ${
+            className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition border-b-2 flex-shrink-0 ${
               activeTab === tab.id
                 ? 'border-amber-400 text-amber-300'
                 : 'border-transparent text-slate-400 hover:text-slate-200'
@@ -97,7 +97,7 @@ export const FarmingHub: React.FC = () => {
       {activeTab === 'calculator' && (
         <div className="space-y-6">
           {/* Interactive Calculator Box */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-slate-100 flex items-center space-x-2">
                 <Calculator className="w-5 h-5 text-amber-400" />

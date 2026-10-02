@@ -63,39 +63,39 @@ export const MaterialsHub: React.FC = () => {
       </div>
 
       {/* Sub-tabs */}
-      <div className="flex border-b border-slate-800 space-x-4">
+      <div className="flex border-b border-slate-800 space-x-3 sm:space-x-4 overflow-x-auto no-scrollbar whitespace-nowrap pb-0.5">
         <button
           onClick={() => setActiveTab('schedule')}
-          className={`pb-3 text-sm font-semibold flex items-center space-x-2 transition border-b-2 ${
+          className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition border-b-2 flex-shrink-0 ${
             activeTab === 'schedule'
               ? 'border-amber-400 text-amber-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <Calendar className="w-4 h-4" />
-          <span>Daily Talent Domain Schedule</span>
+          <span>Daily Talent Schedule</span>
         </button>
         <button
           onClick={() => setActiveTab('specialties')}
-          className={`pb-3 text-sm font-semibold flex items-center space-x-2 transition border-b-2 ${
+          className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition border-b-2 flex-shrink-0 ${
             activeTab === 'specialties'
               ? 'border-amber-400 text-amber-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <MapPin className="w-4 h-4" />
-          <span>Regional Local Specialties (48h)</span>
+          <span>Regional Specialties (48h)</span>
         </button>
         <button
           onClick={() => setActiveTab('mobs')}
-          className={`pb-3 text-sm font-semibold flex items-center space-x-2 transition border-b-2 ${
+          className={`pb-2.5 sm:pb-3 text-xs sm:text-sm font-semibold flex items-center space-x-2 transition border-b-2 flex-shrink-0 ${
             activeTab === 'mobs'
               ? 'border-amber-400 text-amber-300'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <Skull className="w-4 h-4" />
-          <span>Essential Mob Drop Clusters</span>
+          <span>Essential Mob Drops</span>
         </button>
       </div>
 

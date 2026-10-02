@@ -52,11 +52,11 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/80 backdrop-blur-md overflow-hidden animate-fadeIn"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 md:p-8 bg-black/80 backdrop-blur-md overflow-hidden animate-fadeIn"
     >
-      <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-lg max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+      <div className="bg-slate-900 border border-amber-500/40 rounded-2xl sm:rounded-3xl w-full max-w-lg max-h-[94vh] sm:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 flex-shrink-0">
+        <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/80 flex-shrink-0">
           <div className="flex items-center space-x-2.5">
             <div className="relative w-6 h-6 flex-shrink-0">
               <Image
@@ -66,12 +66,12 @@ export const ResinTrackerModal: React.FC<ResinTrackerModalProps> = ({
                 className="object-contain"
               />
             </div>
-            <h3 className="text-base font-bold text-slate-100">Original Resin & Reset Planner</h3>
+            <h3 className="text-sm sm:text-base font-bold text-slate-100">Original Resin & Reset Planner</h3>
           </div>
         </div>
 
         {/* Content with smooth scroll */}
-        <div className="p-6 space-y-6 overflow-y-auto overscroll-contain flex-1">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto overscroll-contain flex-1">
           {/* Main Resin Slider & Display */}
           <div className="bg-slate-950/70 p-4 rounded-2xl border border-sky-500/25 space-y-3">
             <div className="flex justify-between items-center">

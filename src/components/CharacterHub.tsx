@@ -264,18 +264,18 @@ export const CharacterHub: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Visual Header Banner with Teyvat Starry Aesthetic */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/70 border border-amber-500/30 p-6 md:p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/70 border border-amber-500/30 p-4 sm:p-6 md:p-8 shadow-2xl">
         <div className="absolute -right-10 -bottom-10 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
           <div className="max-w-2xl space-y-2">
             <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-              <Sparkles className="w-4 h-4" />
+              <Sparkles className="w-4 h-4 flex-shrink-0" />
               <span>Official Teyvat Database • KeqingMains Standard</span>
             </div>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
               {viewMode === 'characters' ? 'Character Builds & Official Splash Art' : 'Teyvat Weapons Armory'}
             </h2>
-            <p className="text-sm text-slate-300">
+            <p className="text-xs sm:text-sm text-slate-300">
               {viewMode === 'characters'
                 ? `Theorycrafted weapon rankings, optimal artifact sets, substat benchmarks, and full official Wish Splash Arts covering all 122 playable characters across all 8 official regions.`
                 : `Comprehensive database of all 252 official weapons across all 5 classes (Swords, Claymores, Polearms, Bows, and Catalysts) with Lv. 90 Base ATK, substats, passives, and character synergies.`}
@@ -283,28 +283,28 @@ export const CharacterHub: React.FC = () => {
           </div>
 
           {/* Tab Switcher Pills */}
-          <div className="flex items-center bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800 shadow-xl self-start md:self-center flex-shrink-0">
+          <div className="flex items-center w-full md:w-auto bg-slate-950/80 p-1 sm:p-1.5 rounded-2xl border border-slate-800 shadow-xl self-start md:self-center flex-shrink-0">
             <button
               onClick={() => setViewMode('characters')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition duration-200 ${
+              className={`flex-1 md:flex-initial justify-center flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition duration-200 ${
                 viewMode === 'characters'
                   ? 'bg-amber-500 text-slate-950 shadow-lg'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
               }`}
             >
-              <Users className="w-4 h-4" />
+              <Users className="w-4 h-4 flex-shrink-0" />
               <span>Characters ({CHARACTERS_DATA.length})</span>
             </button>
             <button
               onClick={() => setViewMode('weapons')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition duration-200 ${
+              className={`flex-1 md:flex-initial justify-center flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 rounded-xl text-xs font-bold transition duration-200 ${
                 viewMode === 'weapons'
                   ? 'bg-amber-500 text-slate-950 shadow-lg'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800/80'
               }`}
             >
-              <Sword className="w-4 h-4" />
-              <span>Weapons Armory ({WEAPONS_DATA.length})</span>
+              <Sword className="w-4 h-4 flex-shrink-0" />
+              <span>Weapons ({WEAPONS_DATA.length})</span>
             </button>
           </div>
         </div>
@@ -749,11 +749,11 @@ export const CharacterHub: React.FC = () => {
           onClick={(e) => {
             if (e.target === e.currentTarget) setActiveCharacter(null);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-black/85 backdrop-blur-md overflow-hidden animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-8 bg-black/85 backdrop-blur-md overflow-hidden animate-fadeIn"
         >
-          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
+          <div className="bg-slate-900 border border-amber-500/40 rounded-2xl sm:rounded-3xl w-full max-w-4xl max-h-[94vh] sm:max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
             {/* Header Hero with Ambient Splash Art Backdrop */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-5 sm:p-6 border-b border-slate-800 flex-shrink-0">
+            <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-3.5 sm:p-6 border-b border-slate-800 flex-shrink-0">
               {activeCharacter.splashUrl && (
                 <div className="absolute right-0 -top-12 -bottom-12 w-3/4 opacity-35 pointer-events-none overflow-hidden mask-gradient-to-l">
                   <Image
@@ -766,10 +766,10 @@ export const CharacterHub: React.FC = () => {
                 </div>
               )}
 
-              <div className="relative z-10 flex items-start justify-between gap-4">
-                <div className="flex items-center space-x-4">
+              <div className="relative z-10 flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                <div className="flex items-center space-x-3 sm:space-x-4">
                   {/* Avatar Icon */}
-                  <div className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-xl flex-shrink-0 ${
+                  <div className={`relative w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden border-2 shadow-xl flex-shrink-0 ${
                     activeCharacter.rarity === 5
                       ? 'border-amber-400 bg-gradient-to-b from-[#bd772b] to-[#804a14]'
                       : 'border-purple-400 bg-gradient-to-b from-[#644686] to-[#452b61]'
@@ -778,11 +778,11 @@ export const CharacterHub: React.FC = () => {
                   </div>
 
                   <div>
-                    <div className="flex items-center space-x-2.5">
-                      <h2 className="text-2xl sm:text-3xl font-black text-slate-100">
+                    <div className="flex items-center space-x-2 sm:space-x-2.5">
+                      <h2 className="text-xl sm:text-3xl font-black text-slate-100">
                         {activeCharacter.name}
                       </h2>
-                      <div className="relative w-6 h-6">
+                      <div className="relative w-5 h-5 sm:w-6 sm:h-6">
                         <Image
                           src={ELEMENT_DATA[activeCharacter.element].iconUrl}
                           alt={activeCharacter.element}
@@ -793,23 +793,23 @@ export const CharacterHub: React.FC = () => {
                       </div>
                       <button
                         onClick={() => toggleFavoriteChar(activeCharacter.id)}
-                        className={`p-1.5 rounded-lg border transition ${
+                        className={`p-1 sm:p-1.5 rounded-lg border transition ${
                           favoriteCharIds.includes(activeCharacter.id)
                             ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
                             : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-amber-300'
                         }`}
                         title={favoriteCharIds.includes(activeCharacter.id) ? "In My Roster" : "Add to My Roster"}
                       >
-                        <Star className={`w-4 h-4 ${favoriteCharIds.includes(activeCharacter.id) ? 'fill-amber-400' : ''}`} />
+                        <Star className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${favoriteCharIds.includes(activeCharacter.id) ? 'fill-amber-400' : ''}`} />
                       </button>
                     </div>
-                    <p className="text-xs text-amber-300 italic">{activeCharacter.title}</p>
-                    <div className="flex items-center space-x-3 text-xs text-slate-400 mt-1">
+                    <p className="text-[11px] sm:text-xs text-amber-300 italic">{activeCharacter.title}</p>
+                    <div className="flex items-center space-x-2 sm:space-x-3 text-[11px] sm:text-xs text-slate-400 mt-1">
                       <span>{activeCharacter.region}</span>
                       <span>•</span>
-                      <span className="capitalize flex items-center space-x-1.5">
+                      <span className="capitalize flex items-center space-x-1 sm:space-x-1.5">
                         {WEAPON_TYPE_INFO[activeCharacter.weapon]?.iconUrl && (
-                          <span className="relative inline-block w-4 h-4">
+                          <span className="relative inline-block w-3.5 h-3.5 sm:w-4 sm:h-4">
                             <Image
                               src={WEAPON_TYPE_INFO[activeCharacter.weapon].iconUrl}
                               alt={activeCharacter.weapon}
@@ -827,12 +827,12 @@ export const CharacterHub: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2 flex-shrink-0">
+                <div className="flex items-center space-x-2 self-start sm:self-auto flex-shrink-0">
                   {/* Modal Tab Switcher */}
                   <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-800 shadow">
                     <button
                       onClick={() => setCharacterModalTab('build')}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                      className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
                         characterModalTab === 'build'
                           ? 'bg-amber-500 text-slate-950 shadow-md'
                           : 'text-slate-400 hover:text-white hover:bg-slate-800'
@@ -843,7 +843,7 @@ export const CharacterHub: React.FC = () => {
                     </button>
                     <button
                       onClick={() => setCharacterModalTab('splash')}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                      className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
                         characterModalTab === 'splash'
                           ? 'bg-amber-500 text-slate-950 shadow-md'
                           : 'text-slate-400 hover:text-white hover:bg-slate-800'
@@ -1138,15 +1138,15 @@ export const CharacterHub: React.FC = () => {
           onClick={(e) => {
             if (e.target === e.currentTarget) setActiveWeapon(null);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/80 backdrop-blur-md overflow-hidden animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-6 md:p-8 bg-black/80 backdrop-blur-md overflow-hidden animate-fadeIn"
         >
-          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
+          <div className="bg-slate-900 border border-amber-500/40 rounded-2xl sm:rounded-3xl w-full max-w-3xl max-h-[94vh] sm:max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
             {/* Header Hero */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-5 sm:p-6 border-b border-slate-800 flex-shrink-0">
+            <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-4 sm:p-6 border-b border-slate-800 flex-shrink-0">
               <div className="relative z-10 flex items-start justify-between">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-3 sm:space-x-4">
                   {/* Weapon Icon */}
-                  <div className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-xl flex items-center justify-center ${
+                  <div className={`relative w-14 h-14 sm:w-20 sm:h-20 rounded-xl sm:rounded-2xl overflow-hidden border-2 shadow-xl flex items-center justify-center flex-shrink-0 ${
                     activeWeapon.rarity === 5
                       ? 'border-amber-400 bg-gradient-to-b from-[#bd772b] to-[#804a14]'
                       : activeWeapon.rarity === 4
@@ -1159,8 +1159,8 @@ export const CharacterHub: React.FC = () => {
                   </div>
 
                   <div>
-                    <div className="flex items-center space-x-2.5">
-                      <h2 className="text-xl sm:text-2xl font-black text-slate-100">
+                    <div className="flex items-center space-x-2 sm:space-x-2.5">
+                      <h2 className="text-lg sm:text-2xl font-black text-slate-100">
                         {activeWeapon.name}
                       </h2>
                       <button

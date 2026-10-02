@@ -33,14 +33,14 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-amber-500/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16">
           {/* Official Genshin Impact Luminous Logo */}
           <div
-            className="flex items-center space-x-2.5 cursor-pointer select-none group"
+            className="flex items-center space-x-2 sm:space-x-2.5 cursor-pointer select-none group flex-shrink-0"
             onClick={() => setActiveTab('characters')}
           >
-            <div className="relative h-8 w-28 sm:h-9 sm:w-32 transition-transform duration-200 group-hover:scale-105">
+            <div className="relative h-7 w-24 sm:h-9 sm:w-32 transition-transform duration-200 group-hover:scale-105">
               <Image
                 src="/assets/ui/genshin-logo.svg"
                 alt="Genshin Impact"
@@ -49,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="object-contain"
               />
             </div>
-            <span className="text-[10px] tracking-widest uppercase font-black text-amber-400/90 font-mono px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/30">
+            <span className="hidden min-[400px]:inline-block text-[9px] sm:text-[10px] tracking-widest uppercase font-black text-amber-400/90 font-mono px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/30">
               TEYVAT
             </span>
           </div>
@@ -83,13 +83,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Compact In-Game Currency HUD Bar */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
             {/* Unified In-Game HUD Capsule */}
-            <div className="flex items-center bg-slate-900/90 border border-slate-800 rounded-full p-1 pl-2.5 shadow-sm">
+            <div className="flex items-center bg-slate-900/90 border border-slate-800 rounded-full p-1 pl-2 sm:pl-2.5 shadow-sm">
               {/* Mora Shortcut */}
               <button
                 onClick={() => setActiveTab('farming')}
-                className="flex items-center space-x-1.5 pr-2.5 hover:opacity-80 transition"
+                className="hidden min-[480px]:flex items-center space-x-1.5 pr-2.5 hover:opacity-80 transition"
                 title="Mora Farming Guides"
               >
                 <div className="relative w-4 h-4 flex-shrink-0">
@@ -99,12 +99,12 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
 
               {/* Divider */}
-              <div className="h-3.5 w-px bg-slate-700/80" />
+              <div className="hidden min-[480px]:block h-3.5 w-px bg-slate-700/80 mr-1" />
 
               {/* Live Resin Capsule Button */}
               <button
                 onClick={onOpenResinTracker}
-                className="flex items-center space-x-2 px-2.5 py-0.5 rounded-full hover:bg-slate-800/80 transition group"
+                className="flex items-center space-x-1.5 sm:space-x-2 px-2 sm:px-2.5 py-0.5 rounded-full hover:bg-slate-800/80 transition group"
                 title="Open Resin & Daily Reset Planner"
               >
                 <div className="relative w-4 h-4 flex-shrink-0">
@@ -141,7 +141,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800"
+              className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 flex-shrink-0"
+              aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -151,7 +152,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-800 bg-slate-950/95 px-4 py-3 space-y-1">
+        <div className="md:hidden border-t border-slate-800 bg-slate-950/98 px-3 py-3 space-y-1 backdrop-blur-lg animate-fadeIn shadow-2xl">
           {navItems.map((item) => (
             <button
               key={item.id}
@@ -159,10 +160,10 @@ export const Navbar: React.FC<NavbarProps> = ({
                 setActiveTab(item.id);
                 setMobileMenuOpen(false);
               }}
-              className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-xs font-bold ${
+              className={`w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
                 activeTab === item.id
-                  ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40'
-                  : 'text-slate-300 hover:bg-slate-800'
+                  ? 'bg-amber-400/20 text-amber-300 border border-amber-400/40 shadow-sm'
+                  : 'text-slate-300 hover:bg-slate-800/80'
               }`}
             >
               <div className="relative w-4 h-4 flex-shrink-0">

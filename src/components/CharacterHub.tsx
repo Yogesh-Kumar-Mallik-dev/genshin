@@ -16,6 +16,56 @@ const ELEMENT_DATA: Record<ElementType, { name: string; color: string; border: s
   geo: { name: 'Geo', color: 'text-amber-400', border: 'border-amber-500/40', glow: 'glow-geo', iconUrl: '/assets/elements/geo.png' }
 };
 
+const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
+  const [hasError, setHasError] = useState(false);
+  const src = char.cardUrl || char.avatarUrl;
+
+  if (hasError || !src) {
+    return (
+      <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent select-none">
+        <span className="text-4xl filter drop-shadow mb-1.5">{char.icon || '⚔️'}</span>
+        <span className="text-xs font-black text-slate-100 tracking-wide line-clamp-1">{char.name}</span>
+        <span className="text-[10px] font-bold text-amber-400/90">{char.region}</span>
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={char.name}
+      fill
+      className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+      unoptimized
+      onError={() => setHasError(true)}
+    />
+  );
+};
+
+const CharacterModalVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
+  const [hasError, setHasError] = useState(false);
+  const src = char.avatarUrl || char.cardUrl;
+
+  if (hasError || !src) {
+    return (
+      <div className="w-full h-full flex items-center justify-center text-3xl">
+        {char.icon || '⚔️'}
+      </div>
+    );
+  }
+
+  return (
+    <Image
+      src={src}
+      alt={char.name}
+      fill
+      className="object-cover"
+      unoptimized
+      onError={() => setHasError(true)}
+    />
+  );
+};
+
 export const CharacterHub: React.FC = () => {
   const [selectedElement, setSelectedElement] = useState<string>('all');
   const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
@@ -97,7 +147,7 @@ export const CharacterHub: React.FC = () => {
             Character Builds & Armory
           </h2>
           <p className="text-sm text-slate-300">
-            Theorycrafted weapon rankings, optimal artifact sets, substat benchmarks, and synergistic team compositions with official game assets.
+            Theorycrafted weapon rankings, optimal artifact sets, substat benchmarks, and synergistic teams covering all 122 playable characters across all 8 official regions (Mondstadt, Liyue, Inazuma, Sumeru, Fontaine, Natlan, Nod-Krai, and Snezhnaya).
           </p>
         </div>
       </div>
@@ -238,13 +288,7 @@ export const CharacterHub: React.FC = () => {
 
                 {/* Character Avatar/Card Image */}
                 <div className="relative w-full h-full">
-                  <Image
-                    src={char.cardUrl || char.avatarUrl || ''}
-                    alt={char.name}
-                    fill
-                    className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
-                    unoptimized
-                  />
+                  <CharacterCardVisual char={char} />
                 </div>
 
                 {/* Stars overlay at bottom of artwork */}
@@ -306,15 +350,7 @@ export const CharacterHub: React.FC = () => {
                       ? 'border-amber-400 bg-gradient-to-b from-[#bd772b] to-[#804a14]'
                       : 'border-purple-400 bg-gradient-to-b from-[#644686] to-[#452b61]'
                   }`}>
-                    {activeCharacter.avatarUrl && (
-                      <Image
-                        src={activeCharacter.avatarUrl}
-                        alt={activeCharacter.name}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                    )}
+                    <CharacterModalVisual char={activeCharacter} />
                   </div>
 
                   <div>

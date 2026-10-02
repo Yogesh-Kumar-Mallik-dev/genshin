@@ -541,6 +541,114 @@ export const LOCAL_SPECIALTIES: MaterialItem[] = [
     respawnTime: '48 Hours',
     usedFor: ['Fatui Harbinger Operatives'],
     farmingTips: 'Cold-resistant berries found growing in frozen thorny thickets across northern Snezhnaya.'
+  },
+  {
+    id: 'sakura-bloom',
+    name: 'Sakura Bloom',
+    category: 'specialty',
+    region: 'Inazuma',
+    icon: '🌸',
+    iconUrl: '/assets/materials/specialties/naku-weed.png',
+    locationDetails: 'Narukami Island, Grand Narukami Shrine, Mt. Yougou',
+    respawnTime: '48 Hours',
+    usedFor: ['Kamisato Ayaka', 'Kamisato Ayato'],
+    farmingTips: 'Floating cherry blossom clusters; hit with an Electro attack or walk through with Electro aura to collect.'
+  },
+  {
+    id: 'sand-grease-pupa',
+    name: 'Sand Grease Pupa',
+    category: 'specialty',
+    region: 'Sumeru',
+    icon: '🐚',
+    iconUrl: '/assets/materials/specialties/scarab.png',
+    locationDetails: 'Desert of Hadramaveth subterranean caverns and Wenut Tunnels',
+    respawnTime: '48 Hours',
+    usedFor: ['Alhaitham', 'Dehya'],
+    farmingTips: 'Clustered around the Setekh Wenut boss arena and underground tunnel walls in high density.'
+  },
+  {
+    id: 'trishiraite',
+    name: 'Trishiraite',
+    category: 'specialty',
+    region: 'Sumeru',
+    icon: '💎',
+    iconUrl: '/assets/materials/specialties/scarab.png',
+    locationDetails: 'Gavireh Lajavard and Realm of Farakhkert mountain fractures',
+    respawnTime: '48 Hours',
+    usedFor: ['Sethos'],
+    farmingTips: 'Red crystalline ore clusters requiring blunt/Claymore or Geo strikes to harvest.'
+  },
+  {
+    id: 'lumidouce-bell',
+    name: 'Lumidouce Bell',
+    category: 'specialty',
+    region: 'Fontaine',
+    icon: '🔔',
+    iconUrl: '/assets/materials/specialties/rainbow-rose.png',
+    locationDetails: 'Belleau Region slopes and Court of Fontaine northern bluffs',
+    respawnTime: '48 Hours',
+    usedFor: ['Lynette', 'Chevreuse', 'Emilie'],
+    farmingTips: 'Grows in clusters of three bells per stem along grassy hillsides.'
+  },
+  {
+    id: 'brilliant-chrysanthemum',
+    name: 'Brilliant Chrysanthemum',
+    category: 'specialty',
+    region: 'Natlan',
+    icon: '🌼',
+    iconUrl: '/assets/materials/specialties/saurian-claw-succulent.png',
+    locationDetails: 'Stadium of the Sacred Flame perimeter and Coatepec slopes',
+    respawnTime: '48 Hours',
+    usedFor: ['Ororon', 'Citlali'],
+    farmingTips: 'Warm radiant blossoms flourishing in volcanic soil surrounding the grand stadium.'
+  },
+  {
+    id: 'krai-amber-core',
+    name: 'Krai Amber Core',
+    category: 'specialty',
+    region: 'Nod-Krai',
+    icon: '🔶',
+    iconUrl: '/assets/materials/specialties/scarab.png',
+    locationDetails: 'Frontier Marches fossilized resin bluffs',
+    respawnTime: '48 Hours',
+    usedFor: ['Illuga', 'Flins', 'Autonomous Envoys'],
+    farmingTips: 'Fossilized amber resin geodes found embedded in tectonic fissures.'
+  },
+  {
+    id: 'polar-frostmoss',
+    name: 'Polar Frostmoss',
+    category: 'specialty',
+    region: 'Nod-Krai',
+    icon: '🌿',
+    iconUrl: '/assets/materials/specialties/lumitoile.png',
+    locationDetails: 'Aurora High Steppes & Permafrost Outpost glacial streams',
+    respawnTime: '48 Hours',
+    usedFor: ['Aino', 'Lauma', 'Jahoda'],
+    farmingTips: 'Luminescent silver-green moss growing along sub-zero riverbeds.'
+  },
+  {
+    id: 'glacial-shard',
+    name: 'Glacial Shard',
+    category: 'specialty',
+    region: 'Snezhnaya',
+    icon: '🧊',
+    iconUrl: '/assets/materials/specialties/subdetection-unit.png',
+    locationDetails: 'Ironforge Port sea ice & Glacial Bastion battlements',
+    respawnTime: '48 Hours',
+    usedFor: ['Alyosha', 'Odette', 'Vesna'],
+    farmingTips: 'Pure permafrost ice crystals; shatter with heavy blunt attacks or Claymore.'
+  },
+  {
+    id: 'tsarevna-edelweiss',
+    name: 'Tsarevna Edelweiss',
+    category: 'specialty',
+    region: 'Snezhnaya',
+    icon: '🤍',
+    iconUrl: '/assets/materials/specialties/lakelight-lily.png',
+    locationDetails: 'Zapolyarny Palace High Gardens & Frostpeak Tundra cliff edge',
+    respawnTime: '48 Hours',
+    usedFor: ['Sandrone', 'Tsaritsa', 'Vodyanitsa'],
+    farmingTips: 'Exceedingly rare velvet-petaled frost flowers growing only on the highest frozen spires.'
   }
 ];
 

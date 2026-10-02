@@ -26,7 +26,7 @@ const WEAPON_TYPE_INFO: Record<string, { label: string; iconUrl: string }> = {
   catalyst: { label: 'Catalyst', iconUrl: '/assets/weapons/classes/catalyst.png' }
 };
 
-const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
+const CharacterCardVisual: React.FC<{ char: CharacterBuild; priority?: boolean }> = ({ char, priority = false }) => {
   const [hasError, setHasError] = useState(false);
   const src = char.splashUrl || char.cardUrl || char.avatarUrl;
 
@@ -45,8 +45,10 @@ const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
       src={src}
       alt={char.name}
       fill
+      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 240px"
+      priority={priority}
+      loading={priority ? 'eager' : 'lazy'}
       className="object-cover object-center group-hover:scale-110 transition-transform duration-500 ease-out"
-      unoptimized
       onError={() => setHasError(true)}
     />
   );
@@ -69,14 +71,15 @@ const CharacterModalVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
       src={src}
       alt={char.name}
       fill
+      sizes="80px"
+      priority
       className="object-cover"
-      unoptimized
       onError={() => setHasError(true)}
     />
   );
 };
 
-const WeaponCardVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
+const WeaponCardVisual: React.FC<{ weapon: WeaponItem; priority?: boolean }> = ({ weapon, priority = false }) => {
   const [hasError, setHasError] = useState(false);
   const src = weapon.iconUrl;
 
@@ -86,7 +89,7 @@ const WeaponCardVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
       <div className="w-full h-full flex flex-col items-center justify-center p-3 text-center bg-gradient-to-t from-slate-950 via-slate-900/60 to-transparent select-none">
         {classIcon ? (
           <div className="relative w-10 h-10 mb-1">
-            <Image src={classIcon} alt={weapon.type} fill className="object-contain" unoptimized />
+            <Image src={classIcon} alt={weapon.type} fill sizes="40px" className="object-contain" />
           </div>
         ) : (
           <Sword className="w-8 h-8 text-amber-400/80 mb-1" />
@@ -102,8 +105,10 @@ const WeaponCardVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
       src={src}
       alt={weapon.name}
       fill
+      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 180px"
+      priority={priority}
+      loading={priority ? 'eager' : 'lazy'}
       className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"
-      unoptimized
       onError={() => setHasError(true)}
     />
   );
@@ -119,7 +124,7 @@ const WeaponModalVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
       <div className="w-full h-full flex items-center justify-center p-2">
         {classIcon ? (
           <div className="relative w-12 h-12">
-            <Image src={classIcon} alt={weapon.type} fill className="object-contain" unoptimized />
+            <Image src={classIcon} alt={weapon.type} fill sizes="48px" className="object-contain" />
           </div>
         ) : (
           <Sword className="w-10 h-10 text-amber-400/80" />
@@ -133,8 +138,9 @@ const WeaponModalVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
       src={src}
       alt={weapon.name}
       fill
+      sizes="80px"
+      priority
       className="object-contain p-2"
-      unoptimized
       onError={() => setHasError(true)}
     />
   );
@@ -432,7 +438,7 @@ export const CharacterHub: React.FC = () => {
 
           {/* In-Game Style Character Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {filteredCharacters.map((char) => {
+            {filteredCharacters.map((char, index) => {
               const elInfo = ELEMENT_DATA[char.element];
               const isFiveStar = char.rarity === 5;
 
@@ -460,8 +466,8 @@ export const CharacterHub: React.FC = () => {
                           src={elInfo.iconUrl}
                           alt={char.element}
                           fill
+                          sizes="28px"
                           className="object-contain"
-                          unoptimized
                         />
                       </div>
                     </div>
@@ -484,7 +490,7 @@ export const CharacterHub: React.FC = () => {
 
                     {/* Character Visual (Official Splash Art) */}
                     <div className="relative w-full h-full">
-                      <CharacterCardVisual char={char} />
+                      <CharacterCardVisual char={char} priority={index < 10} />
                     </div>
 
                     {/* Stars overlay at bottom of artwork */}
@@ -649,7 +655,7 @@ export const CharacterHub: React.FC = () => {
 
           {/* Weapon Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5">
-            {filteredWeapons.map((weapon) => {
+            {filteredWeapons.map((weapon, index) => {
               const is5 = weapon.rarity === 5;
               const is4 = weapon.rarity === 4;
               const is3 = weapon.rarity === 3;
@@ -680,8 +686,8 @@ export const CharacterHub: React.FC = () => {
                             src={WEAPON_TYPE_INFO[weapon.type].iconUrl}
                             alt={weapon.type}
                             fill
+                            sizes="14px"
                             className="object-contain"
-                            unoptimized
                           />
                         </div>
                       )}
@@ -706,7 +712,7 @@ export const CharacterHub: React.FC = () => {
 
                     {/* Weapon Image */}
                     <div className="relative w-full h-full">
-                      <WeaponCardVisual weapon={weapon} />
+                      <WeaponCardVisual weapon={weapon} priority={index < 12} />
                     </div>
 
                     {/* Stars overlay at bottom of artwork */}
@@ -760,8 +766,9 @@ export const CharacterHub: React.FC = () => {
                     src={activeCharacter.splashUrl}
                     alt={activeCharacter.name}
                     fill
+                    sizes="(max-width: 1024px) 75vw, 600px"
+                    priority
                     className="object-contain object-right"
-                    unoptimized
                   />
                 </div>
               )}
@@ -1085,8 +1092,9 @@ export const CharacterHub: React.FC = () => {
                       src={activeCharacter.splashUrl}
                       alt={`${activeCharacter.name} Full Wish Splash Art`}
                       fill
+                      sizes="(max-width: 1024px) 100vw, 1200px"
+                      priority
                       className="object-contain p-2"
-                      unoptimized
                     />
                     <div className="absolute bottom-3 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 flex items-center space-x-2">
                       <span className="text-xs font-black text-amber-400">{activeCharacter.name}</span>

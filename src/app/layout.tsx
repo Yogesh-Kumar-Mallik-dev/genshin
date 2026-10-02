@@ -4,7 +4,15 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Teyvat Guide — Genshin Impact Resource Locator, Builds & Progression Hub',
   description: 'The ultimate Genshin Impact companion: Interactive Teyvat Resource Locator, KQM-standard character builds, optimal new player quest roadmap, and high-efficiency AR, Mora & EXP book farming strategies.',
-  keywords: ['Genshin Impact', 'Builds', 'Resource Locator', 'Tactical Routes', 'Quest Order', 'Mora Farming', 'AR Leveling', 'Talent Books', 'Artifacts']
+  keywords: ['Genshin Impact', 'Builds', 'Resource Locator', 'Tactical Routes', 'Quest Order', 'Mora Farming', 'AR Leveling', 'Talent Books', 'Artifacts'],
+  icons: {
+    icon: [
+      { url: '/favicon.jpg', type: 'image/jpeg' },
+      { url: '/favicon.ico', type: 'image/x-icon' }
+    ],
+    shortcut: '/favicon.jpg',
+    apple: '/favicon.jpg'
+  }
 };
 
 export default function RootLayout({

@@ -1,1 +1,0 @@
-import{I as e,S as t,St as n,_ as r,_t as i}from"./vue.runtime.esm-bundler-BvZ39CsU.js";import{v as a}from"./stores-CVnysCAS.js";var o={class:`w-full h-full overflow-hidden`},s=t({__name:`worker-marker-state`,setup(t){let s=a();return(t,a)=>(e(),r(`div`,o,n(i(s).indexList.length),1))}});export{s as default};

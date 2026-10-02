@@ -2,7 +2,7 @@ export type ElementType = 'pyro' | 'hydro' | 'dendro' | 'electro' | 'anemo' | 'c
 
 export type WeaponType = 'sword' | 'claymore' | 'polearm' | 'bow' | 'catalyst';
 
-export type RegionType = 'Mondstadt' | 'Liyue' | 'Inazuma' | 'Sumeru' | 'Fontaine' | 'Natlan' | 'Snezhnaya' | 'Khaenriah';
+export type RegionType = 'Mondstadt' | 'Liyue' | 'Inazuma' | 'Sumeru' | 'Fontaine' | 'Natlan' | 'Nod-Krai' | 'Snezhnaya' | 'Khaenriah';
 
 export interface CharacterBuild {
   id: string;

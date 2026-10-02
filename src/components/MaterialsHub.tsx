@@ -41,7 +41,7 @@ export const MaterialsHub: React.FC = () => {
     return selectedRegion === 'all' || item.region === selectedRegion;
   });
 
-  const regions: RegionType[] = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan'];
+  const regions: RegionType[] = ['Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'];
 
   return (
     <div className="space-y-6">

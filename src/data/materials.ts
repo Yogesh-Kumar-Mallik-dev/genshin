@@ -503,6 +503,44 @@ export const LOCAL_SPECIALTIES: MaterialItem[] = [
     respawnTime: '48 Hours',
     usedFor: ['Xilonen', 'Chasca'],
     farmingTips: 'Dark violet flowers flourishing in volcanic soil along tectonic crevices.'
+  },
+  // Nod-Krai (Autonomous Region - Released 2025 / v6.0)
+  {
+    id: 'aurora-blossom',
+    name: 'Aurora Blossom',
+    category: 'specialty',
+    region: 'Nod-Krai',
+    icon: '✨',
+    iconUrl: '/assets/materials/specialties/lumitoile.png',
+    locationDetails: 'Aurora High Steppes & Permafrost Outpost plains',
+    respawnTime: '48 Hours',
+    usedFor: ['Varka', 'Autonomous Envoys'],
+    farmingTips: 'Luminescent glacial blossoms that sparkle brilliantly under polar night skies.'
+  },
+  // Snezhnaya (Cryo - Released August 12, 2026 / v7.0)
+  {
+    id: 'frostfrost-lily',
+    name: 'Frostfrost Lily',
+    category: 'specialty',
+    region: 'Snezhnaya',
+    icon: '❄️',
+    iconUrl: '/assets/materials/specialties/lakelight-lily.png',
+    locationDetails: 'Zapolyarny Citadel Ice Shelves & Glacial Caverns',
+    respawnTime: '48 Hours',
+    usedFor: ['Tsaritsa', 'Tartaglia (Childe)', 'Capitano', 'Pulcinella'],
+    farmingTips: 'Hardy permafrost flowers growing atop frozen ice shelves; apply Pyro to thaw frozen roots.'
+  },
+  {
+    id: 'snezhnayan-rimeberry',
+    name: 'Snezhnayan Rimeberry',
+    category: 'specialty',
+    region: 'Snezhnaya',
+    icon: '🫐',
+    iconUrl: '/assets/materials/specialties/subdetection-unit.png',
+    locationDetails: 'Snowblind Ravine & Ironforge Port perimeter',
+    respawnTime: '48 Hours',
+    usedFor: ['Fatui Harbinger Operatives'],
+    farmingTips: 'Cold-resistant berries found growing in frozen thorny thickets across northern Snezhnaya.'
   }
 ];
 

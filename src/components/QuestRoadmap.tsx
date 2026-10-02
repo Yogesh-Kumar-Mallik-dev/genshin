@@ -69,7 +69,7 @@ export const QuestRoadmap: React.FC = () => {
             Best Order of Quests & Feature Unlocks
           </h2>
           <p className="text-sm text-slate-300">
-            A battle-tested chronological guide from Mondstadt to Natlan. Avoid getting locked behind world exploration traps and unlock crucial quality-of-life systems early.
+            A battle-tested chronological guide spanning from Mondstadt (v1.0) all the way to Nod-Krai and Snezhnaya (v7.0). Avoid getting locked behind world exploration traps and unlock crucial quality-of-life systems early.
           </p>
         </div>
       </div>

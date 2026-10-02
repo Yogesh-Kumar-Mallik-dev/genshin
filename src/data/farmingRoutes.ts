@@ -837,5 +837,88 @@ export const SPECIALTY_FARMING_PROFILES: SpecialtyFarmingProfile[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'aurora-blossom',
+    name: 'Aurora Blossom',
+    region: 'Nod-Krai',
+    iconUrl: '/assets/materials/specialties/lumitoile.png',
+    totalWorldSpawns: 68,
+    ascensionTarget: 168,
+    respawnHours: 48,
+    usedFor: ['Varka', 'Autonomous Envoys'],
+    radarPassiveCharacter: 'Nod-Krai Pioneer (Autonomous Region radar)',
+    proTips: 'Shimmers under polar skies in the Aurora High Steppes. Distinctive emerald and violet glow at dusk.',
+    routes: [
+      {
+        id: 'aurora-route-1',
+        routeName: 'Aurora High Steppes Polar Plateau Run',
+        yieldCount: 28,
+        estimatedMinutes: 3,
+        difficulty: 'Very Fast',
+        startTeleport: 'Permafrost Outpost Statue of the Seven',
+        steps: [
+          {
+            stepNumber: 1,
+            instruction: 'Teleport to Permafrost Outpost Statue, glide north onto the windswept steppe plateau collecting 14 glowing blossoms.',
+            count: 14,
+            elevation: 'Surface',
+            teleportReference: 'Permafrost Outpost Statue'
+          },
+          {
+            stepNumber: 2,
+            instruction: 'Drop into the glacial basin rim near the Enclave Citadel gate for the remaining 14 blossoms.',
+            count: 14,
+            elevation: 'Surface',
+            teleportReference: 'Enclave Basin Rim'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'frostfrost-lily',
+    name: 'Frostfrost Lily',
+    region: 'Snezhnaya',
+    iconUrl: '/assets/materials/specialties/lakelight-lily.png',
+    totalWorldSpawns: 78,
+    ascensionTarget: 168,
+    respawnHours: 48,
+    usedFor: ['Tsaritsa', 'Tartaglia (Childe)', 'Capitano', 'Pulcinella'],
+    radarPassiveCharacter: 'Tartaglia / Fatui Diplomat (Snezhnaya radar)',
+    shopNpc: {
+      name: 'Zapolyarny Merchant Viktor',
+      location: 'Zapolyarny Citadel Lower Plaza',
+      count: 5,
+      costMora: 1000,
+      refreshDays: 3
+    },
+    proTips: 'Hardy permafrost flowers growing directly atop frozen ice shelves and cavern fissures around Zapolyarny Citadel. Use Pyro to thaw frozen roots.',
+    routes: [
+      {
+        id: 'frostfrost-route-1',
+        routeName: 'Zapolyarny Citadel Permafrost Ice Shelf Loop',
+        yieldCount: 36,
+        estimatedMinutes: 3.5,
+        difficulty: 'Very Fast',
+        startTeleport: 'Zapolyarny Citadel Statue of the Seven',
+        steps: [
+          {
+            stepNumber: 1,
+            instruction: 'Teleport to Zapolyarny Citadel Statue. Run east along the palace outer wall battlements to gather 18 Frostfrost Lilies in the snowbanks.',
+            count: 18,
+            elevation: 'Surface',
+            teleportReference: 'Zapolyarny Citadel Statue'
+          },
+          {
+            stepNumber: 2,
+            instruction: 'Drop down into the glacial fissure below the main bridge for another 18 lilies along the frozen stream bed.',
+            count: 18,
+            elevation: 'Underground Cave',
+            teleportReference: 'Imperial Fissure Cavern'
+          }
+        ]
+      }
+    ]
   }
 ];

@@ -26,7 +26,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const navItems: { id: ActiveTab; label: string; iconSrc: string }[] = [
     { id: 'characters', label: 'Builds', iconSrc: '/assets/ui/intertwined-fate.png' },
     { id: 'materials', label: 'Materials', iconSrc: '/assets/ui/primogem.png' },
-    { id: 'map', label: 'Resource Map', iconSrc: '/assets/ui/map.png' },
+    { id: 'map', label: 'Resource Locator', iconSrc: '/assets/ui/map.png' },
     { id: 'quests', label: 'Quest Roadmap', iconSrc: '/assets/ui/quest.png' },
     { id: 'farming', label: 'Farming Hub', iconSrc: '/assets/ui/heros-wit.png' }
   ];

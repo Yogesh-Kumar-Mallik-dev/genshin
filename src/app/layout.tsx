@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Teyvat Guide — Genshin Impact Resource Map, Builds & Progression Hub',
-  description: 'The ultimate Genshin Impact companion: Interactive Teyvat Resource Map, KQM-standard character builds, optimal new player quest roadmap, and high-efficiency AR, Mora & EXP book farming strategies.',
-  keywords: ['Genshin Impact', 'Builds', 'Interactive Map', 'Quest Order', 'Mora Farming', 'AR Leveling', 'Talent Books', 'Artifacts']
+  title: 'Teyvat Guide — Genshin Impact Resource Locator, Builds & Progression Hub',
+  description: 'The ultimate Genshin Impact companion: Interactive Teyvat Resource Locator, KQM-standard character builds, optimal new player quest roadmap, and high-efficiency AR, Mora & EXP book farming strategies.',
+  keywords: ['Genshin Impact', 'Builds', 'Resource Locator', 'Tactical Routes', 'Quest Order', 'Mora Farming', 'AR Leveling', 'Talent Books', 'Artifacts']
 };
 
 export default function RootLayout({

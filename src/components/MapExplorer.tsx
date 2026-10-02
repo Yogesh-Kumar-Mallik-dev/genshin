@@ -34,8 +34,21 @@ const REGION_THEMES: Record<RegionType | 'All', { bg: string; text: string; bord
   Sumeru: { bg: 'bg-emerald-500/10', text: 'text-emerald-300', border: 'border-emerald-500/30' },
   Fontaine: { bg: 'bg-blue-500/10', text: 'text-blue-300', border: 'border-blue-500/30' },
   Natlan: { bg: 'bg-orange-500/10', text: 'text-orange-300', border: 'border-orange-500/30' },
-  Snezhnaya: { bg: 'bg-slate-500/10', text: 'text-slate-300', border: 'border-slate-500/30' },
+  'Nod-Krai': { bg: 'bg-teal-500/10', text: 'text-teal-300', border: 'border-teal-500/30' },
+  Snezhnaya: { bg: 'bg-sky-500/10', text: 'text-sky-300', border: 'border-sky-500/30' },
   Khaenriah: { bg: 'bg-slate-500/10', text: 'text-slate-300', border: 'border-slate-500/30' }
+};
+
+export const REGION_OFFICIAL_METADATA: Record<RegionType, { element: string; releaseNote: string; version: string; year: string }> = {
+  Mondstadt: { element: 'Anemo', releaseNote: 'Available since launch (Version 1.0)', version: 'Version 1.0', year: '2020' },
+  Liyue: { element: 'Geo', releaseNote: 'Available since launch (Version 1.0)', version: 'Version 1.0', year: '2020' },
+  Inazuma: { element: 'Electro', releaseNote: 'Released in 2021 (Version 2.0)', version: 'Version 2.0', year: '2021' },
+  Sumeru: { element: 'Dendro', releaseNote: 'Released in 2022 (Version 3.0)', version: 'Version 3.0', year: '2022' },
+  Fontaine: { element: 'Hydro', releaseNote: 'Released in 2023 (Version 4.0)', version: 'Version 4.0', year: '2023' },
+  Natlan: { element: 'Pyro', releaseNote: 'Released in 2024 (Version 5.0)', version: 'Version 5.0', year: '2024' },
+  'Nod-Krai': { element: 'Autonomous Region', releaseNote: 'Released in 2025 (Version 6.0)', version: 'Version 6.0', year: '2025' },
+  Snezhnaya: { element: 'Cryo', releaseNote: 'Released on August 12, 2026 (Version 7.0)', version: 'Version 7.0', year: '2026' },
+  Khaenriah: { element: 'Abyssal / Eclipse', releaseNote: 'Future Expansion (Version 8.0+)', version: 'Version 8.0+', year: 'TBA' }
 };
 
 const ELEVATION_BADGES: Record<string, { bg: string; text: string }> = {
@@ -164,13 +177,13 @@ export const MapExplorer: React.FC = () => {
           <div className="max-w-2xl space-y-2">
             <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
               <Compass className="w-4 h-4" />
-              <span>Optimized Farming Routes & Waypoint Navigator</span>
+              <span>Teyvat Resource Locator & Route Navigator</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
-              Teyvat Tactical Route Hub
+              Teyvat Resource Locator
             </h2>
             <p className="text-sm text-slate-300">
-              High-yield 5-minute farming runs with numbered waypoint paths, elevation notes, 48-hour respawn timers, and character ascension targets.
+              High-yield 5-minute farming routes with numbered waypoint paths, elevation badges, 48-hour respawn timers, and character ascension targets across all 8 officially supported regions.
             </p>
           </div>
 
@@ -187,38 +200,63 @@ export const MapExplorer: React.FC = () => {
       </div>
 
       {/* Nation Filter & Search Bar */}
-      <div className="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
-        {/* Nation Pills */}
-        <div className="flex flex-wrap items-center gap-1.5">
-          {(['All', 'Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan'] as const).map((region) => {
-            const isSelected = selectedRegion === region;
-            const theme = REGION_THEMES[region];
-            return (
-              <button
-                key={region}
-                onClick={() => setSelectedRegion(region)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
-                  isSelected
-                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
-                    : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
-                }`}
-              >
-                {region}
-              </button>
-            );
-          })}
+      <div className="bg-slate-900/90 p-4 rounded-2xl border border-slate-800 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          {/* Nation Pills */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            {(['All', 'Mondstadt', 'Liyue', 'Inazuma', 'Sumeru', 'Fontaine', 'Natlan', 'Nod-Krai', 'Snezhnaya'] as const).map((region) => {
+              const isSelected = selectedRegion === region;
+              const meta = region !== 'All' ? REGION_OFFICIAL_METADATA[region] : null;
+
+              return (
+                <button
+                  key={region}
+                  onClick={() => setSelectedRegion(region)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 ${
+                    isSelected
+                      ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20'
+                      : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700'
+                  }`}
+                >
+                  <span>{region}</span>
+                  {meta && (
+                    <span className={`text-[10px] font-mono px-1 rounded ${isSelected ? 'bg-slate-900/20 text-slate-950 font-extrabold' : 'bg-slate-950/60 text-slate-400'}`}>
+                      {meta.version.replace('Version ', 'v')}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Search */}
+          <div className="relative min-w-[240px] w-full sm:w-auto">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search specialty, character (e.g. Furina)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400"
+            />
+          </div>
         </div>
 
-        {/* Search */}
-        <div className="relative min-w-[240px] w-full sm:w-auto">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Search specialty, character (e.g. Furina)..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-amber-400"
-          />
+        {/* Official Region Support Detail Banner */}
+        <div className="pt-1 border-t border-slate-800/60 text-xs flex flex-wrap items-center gap-2 text-slate-400">
+          <span className="font-semibold text-amber-400/90 flex items-center space-x-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Official Support:</span>
+          </span>
+          {selectedRegion === 'All' ? (
+            <span className="text-[11px] text-slate-400">
+              • Mondstadt (Anemo, v1.0) • Liyue (Geo, v1.0) • Inazuma (Electro, 2021) • Sumeru (Dendro, 2022) • Fontaine (Hydro, 2023) • Natlan (Pyro, 2024) • Nod-Krai (Autonomous, 2025) • Snezhnaya (Cryo, Aug 12, 2026)
+            </span>
+          ) : (
+            <span className="text-[11px] text-slate-300 font-medium">
+              <strong className="text-slate-100">{selectedRegion}</strong> ({REGION_OFFICIAL_METADATA[selectedRegion].element}) – {REGION_OFFICIAL_METADATA[selectedRegion].releaseNote}
+            </span>
+          )}
         </div>
       </div>
 

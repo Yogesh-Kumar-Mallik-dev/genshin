@@ -5,6 +5,9 @@ export interface RegionMapConfig {
   name: string;
   themeColor: string;
   element: string;
+  releaseInfo: string;
+  version: string;
+  releaseDate?: string;
   bgGradient: string;
   subregions: string[];
   focusX: number; // percentage of full Teyvat map
@@ -19,6 +22,8 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     name: 'Mondstadt',
     themeColor: '#48d1cc',
     element: 'Anemo',
+    releaseInfo: 'Available since launch (Version 1.0)',
+    version: 'Version 1.0',
     bgGradient: 'from-emerald-950/40 via-cyan-950/30 to-slate-900',
     subregions: ['Starfell Valley', 'Galesong Hill', 'Windwail Highland', 'Brightcrown Mountains', 'Dragonspine'],
     focusX: 77.5,
@@ -29,6 +34,8 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     name: 'Liyue',
     themeColor: '#eab308',
     element: 'Geo',
+    releaseInfo: 'Available since launch (Version 1.0)',
+    version: 'Version 1.0',
     bgGradient: 'from-amber-950/40 via-yellow-950/30 to-slate-900',
     subregions: ['Bishui Plain', 'Qiongji Estuary', 'Minlin', 'Sea of Clouds', 'The Chasm', 'Chenyu Vale'],
     focusX: 70.0,
@@ -39,6 +46,9 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     name: 'Inazuma',
     themeColor: '#a855f7',
     element: 'Electro',
+    releaseInfo: 'Released in 2021 (Version 2.0)',
+    version: 'Version 2.0',
+    releaseDate: '2021',
     bgGradient: 'from-purple-950/40 via-violet-950/30 to-slate-900',
     subregions: ['Narukami Island', 'Kannazuka', 'Yashiori Island', 'Watatsumi Island', 'Seirai Island', 'Tsurumi Island'],
     focusX: 86.5,
@@ -49,6 +59,9 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     name: 'Sumeru',
     themeColor: '#22c55e',
     element: 'Dendro',
+    releaseInfo: 'Released in 2022 (Version 3.0)',
+    version: 'Version 3.0',
+    releaseDate: '2022',
     bgGradient: 'from-green-950/40 via-emerald-950/30 to-slate-900',
     subregions: ['Avidya Forest', 'Lokapala Jungle', 'Ashavan Realm', 'Hypostyle Desert', 'Desert of Hadramaveth'],
     focusX: 58.0,
@@ -59,6 +72,9 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     name: 'Fontaine',
     themeColor: '#0ea5e9',
     element: 'Hydro',
+    releaseInfo: 'Released in 2023 (Version 4.0)',
+    version: 'Version 4.0',
+    releaseDate: '2023',
     bgGradient: 'from-blue-950/40 via-cyan-950/30 to-slate-900',
     subregions: ['Court of Fontaine', 'Beryl Region', 'Belleau Region', 'Liffey Region', 'Erinnyes Forest', 'Sea of Bygone Eras'],
     focusX: 57.0,
@@ -69,10 +85,39 @@ export const REGIONS_CONFIG: RegionMapConfig[] = [
     name: 'Natlan',
     themeColor: '#f97316',
     element: 'Pyro',
+    releaseInfo: 'Released in 2024 (Version 5.0)',
+    version: 'Version 5.0',
+    releaseDate: '2024',
     bgGradient: 'from-orange-950/40 via-red-950/30 to-slate-900',
     subregions: ['Basin of Unnumbered Flames', 'Coatepec Mountain', 'Tequenemecan Valley', 'Ochkanatlan'],
     focusX: 33.5,
     focusY: 54.0
+  },
+  {
+    id: 'Nod-Krai',
+    name: 'Nod-Krai',
+    themeColor: '#10b981',
+    element: 'Autonomous Region',
+    releaseInfo: 'Released in 2025 (Version 6.0)',
+    version: 'Version 6.0',
+    releaseDate: '2025',
+    bgGradient: 'from-teal-950/40 via-emerald-950/30 to-slate-900',
+    subregions: ['Frontier Marches', 'Aurora High Steppes', 'Sovereign Enclave', 'Permafrost Outpost'],
+    focusX: 42.0,
+    focusY: 22.0
+  },
+  {
+    id: 'Snezhnaya',
+    name: 'Snezhnaya',
+    themeColor: '#38bdf8',
+    element: 'Cryo',
+    releaseInfo: 'Released on August 12, 2026 (Version 7.0)',
+    version: 'Version 7.0',
+    releaseDate: 'August 12, 2026',
+    bgGradient: 'from-sky-950/40 via-indigo-950/30 to-slate-900',
+    subregions: ['Zapolyarny Palace Citadel', 'Frostpeak Tundra', 'Glacial Bastion', 'Ironforge Port', 'Snowblind Ravine'],
+    focusX: 50.0,
+    focusY: 15.0
   }
 ];
 
@@ -217,5 +262,22 @@ export const MAP_PINS: MapPin[] = [
   { id: 'n_statue_stadium', name: 'Statue of the Seven (Stadium Approach)', category: 'teleport', region: 'Natlan', x: 33.9, y: 54.5, description: 'Paved avenue leading to the Stadium of the Sacred Flame.' },
   { id: 'n_boss_lord_fire', name: 'Trounce: Lord of Primal Fire', category: 'boss', region: 'Natlan', x: 36.33, y: 51.48, description: 'Weekly boss: Fireheart Sanctum arena.' },
   { id: 'n_ore_natlan', name: 'Natlan Volcanic Phlogiston Ore', category: 'ore', region: 'Natlan', x: 32.8, y: 57.2, description: 'Volcanic magma fractures in southern Natlan.', count: 16 },
-  { id: 'n_shrine_flames', name: 'Shrine of Depths (Basin of Flames)', category: 'shrine', region: 'Natlan', x: 34.2, y: 57.5, description: 'Red stone sanctuary nestled in volcanic valley.' }
+  { id: 'n_shrine_flames', name: 'Shrine of Depths (Basin of Flames)', category: 'shrine', region: 'Natlan', x: 34.2, y: 57.5, description: 'Red stone sanctuary nestled in volcanic valley.' },
+
+  // ==========================================
+  // NOD-KRAI PINS (AUTONOMOUS REGION)
+  // ==========================================
+  { id: 'nk_aurora_bloom_valley', name: 'Aurora Blossom Fields (28x)', category: 'specialty', region: 'Nod-Krai', x: 42.5, y: 21.8, description: 'Shimmering glacial flora blooming in the Aurora High Steppes under the night sky.', count: 28 },
+  { id: 'nk_krai_amber_ridge', name: 'Krai Amber Core Geodes (24x)', category: 'specialty', region: 'Nod-Krai', x: 41.2, y: 23.4, description: 'Fossilized subterranean resin deposits along the Frontier Marches.', count: 24 },
+  { id: 'nk_statue_outpost', name: 'Statue of the Seven (Permafrost Outpost)', category: 'teleport', region: 'Nod-Krai', x: 42.0, y: 22.0, description: 'Overlooking the vast neutral plains of the autonomous territory.' },
+  { id: 'nk_boss_aurora_warden', name: 'Trounce: Sovereign Aurora Warden', category: 'boss', region: 'Nod-Krai', x: 43.1, y: 20.9, description: 'Weekly boss: Enclave High Citadel challenge.' },
+
+  // ==========================================
+  // SNEZHNAYA PINS (CRYO NATION - VERSION 7.0)
+  // ==========================================
+  { id: 'sn_frostfrost_lily_tundra', name: 'Frostfrost Lily Fields (36x)', category: 'specialty', region: 'Snezhnaya', x: 50.8, y: 14.5, description: 'Permafrost flowers blooming directly atop frozen ice shelves near Zapolyarny Citadel.', count: 36 },
+  { id: 'sn_rimeberry_thicket', name: 'Snezhnayan Rimeberry Thicket (32x)', category: 'specialty', region: 'Snezhnaya', x: 49.2, y: 16.2, description: 'Hardy frozen shrubs clustered in the Snowblind Ravine.', count: 32 },
+  { id: 'sn_cryoculus_citadel', name: 'Cryoculus (Zapolyarny Palace Spire)', category: 'oculus', region: 'Snezhnaya', x: 50.0, y: 14.2, description: 'Suspended in the biting blizzard vortex above the Tsaritsa’s Throne Room.', count: 1 },
+  { id: 'sn_statue_zapolyarny', name: 'Statue of the Seven (Zapolyarny Citadel)', category: 'teleport', region: 'Snezhnaya', x: 50.0, y: 15.0, description: 'The grand imperial statue marking the dominion of the Cryo Archon.' },
+  { id: 'sn_boss_tsaritsa_palace', name: 'Trounce: Zapolyarny Imperial Court', category: 'boss', region: 'Snezhnaya', x: 50.2, y: 13.8, description: 'Weekly boss: The Fatui Harbinger High Command.' }
 ];

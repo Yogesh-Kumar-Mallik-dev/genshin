@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { usePersistentState } from '@/hooks/usePersistentState';
 import { SPECIALTY_FARMING_PROFILES, SpecialtyFarmingProfile, FarmingRoute } from '@/data/farmingRoutes';
 import { RegionType } from '@/types/genshin';
 import {
@@ -59,10 +60,10 @@ const ELEVATION_BADGES: Record<string, { bg: string; text: string }> = {
 };
 
 export const MapExplorer: React.FC = () => {
-  const [selectedRegion, setSelectedRegion] = useState<RegionType | 'All'>('All');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [activeSpecialtyId, setActiveSpecialtyId] = useState<string>('lakelight-lily');
-  const [activeRouteId, setActiveRouteId] = useState<string>('lakelight-route-1');
+  const [selectedRegion, setSelectedRegion] = usePersistentState<RegionType | 'All'>('teyvat_map_selected_region', 'All');
+  const [searchQuery, setSearchQuery] = usePersistentState<string>('teyvat_map_search_query', '');
+  const [activeSpecialtyId, setActiveSpecialtyId] = usePersistentState<string>('teyvat_map_active_specialty_id', 'lakelight-lily');
+  const [activeRouteId, setActiveRouteId] = usePersistentState<string>('teyvat_map_active_route_id', 'lakelight-route-1');
 
   // Tracking states saved to localStorage
   const [userCollectedCounts, setUserCollectedCounts] = useState<Record<string, number>>({});

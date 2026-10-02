@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { usePersistentState } from '@/hooks/usePersistentState';
 import { LOCAL_SPECIALTIES, TALENT_SCHEDULES, ESSENTIAL_MOB_DROPS } from '@/data/materials';
 import { RegionType } from '@/types/genshin';
 import { Calendar, MapPin, Sparkles, Clock, ShieldCheck, Skull, ChevronRight } from 'lucide-react';
@@ -22,9 +23,9 @@ export const MaterialsHub: React.FC = () => {
     Sunday: 'Sun'
   };
 
-  const [selectedDay, setSelectedDay] = useState<string>(todayName);
-  const [selectedRegion, setSelectedRegion] = useState<string>('all');
-  const [activeTab, setActiveTab] = useState<'schedule' | 'specialties' | 'mobs'>('schedule');
+  const [selectedDay, setSelectedDay] = usePersistentState<string>('teyvat_materials_day', todayName);
+  const [selectedRegion, setSelectedRegion] = usePersistentState<string>('teyvat_materials_region', 'all');
+  const [activeTab, setActiveTab] = usePersistentState<'schedule' | 'specialties' | 'mobs'>('teyvat_materials_tab', 'schedule');
 
   const filteredTalents = TALENT_SCHEDULES.map((sched) => {
     const dayShort = shortDays[selectedDay];

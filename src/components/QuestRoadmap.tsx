@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { usePersistentState } from '@/hooks/usePersistentState';
 import { QUEST_ROADMAP } from '@/data/quests';
 import { QuestStep } from '@/types/genshin';
 import { CheckCircle2, Circle, Search, Trophy, Key, ArrowRight } from 'lucide-react';
 
 export const QuestRoadmap: React.FC = () => {
   const [completedQuestIds, setCompletedQuestIds] = useState<string[]>([]);
-  const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [categoryFilter, setCategoryFilter] = usePersistentState<string>('teyvat_quest_category_filter', 'all');
+  const [searchQuery, setSearchQuery] = usePersistentState<string>('teyvat_quest_search_query', '');
 
   // Load from localStorage on mount
   useEffect(() => {

@@ -10,8 +10,10 @@ import { FarmingHub } from '@/components/FarmingHub';
 import { ResinTrackerModal } from '@/components/ResinTrackerModal';
 import { Footer } from '@/components/Footer';
 
+import { usePersistentState } from '@/hooks/usePersistentState';
+
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('characters');
+  const [activeTab, setActiveTab] = usePersistentState<ActiveTab>('teyvat_active_tab', 'characters');
   const [isResinModalOpen, setIsResinModalOpen] = useState<boolean>(false);
 
   // Resin Tracker persistent state
@@ -19,13 +21,29 @@ export default function Home() {
   const [condensedCount, setCondensedCount] = useState<number>(3);
   const [weeklyBossesDone, setWeeklyBossesDone] = useState<number>(1);
 
-  // Load resin state from localStorage
+  // Load resin state from localStorage and compute natural regeneration (1 resin per 8 minutes, capped at 200)
   useEffect(() => {
     try {
       const savedResin = localStorage.getItem('teyvat_resin_count');
+      const savedTimestamp = localStorage.getItem('teyvat_resin_timestamp');
       const savedCondensed = localStorage.getItem('teyvat_condensed_count');
       const savedBosses = localStorage.getItem('teyvat_weekly_bosses');
-      if (savedResin !== null) setResin(Number(savedResin));
+
+      if (savedResin !== null) {
+        let currentResinCount = Number(savedResin);
+        if (savedTimestamp !== null) {
+          const elapsedMs = Math.max(0, Date.now() - Number(savedTimestamp));
+          const regenAmount = Math.floor(elapsedMs / (8 * 60 * 1000));
+          if (regenAmount > 0) {
+            currentResinCount = Math.min(200, currentResinCount + regenAmount);
+            // Update timestamp to the surplus point
+            const remainingElapsed = elapsedMs % (8 * 60 * 1000);
+            localStorage.setItem('teyvat_resin_count', String(currentResinCount));
+            localStorage.setItem('teyvat_resin_timestamp', String(Date.now() - remainingElapsed));
+          }
+        }
+        setResin(currentResinCount);
+      }
       if (savedCondensed !== null) setCondensedCount(Number(savedCondensed));
       if (savedBosses !== null) setWeeklyBossesDone(Number(savedBosses));
     } catch {
@@ -37,6 +55,7 @@ export default function Home() {
     setResin(val);
     try {
       localStorage.setItem('teyvat_resin_count', String(val));
+      localStorage.setItem('teyvat_resin_timestamp', String(Date.now()));
     } catch {
       // ignore
     }

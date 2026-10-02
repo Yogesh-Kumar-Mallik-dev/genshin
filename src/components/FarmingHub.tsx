@@ -2,15 +2,25 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import { usePersistentState } from '@/hooks/usePersistentState';
 import { FARMING_STRATEGIES, DAILY_ARTIFACT_ROUTE_SPOTS } from '@/data/farming';
-import { Calculator, CheckCircle2, TrendingUp, MapPin } from 'lucide-react';
+import { Calculator, CheckCircle2, Circle, TrendingUp, MapPin, RotateCcw } from 'lucide-react';
 
 export const FarmingHub: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'calculator' | 'mora' | 'books' | 'resin' | 'route'>('calculator');
+  const [activeTab, setActiveTab] = usePersistentState<'calculator' | 'mora' | 'books' | 'resin' | 'route'>('teyvat_farming_tab', 'calculator');
 
   // Calculator State
-  const [currentAr, setCurrentAr] = useState<number>(35);
-  const [targetAr, setTargetAr] = useState<number>(45);
+  const [currentAr, setCurrentAr] = usePersistentState<number>('teyvat_farming_current_ar', 35);
+  const [targetAr, setTargetAr] = usePersistentState<number>('teyvat_farming_target_ar', 45);
+
+  // Daily Artifact Route spot checklist state
+  const [completedSpots, setCompletedSpots] = usePersistentState<number[]>('teyvat_farming_artifact_spots', []);
+
+  const toggleArtifactSpot = (idx: number) => {
+    setCompletedSpots((prev) =>
+      prev.includes(idx) ? prev.filter((i) => i !== idx) : [...prev, idx]
+    );
+  };
 
   // Approximate EXP lookup table between AR tiers
   const arExpTable: Record<number, number> = {
@@ -307,26 +317,67 @@ export const FarmingHub: React.FC = () => {
             <p className="text-xs text-slate-300 leading-relaxed">
               Teyvat has an in-game daily limit of 100 sparkling artifact investigation spots. You can complete this fast 12-15 minute route every 24 hours to collect over 100+ gray and green artifacts. Destroy them for <strong>60,000+ Mora/day (1.8 Million Mora/month)</strong> or feed them to level up your 5-star artifacts without spending a single resin!
             </p>
+
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800">
+              <div className="flex items-center space-x-2 text-xs">
+                <span className="text-slate-400">Progress:</span>
+                <span className="font-bold text-amber-400">
+                  {completedSpots.length} / {DAILY_ARTIFACT_ROUTE_SPOTS.length} Spots Completed
+                </span>
+                <span className="text-slate-500">
+                  ({Math.round((completedSpots.length / DAILY_ARTIFACT_ROUTE_SPOTS.length) * 100)}%)
+                </span>
+              </div>
+              {completedSpots.length > 0 && (
+                <button
+                  onClick={() => setCompletedSpots([])}
+                  className="flex items-center space-x-1.5 text-xs text-slate-400 hover:text-amber-400 transition"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset Today's Route</span>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {DAILY_ARTIFACT_ROUTE_SPOTS.map((spot, idx) => (
-              <div key={idx} className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <h5 className="font-bold text-sm text-slate-100">{spot.location}</h5>
-                  <span className="text-xs text-emerald-400 font-semibold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20">
-                    {spot.yieldMora}
-                  </span>
+            {DAILY_ARTIFACT_ROUTE_SPOTS.map((spot, idx) => {
+              const isDone = completedSpots.includes(idx);
+              return (
+                <div
+                  key={idx}
+                  onClick={() => toggleArtifactSpot(idx)}
+                  className={`cursor-pointer rounded-xl p-4 space-y-2 transition-all border ${
+                    isDone
+                      ? 'bg-slate-950/60 border-emerald-500/40 opacity-75'
+                      : 'bg-slate-900 border-slate-800 hover:border-amber-500/40'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2.5">
+                      {isDone ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-slate-500 flex-shrink-0 hover:text-amber-400" />
+                      )}
+                      <h5 className={`font-bold text-sm ${isDone ? 'line-through text-slate-400' : 'text-slate-100'}`}>
+                        {spot.location}
+                      </h5>
+                    </div>
+                    <span className="text-xs text-emerald-400 font-semibold bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/20">
+                      {spot.yieldMora}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-4 text-xs text-slate-400 pl-6.5">
+                    <span>Spots: <strong className="text-slate-200">{spot.spotsCount}</strong></span>
+                    <span>Est. Time: <strong className="text-slate-200">{spot.timeMinutes} mins</strong></span>
+                  </div>
+                  <p className="text-xs text-slate-300 bg-slate-950/60 p-2 rounded border border-slate-800/80 ml-6.5">
+                    {spot.notes}
+                  </p>
                 </div>
-                <div className="flex items-center space-x-4 text-xs text-slate-400">
-                  <span>Spots: <strong className="text-slate-200">{spot.spotsCount}</strong></span>
-                  <span>Est. Time: <strong className="text-slate-200">{spot.timeMinutes} mins</strong></span>
-                </div>
-                <p className="text-xs text-slate-300 bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                  {spot.notes}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { usePersistentState } from '@/hooks/usePersistentState';
 import { CHARACTERS_DATA } from '@/data/characters';
 import { WEAPONS_DATA } from '@/data/weapons';
 import { CharacterBuild, ElementType, WeaponItem } from '@/types/genshin';
@@ -140,22 +141,39 @@ const WeaponModalVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
 };
 
 export const CharacterHub: React.FC = () => {
-  const [viewMode, setViewMode] = useState<'characters' | 'weapons'>('characters');
+  const [viewMode, setViewMode] = usePersistentState<'characters' | 'weapons'>('teyvat_char_view_mode', 'characters');
 
   // Character filters & display settings
-  const [characterModalTab, setCharacterModalTab] = useState<'build' | 'splash'>('build');
-  const [selectedElement, setSelectedElement] = useState<string>('all');
-  const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
-  const [selectedRole, setSelectedRole] = useState<string>('all');
-  const [selectedRegion, setSelectedRegion] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [characterModalTab, setCharacterModalTab] = usePersistentState<'build' | 'splash'>('teyvat_char_modal_tab', 'build');
+  const [selectedElement, setSelectedElement] = usePersistentState<string>('teyvat_char_filter_element', 'all');
+  const [selectedWeapon, setSelectedWeapon] = usePersistentState<string>('teyvat_char_filter_weapon', 'all');
+  const [selectedRole, setSelectedRole] = usePersistentState<string>('teyvat_char_filter_role', 'all');
+  const [selectedRegion, setSelectedRegion] = usePersistentState<string>('teyvat_char_filter_region', 'all');
+  const [searchQuery, setSearchQuery] = usePersistentState<string>('teyvat_char_search_query', '');
   const [activeCharacter, setActiveCharacter] = useState<CharacterBuild | null>(null);
 
   // Weapon filters
-  const [selectedWeaponClass, setSelectedWeaponClass] = useState<string>('all');
-  const [selectedWeaponRarity, setSelectedWeaponRarity] = useState<string>('all');
-  const [weaponSearchQuery, setWeaponSearchQuery] = useState<string>('');
+  const [selectedWeaponClass, setSelectedWeaponClass] = usePersistentState<string>('teyvat_weapon_filter_class', 'all');
+  const [selectedWeaponRarity, setSelectedWeaponRarity] = usePersistentState<string>('teyvat_weapon_filter_rarity', 'all');
+  const [weaponSearchQuery, setWeaponSearchQuery] = usePersistentState<string>('teyvat_weapon_search_query', '');
   const [activeWeapon, setActiveWeapon] = useState<WeaponItem | null>(null);
+
+  // Favorites / User Roster & Saved Weapons
+  const [favoriteCharIds, setFavoriteCharIds] = usePersistentState<string[]>('teyvat_favorite_chars', []);
+  const [favoriteWeaponIds, setFavoriteWeaponIds] = usePersistentState<string[]>('teyvat_favorite_weapons', []);
+  const [onlyFavorites, setOnlyFavorites] = usePersistentState<boolean>('teyvat_filter_favs_only', false);
+
+  const toggleFavoriteChar = (id: string) => {
+    setFavoriteCharIds((prev) =>
+      prev.includes(id) ? prev.filter((cId) => cId !== id) : [...prev, id]
+    );
+  };
+
+  const toggleFavoriteWeapon = (id: string) => {
+    setFavoriteWeaponIds((prev) =>
+      prev.includes(id) ? prev.filter((wId) => wId !== id) : [...prev, id]
+    );
+  };
 
   useEffect(() => {
     if (activeCharacter || activeWeapon) {
@@ -205,6 +223,7 @@ export const CharacterHub: React.FC = () => {
   ];
 
   const filteredCharacters = CHARACTERS_DATA.filter((char) => {
+    const matchesFav = !onlyFavorites || favoriteCharIds.includes(char.id);
     const matchesElement = selectedElement === 'all' || char.element === selectedElement;
     const matchesWeapon = selectedWeapon === 'all' || char.weapon === selectedWeapon;
     const matchesRole = selectedRole === 'all' || char.role === selectedRole;
@@ -213,10 +232,11 @@ export const CharacterHub: React.FC = () => {
       char.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       char.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       char.region.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesElement && matchesWeapon && matchesRole && matchesRegion && matchesSearch;
+    return matchesFav && matchesElement && matchesWeapon && matchesRole && matchesRegion && matchesSearch;
   });
 
   const filteredWeapons = WEAPONS_DATA.filter((w) => {
+    const matchesFav = !onlyFavorites || favoriteWeaponIds.includes(w.id);
     const matchesType = selectedWeaponClass === 'all' || w.type.toLowerCase() === selectedWeaponClass.toLowerCase();
     const matchesRarity =
       selectedWeaponRarity === 'all' ||
@@ -228,7 +248,7 @@ export const CharacterHub: React.FC = () => {
       w.name.toLowerCase().includes(weaponSearchQuery.toLowerCase()) ||
       (w.substatType && w.substatType.toLowerCase().includes(weaponSearchQuery.toLowerCase())) ||
       (w.passiveDesc && w.passiveDesc.toLowerCase().includes(weaponSearchQuery.toLowerCase()));
-    return matchesType && matchesRarity && matchesSearch;
+    return matchesFav && matchesType && matchesRarity && matchesSearch;
   });
 
   const weaponBeneficiaries = activeWeapon
@@ -379,7 +399,20 @@ export const CharacterHub: React.FC = () => {
                 ))}
               </select>
 
-              {(selectedElement !== 'all' || selectedWeapon !== 'all' || selectedRole !== 'all' || selectedRegion !== 'all' || searchQuery) && (
+              {/* Favorites / My Roster Filter Pill */}
+              <button
+                onClick={() => setOnlyFavorites(!onlyFavorites)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 ${
+                  onlyFavorites
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                }`}
+              >
+                <Star className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-slate-950 text-slate-950' : 'text-amber-400'}`} />
+                <span>My Roster {favoriteCharIds.length > 0 ? `(${favoriteCharIds.length})` : ''}</span>
+              </button>
+
+              {(selectedElement !== 'all' || selectedWeapon !== 'all' || selectedRole !== 'all' || selectedRegion !== 'all' || searchQuery || onlyFavorites) && (
                 <button
                   onClick={() => {
                     setSelectedElement('all');
@@ -387,6 +420,7 @@ export const CharacterHub: React.FC = () => {
                     setSelectedRole('all');
                     setSelectedRegion('all');
                     setSearchQuery('');
+                    setOnlyFavorites(false);
                   }}
                   className="text-xs text-amber-400 hover:underline ml-auto"
                 >
@@ -431,6 +465,22 @@ export const CharacterHub: React.FC = () => {
                         />
                       </div>
                     </div>
+
+                    {/* Favorite Roster Star in Top-Right */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavoriteChar(char.id);
+                      }}
+                      title={favoriteCharIds.includes(char.id) ? "Remove from My Roster" : "Add to My Roster"}
+                      className={`absolute top-2 right-2 z-20 w-7 h-7 rounded-full backdrop-blur-sm border flex items-center justify-center transition-all ${
+                        favoriteCharIds.includes(char.id)
+                          ? 'bg-amber-500/90 text-slate-950 border-amber-300 shadow-md scale-105'
+                          : 'bg-slate-950/60 text-slate-400 border-white/20 hover:text-amber-300 hover:scale-110'
+                      }`}
+                    >
+                      <Star className={`w-3.5 h-3.5 ${favoriteCharIds.includes(char.id) ? 'fill-slate-950' : ''}`} />
+                    </button>
 
                     {/* Character Visual (Official Splash Art) */}
                     <div className="relative w-full h-full">
@@ -562,12 +612,26 @@ export const CharacterHub: React.FC = () => {
                 })}
               </div>
 
-              {(selectedWeaponClass !== 'all' || selectedWeaponRarity !== 'all' || weaponSearchQuery) && (
+              {/* Saved Weapons Filter Pill */}
+              <button
+                onClick={() => setOnlyFavorites(!onlyFavorites)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5 ${
+                  onlyFavorites
+                    ? 'bg-amber-500 text-slate-950 font-bold shadow-md'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white'
+                }`}
+              >
+                <Star className={`w-3.5 h-3.5 ${onlyFavorites ? 'fill-slate-950 text-slate-950' : 'text-amber-400'}`} />
+                <span>Saved Weapons {favoriteWeaponIds.length > 0 ? `(${favoriteWeaponIds.length})` : ''}</span>
+              </button>
+
+              {(selectedWeaponClass !== 'all' || selectedWeaponRarity !== 'all' || weaponSearchQuery || onlyFavorites) && (
                 <button
                   onClick={() => {
                     setSelectedWeaponClass('all');
                     setSelectedWeaponRarity('all');
                     setWeaponSearchQuery('');
+                    setOnlyFavorites(false);
                   }}
                   className="text-xs text-amber-400 hover:underline ml-auto"
                 >
@@ -623,6 +687,22 @@ export const CharacterHub: React.FC = () => {
                       )}
                       <span className="capitalize">{weapon.type}</span>
                     </div>
+
+                    {/* Favorite Weapon Star in Top-Right */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavoriteWeapon(weapon.id);
+                      }}
+                      title={favoriteWeaponIds.includes(weapon.id) ? "Remove from Saved Weapons" : "Save Weapon"}
+                      className={`absolute top-2 right-2 z-20 w-6 h-6 rounded-full backdrop-blur-sm border flex items-center justify-center transition-all ${
+                        favoriteWeaponIds.includes(weapon.id)
+                          ? 'bg-amber-500/90 text-slate-950 border-amber-300 shadow-md scale-105'
+                          : 'bg-slate-950/60 text-slate-400 border-white/20 hover:text-amber-300 hover:scale-110'
+                      }`}
+                    >
+                      <Star className={`w-3 h-3 ${favoriteWeaponIds.includes(weapon.id) ? 'fill-slate-950' : ''}`} />
+                    </button>
 
                     {/* Weapon Image */}
                     <div className="relative w-full h-full">
@@ -711,6 +791,17 @@ export const CharacterHub: React.FC = () => {
                           unoptimized
                         />
                       </div>
+                      <button
+                        onClick={() => toggleFavoriteChar(activeCharacter.id)}
+                        className={`p-1.5 rounded-lg border transition ${
+                          favoriteCharIds.includes(activeCharacter.id)
+                            ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+                            : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-amber-300'
+                        }`}
+                        title={favoriteCharIds.includes(activeCharacter.id) ? "In My Roster" : "Add to My Roster"}
+                      >
+                        <Star className={`w-4 h-4 ${favoriteCharIds.includes(activeCharacter.id) ? 'fill-amber-400' : ''}`} />
+                      </button>
                     </div>
                     <p className="text-xs text-amber-300 italic">{activeCharacter.title}</p>
                     <div className="flex items-center space-x-3 text-xs text-slate-400 mt-1">
@@ -1072,6 +1163,17 @@ export const CharacterHub: React.FC = () => {
                       <h2 className="text-xl sm:text-2xl font-black text-slate-100">
                         {activeWeapon.name}
                       </h2>
+                      <button
+                        onClick={() => toggleFavoriteWeapon(activeWeapon.id)}
+                        className={`p-1.5 rounded-lg border transition ${
+                          favoriteWeaponIds.includes(activeWeapon.id)
+                            ? 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+                            : 'bg-slate-800/80 text-slate-400 border-slate-700 hover:text-amber-300'
+                        }`}
+                        title={favoriteWeaponIds.includes(activeWeapon.id) ? "Saved Weapon" : "Save Weapon"}
+                      >
+                        <Star className={`w-4 h-4 ${favoriteWeaponIds.includes(activeWeapon.id) ? 'fill-amber-400' : ''}`} />
+                      </button>
                     </div>
                     <div className="flex items-center space-x-1 mt-1">
                       {Array.from({ length: activeWeapon.rarity }).map((_, i) => (

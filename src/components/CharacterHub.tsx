@@ -20,6 +20,7 @@ export const CharacterHub: React.FC = () => {
   const [selectedElement, setSelectedElement] = useState<string>('all');
   const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
   const [selectedRole, setSelectedRole] = useState<string>('all');
+  const [selectedRegion, setSelectedRegion] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeCharacter, setActiveCharacter] = useState<CharacterBuild | null>(null);
 
@@ -58,15 +59,28 @@ export const CharacterHub: React.FC = () => {
 
   const roles = ['all', 'Main DPS', 'Sub DPS', 'Buffer', 'Support', 'Healer'];
 
+  const regions: { id: string; label: string }[] = [
+    { id: 'all', label: 'All Regions' },
+    { id: 'Mondstadt', label: 'Mondstadt' },
+    { id: 'Liyue', label: 'Liyue' },
+    { id: 'Inazuma', label: 'Inazuma' },
+    { id: 'Sumeru', label: 'Sumeru' },
+    { id: 'Fontaine', label: 'Fontaine' },
+    { id: 'Natlan', label: 'Natlan' },
+    { id: 'Nod-Krai', label: 'Nod-Krai' },
+    { id: 'Snezhnaya', label: 'Snezhnaya' }
+  ];
+
   const filteredCharacters = CHARACTERS_DATA.filter((char) => {
     const matchesElement = selectedElement === 'all' || char.element === selectedElement;
     const matchesWeapon = selectedWeapon === 'all' || char.weapon === selectedWeapon;
     const matchesRole = selectedRole === 'all' || char.role === selectedRole;
+    const matchesRegion = selectedRegion === 'all' || char.region === selectedRegion;
     const matchesSearch =
       char.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       char.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       char.region.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesElement && matchesWeapon && matchesRole && matchesSearch;
+    return matchesElement && matchesWeapon && matchesRole && matchesRegion && matchesSearch;
   });
 
   return (
@@ -159,12 +173,26 @@ export const CharacterHub: React.FC = () => {
             ))}
           </select>
 
-          {(selectedElement !== 'all' || selectedWeapon !== 'all' || selectedRole !== 'all' || searchQuery) && (
+          {/* Region Dropdown */}
+          <select
+            value={selectedRegion}
+            onChange={(e) => setSelectedRegion(e.target.value)}
+            className="bg-slate-800 border border-slate-700 text-slate-200 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-amber-400"
+          >
+            {regions.map((reg) => (
+              <option key={reg.id} value={reg.id}>
+                {reg.label}
+              </option>
+            ))}
+          </select>
+
+          {(selectedElement !== 'all' || selectedWeapon !== 'all' || selectedRole !== 'all' || selectedRegion !== 'all' || searchQuery) && (
             <button
               onClick={() => {
                 setSelectedElement('all');
                 setSelectedWeapon('all');
                 setSelectedRole('all');
+                setSelectedRegion('all');
                 setSearchQuery('');
               }}
               className="text-xs text-amber-400 hover:underline ml-auto"

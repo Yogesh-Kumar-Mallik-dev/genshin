@@ -609,6 +609,24 @@ export const TALENT_SCHEDULES: TalentSchedule[] = [
       { name: 'Kindling', iconUrl: '/assets/materials/talents/kindling.png', days: ['Tue', 'Fri', 'Sun'], characters: ['Kinich', 'Kachina'] },
       { name: 'Conflict', iconUrl: '/assets/materials/talents/conflict.png', days: ['Wed', 'Sat', 'Sun'], characters: ['Xilonen', 'Chasca'] }
     ]
+  },
+  {
+    domain: 'Enclave Archives',
+    region: 'Nod-Krai',
+    items: [
+      { name: 'Aurora', iconUrl: '/assets/materials/talents/admonition.png', days: ['Mon', 'Thu', 'Sun'], characters: ['Varka', 'Autonomous Envoys'] },
+      { name: 'Frontier', iconUrl: '/assets/materials/talents/ingenuity.png', days: ['Tue', 'Fri', 'Sun'], characters: ['Alva', 'High Steppe Scouts'] },
+      { name: 'Accord', iconUrl: '/assets/materials/talents/praxis.png', days: ['Wed', 'Sat', 'Sun'], characters: ['Sovereign Council Representatives'] }
+    ]
+  },
+  {
+    domain: 'Zapolyarny Foundry',
+    region: 'Snezhnaya',
+    items: [
+      { name: 'Permafrost', iconUrl: '/assets/materials/talents/equity.png', days: ['Mon', 'Thu', 'Sun'], characters: ['Tsaritsa', 'Tartaglia (Childe)'] },
+      { name: 'Tsardom', iconUrl: '/assets/materials/talents/justice.png', days: ['Tue', 'Fri', 'Sun'], characters: ['Capitano', 'Pulcinella'] },
+      { name: 'Ironforge', iconUrl: '/assets/materials/talents/order.png', days: ['Wed', 'Sat', 'Sun'], characters: ['Sandrone', 'Dottore'] }
+    ]
   }
 ];
 
@@ -623,6 +641,24 @@ export interface MobDropItem {
 }
 
 export const ESSENTIAL_MOB_DROPS: MobDropItem[] = [
+  {
+    id: 'saurian-fang',
+    name: 'Saurian Fangs & Claws',
+    enemy: 'Natlan Saurians (Tepetlisaurus, Yumkasaurus, Koholasaurus)',
+    locations: 'Canyons, lakeshores, and volcanic ridges throughout Natlan',
+    farmingTips: 'Stun Saurians during elemental charge states. Water-based Saurians are vulnerable to Electro-Charged.',
+    usedFor: ['Mualani', 'Kinich', 'Xilonen', 'Natlan forge weapons'],
+    iconUrl: '/assets/materials/mobs/chaos-core.png'
+  },
+  {
+    id: 'operative-pocket-watch',
+    name: 'Operative Pocket Watch',
+    enemy: 'Fatui Wind & Frost Operatives',
+    locations: 'Mont Esus East (Fontaine), Zapolyarny Outposts (Snezhnaya)',
+    farmingTips: 'Clear the Life Bond debuff with instant heals or shields before their execution strikes trigger.',
+    usedFor: ['Arlecchino', 'Capitano', 'Tsaritsa', 'Snezhnaya weapons'],
+    iconUrl: '/assets/materials/mobs/lieutenants-insignia.png'
+  },
   {
     id: 'spectral-nucleus',
     name: 'Specter Nucleus / Drops',

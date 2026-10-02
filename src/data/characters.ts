@@ -10895,63 +10895,75 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     ]
   },
   {
-    "id": "traveler",
-    "name": "Traveler",
-    "title": "Mondstadt 5★ ANEMO Main DPS",
+    "id": "traveler-anemo",
+    "name": "Traveler (Anemo)",
+    "title": "Honorary Knight of Favonius",
     "rarity": 5,
     "element": "anemo",
     "weapon": "sword",
     "region": "Mondstadt",
-    "role": "Main DPS",
+    "role": "Support",
     "icon": "🍃",
-    "avatarUrl": "/assets/characters/traveler/icon.png",
-    "cardUrl": "/assets/characters/traveler/card.png",
-    "splashUrl": "/assets/characters/traveler/splash.png",
-    "description": "Traveler is a 5-star ANEMO sword wielder hailing from Mondstadt. Specializes as an elite Main DPS in high-efficiency team synergies.",
-    "signatureWeapon": "Mistsplitter Reforged",
+    "avatarUrl": "/assets/characters/traveler-anemo/icon.png",
+    "cardUrl": "/assets/characters/traveler-anemo/card.png",
+    "splashUrl": "/assets/characters/traveler-anemo/splash.png",
+    "description": "Traveler attuned to the gentle breezes of Mondstadt. Gathers and shreds enemy resistances with swirling vortexes and provides team EM boosts.",
+    "signatureWeapon": "Freedom-Sworn",
     "bestWeapons": [
       {
-        "name": "Mistsplitter Reforged",
+        "name": "Freedom-Sworn",
         "rarity": 5,
-        "description": "BiS DPS: High Base ATK, Crit DMG, and elemental DMG stacks.",
-        "iconUrl": "/assets/weapons/mistsplitter-reforged.png"
-      },
-      {
-        "name": "Fleuve Cendre Ferryman (Pipe)",
-        "rarity": 4,
-        "description": "Best F2P option: High Energy Recharge and bonus Skill Crit Rate.",
-        "isF2P": true,
-        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+        "description": "BiS Support: Massive EM and provides party-wide Normal/Charged Attack and ATK% buffs on triggering elemental reactions.",
+        "iconUrl": "/assets/weapons/freedom-sworn.png"
       },
       {
         "name": "Favonius Sword",
         "rarity": 4,
-        "description": "Best battery: Generates clear energy particles for team burst consistency.",
+        "description": "Premier F2P battery: High ER and consistent neutral energy particle generation on Crit hits.",
         "isF2P": true,
         "iconUrl": "/assets/weapons/favonius-sword.png"
+      },
+      {
+        "name": "Iron Sting",
+        "rarity": 4,
+        "description": "Craftable F2P: High Elemental Mastery stat stick maximizing Swirl damage output.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/iron-sting.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "F2P Fishing Sword: Grants vital Energy Recharge and +16% Skill Crit Rate.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
       }
     ],
     "bestArtifacts": [
       {
-        "name": "Gladiator / Shimenawa",
+        "name": "Viridescent Venerer",
         "count": 4,
-        "description": "Universal ATK% and Normal Attack DMG bonus.",
-        "iconUrl": "/assets/artifacts/gladiators-finale.png"
+        "description": "Mandatory BiS: +60% Swirl DMG and shreds enemy elemental RES by 40% to the swirled element for 10s.",
+        "iconUrl": "/assets/artifacts/viridescent-venerer.png"
+      },
+      {
+        "name": "Noblesse Oblige",
+        "count": 4,
+        "description": "Alternative support set: +20% Burst DMG and grants all party members +20% ATK for 12s on Burst cast.",
+        "iconUrl": "/assets/artifacts/noblesse-oblige.png"
       }
     ],
     "statPriorities": {
-      "sands": "ATK% or Energy Recharge",
-      "goblet": "Anemo DMG Bonus",
-      "circlet": "Crit Rate / Crit DMG",
+      "sands": "Energy Recharge or Elemental Mastery",
+      "goblet": "Elemental Mastery or Anemo DMG Bonus",
+      "circlet": "Elemental Mastery or Crit Rate (for Favonius)",
       "substats": [
-        "Crit Rate",
-        "Crit DMG",
-        "ATK%",
+        "Energy Recharge (160-190%)",
         "Elemental Mastery",
-        "Energy Recharge (120-140%)"
+        "Crit Rate (if using Favonius)",
+        "ATK%"
       ],
-      "benchmarkEr": "120% - 140%",
-      "benchmarkCrCd": "65% / 140%+"
+      "benchmarkEr": "160% - 190%",
+      "benchmarkCrCd": "50% / 100% (Hybrid) or Full EM"
     },
     "talentPriority": [
       "Elemental Burst (Q)",
@@ -10960,29 +10972,719 @@ export const CHARACTERS_DATA: CharacterBuild[] = [
     ],
     "recommendedTeams": [
       {
-        "name": "Traveler Core Synergy",
+        "name": "Anemo VV National",
         "members": [
-          "Traveler",
-          "Bennett",
-          "Kazuha",
-          "Furina"
+          "Traveler (Anemo)",
+          "Xiangling",
+          "Xingqiu",
+          "Bennett"
         ],
-        "notes": "Synergizes with universal elemental supports for maximized ANEMO damage and reaction triggers."
+        "notes": "Infuses Palm Vortex and Gust Surge with Pyro to maximize Swirl triggers while shredding Pyro/Hydro RES for Xiangling and Xingqiu."
+      },
+      {
+        "name": "Mondstadt Freeze Enabler",
+        "members": [
+          "Traveler (Anemo)",
+          "Kamisato Ayaka",
+          "Furina",
+          "Charlotte"
+        ],
+        "notes": "Pulls frozen opponents into swirling cryo storms while providing continuous 4pc Viridescent Venerer Cryo RES shred."
       }
     ],
     "ascensionMaterials": {
-      "bossDrop": "Mondstadt World Boss Drop",
-      "localSpecialty": "Mondstadt Regional Specialty",
-      "mobDrop": "Mondstadt Common Mob Drop",
-      "gem": "Vayuda Turquoise"
+      "bossDrop": "Hurricane Seed",
+      "localSpecialty": "Windwheel Aster",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
     },
     "talentMaterials": {
-      "bookName": "Mondstadt Talent Teachings / Guides",
-      "weeklyBossDrop": "Mondstadt Trounce Domain Trophy"
+      "bookName": "Teachings of Ballad / Resistance / Freedom",
+      "weeklyBossDrop": "Dvalin's Sigh"
     },
     "proTips": [
-      "Maintain optimal rotation order to maximize undefined buff and damage windows.",
-      "Focus on meeting benchmark Energy Recharge (120% - 140%) before maximizing Crit substats."
+      "Hold Palm Vortex (E) for maximum vacuum duration and elemental absorption, triggering 4pc VV resistance shred before swapping.",
+      "Position Gust Surge (Burst) so the advancing tornado carries mobs against terrain or walls rather than carrying them out of your melee reach."
+    ]
+  },
+  {
+    "id": "traveler-geo",
+    "name": "Traveler (Geo)",
+    "title": "Resonator of the Earth",
+    "rarity": 5,
+    "element": "geo",
+    "weapon": "sword",
+    "region": "Liyue",
+    "role": "Sub DPS",
+    "icon": "🪨",
+    "avatarUrl": "/assets/characters/traveler-geo/icon.png",
+    "cardUrl": "/assets/characters/traveler-geo/card.png",
+    "splashUrl": "/assets/characters/traveler-geo/splash.png",
+    "description": "Traveler attuned to Liyue's bedrock. Summons massive Starfell meteorite constructs with huge burst multipliers and creates a shockwave stone zone providing party Crit Rate.",
+    "signatureWeapon": "Mistsplitter Reforged",
+    "bestWeapons": [
+      {
+        "name": "Mistsplitter Reforged",
+        "rarity": 5,
+        "description": "BiS DPS: High Base ATK, Crit DMG substat, and unconditional all-elemental DMG bonus stacks.",
+        "iconUrl": "/assets/weapons/mistsplitter-reforged.png"
+      },
+      {
+        "name": "Primordial Jade Cutter",
+        "rarity": 5,
+        "description": "Top Stat Stick: Massive 44.1% Crit Rate and bonus ATK scaling based on Max HP.",
+        "iconUrl": "/assets/weapons/primordial-jade-cutter.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "Best F2P option: Boosts Skill Crit Rate by 16% and ensures Burst availability off-cooldown.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+      },
+      {
+        "name": "Harbinger of Dawn",
+        "rarity": 3,
+        "description": "F2P budget gem: Grants massive Crit Rate and Crit DMG when remaining above 90% HP.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/harbinger-of-dawn.png"
+      }
+    ],
+    "bestArtifacts": [
+      {
+        "name": "Golden Troupe",
+        "count": 4,
+        "description": "BiS Skill DPS: Up to +70% Elemental Skill DMG when off-field, turning Starfell Sword into a tactical nuke.",
+        "iconUrl": "/assets/artifacts/golden-troupe.png"
+      },
+      {
+        "name": "Archaic Petra",
+        "count": 2,
+        "description": "Classic Geo Burst setup: Combines +15% Geo DMG with +20% Burst DMG (Noblesse 2pc).",
+        "iconUrl": "/assets/artifacts/archaic-petra.png"
+      }
+    ],
+    "statPriorities": {
+      "sands": "ATK%",
+      "goblet": "Geo DMG Bonus",
+      "circlet": "Crit Rate / Crit DMG",
+      "substats": [
+        "Crit Rate",
+        "Crit DMG",
+        "ATK%",
+        "Energy Recharge (130-150%)"
+      ],
+      "benchmarkEr": "130% - 150%",
+      "benchmarkCrCd": "65% / 140%+"
+    },
+    "talentPriority": [
+      "Elemental Skill (E)",
+      "Elemental Burst (Q)",
+      "Normal Attack (NA)"
+    ],
+    "recommendedTeams": [
+      {
+        "name": "Geo Resonance Construct Core",
+        "members": [
+          "Traveler (Geo)",
+          "Zhongli",
+          "Navia",
+          "Bennett"
+        ],
+        "notes": "Meteorite constructs resonate with Zhongli's pillar and generate crystallize shards continuously for Navia's Rosula charges."
+      },
+      {
+        "name": "Mono Geo Resonators",
+        "members": [
+          "Traveler (Geo)",
+          "Arataki Itto",
+          "Gorou",
+          "Chiori"
+        ],
+        "notes": "Wake of Earth provides +10% free Crit Rate within its perimeter and activates Chiori's automaton summon via Geo constructs."
+      }
+    ],
+    "ascensionMaterials": {
+      "bossDrop": "Basalt Pillar",
+      "localSpecialty": "Cor Lapis",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
+    },
+    "talentMaterials": {
+      "bookName": "Teachings of Prosperity / Diligence / Gold",
+      "weeklyBossDrop": "Ring of Boreas"
+    },
+    "proTips": [
+      "Aim Starfell Sword (E) adjacent to large bosses rather than directly beneath them to prevent constructs from instantly shattering or lifting enemies away.",
+      "Wake of Earth (Burst) constructs do not count against the standard 3-construct limit, allowing full synergy with Zhongli and Chiori."
+    ]
+  },
+  {
+    "id": "traveler-electro",
+    "name": "Traveler (Electro)",
+    "title": "Conductor of Eternity",
+    "rarity": 5,
+    "element": "electro",
+    "weapon": "sword",
+    "region": "Inazuma",
+    "role": "Support",
+    "icon": "⚡",
+    "avatarUrl": "/assets/characters/traveler-electro/icon.png",
+    "cardUrl": "/assets/characters/traveler-electro/card.png",
+    "splashUrl": "/assets/characters/traveler-electro/splash.png",
+    "description": "Traveler attuned to the thunderous power of Inazuma. Serves as a universal party battery, dropping Abundance Amulets that instantly refund flat energy and boost teammates' Energy Recharge.",
+    "signatureWeapon": "Favonius Sword",
+    "bestWeapons": [
+      {
+        "name": "Favonius Sword",
+        "rarity": 4,
+        "description": "BiS Battery: Highest ER scaling and team particle generation, magnifying Traveler's energy refund utility.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/favonius-sword.png"
+      },
+      {
+        "name": "Sacrificial Sword",
+        "rarity": 4,
+        "description": "Reset Utility: Chance to reset Skill cooldown, allowing double deployment of Abundance Amulets.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/sacrificial-sword.png"
+      },
+      {
+        "name": "Skyward Blade",
+        "rarity": 5,
+        "description": "5-Star Energy Engine: Generous Energy Recharge, Base ATK, and bonus Crit Rate.",
+        "iconUrl": "/assets/weapons/skyward-blade.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "Reliable F2P: Generates substantial Energy Recharge after casting Skill.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+      }
+    ],
+    "bestArtifacts": [
+      {
+        "name": "Emblem of Severed Fate",
+        "count": 4,
+        "description": "BiS Set: +20% Energy Recharge and converts up to 75% of ER into Elemental Burst DMG bonus.",
+        "iconUrl": "/assets/artifacts/emblem-of-severed-fate.png"
+      },
+      {
+        "name": "Noblesse Oblige",
+        "count": 4,
+        "description": "Universal Support: Buffs entire party ATK by 20% after casting Bellowing Thunder.",
+        "iconUrl": "/assets/artifacts/noblesse-oblige.png"
+      }
+    ],
+    "statPriorities": {
+      "sands": "Energy Recharge",
+      "goblet": "Electro DMG Bonus or ATK%",
+      "circlet": "Crit Rate (for Favonius consistency)",
+      "substats": [
+        "Energy Recharge (240%+)",
+        "Crit Rate",
+        "ATK%",
+        "Crit DMG"
+      ],
+      "benchmarkEr": "240% - 280%",
+      "benchmarkCrCd": "50% / 100%"
+    },
+    "talentPriority": [
+      "Elemental Skill (E)",
+      "Elemental Burst (Q)",
+      "Normal Attack (NA)"
+    ],
+    "recommendedTeams": [
+      {
+        "name": "Superconduct Physical Battery",
+        "members": [
+          "Traveler (Electro)",
+          "Eula",
+          "Raiden Shogun",
+          "Diona"
+        ],
+        "notes": "Allows Eula to reliably cast her 80-cost Lightfall Sword every rotation while supplying steady Superconduct triggers."
+      },
+      {
+        "name": "Electro-Charged Taser Core",
+        "members": [
+          "Traveler (Electro)",
+          "Kamisato Ayato",
+          "Beidou",
+          "Jean"
+        ],
+        "notes": "Solves Beidou's extreme energy requirements completely, enabling off-field lightning chains alongside Ayato's Hydro slashes."
+      }
+    ],
+    "ascensionMaterials": {
+      "bossDrop": "Storm Beads",
+      "localSpecialty": "Naku Weed",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
+    },
+    "talentMaterials": {
+      "bookName": "Teachings of Transience / Elegance / Light",
+      "weeklyBossDrop": "Dragon Lord's Crown"
+    },
+    "proTips": [
+      "Lightning Blade (E) generates 3 Abundance Amulets. Swap immediately to your energy-hungry main carry (like Eula or Xiao) to pick up the amulets for a flat energy refund and ER boost.",
+      "Stacking pure Energy Recharge converts directly into additional party ER buffs through the 4th Ascension passive Resounding Roar."
+    ]
+  },
+  {
+    "id": "traveler-dendro",
+    "name": "Traveler (Dendro)",
+    "title": "Verdant Dreamer",
+    "rarity": 5,
+    "element": "dendro",
+    "weapon": "sword",
+    "region": "Sumeru",
+    "role": "Sub DPS",
+    "icon": "🌿",
+    "avatarUrl": "/assets/characters/traveler-dendro/icon.png",
+    "cardUrl": "/assets/characters/traveler-dendro/card.png",
+    "splashUrl": "/assets/characters/traveler-dendro/splash.png",
+    "description": "Traveler infused with the wisdom of Sumeru's foliage. Deploys a Lea Lotus Lamp that reacts with Hydro, Electro, and Pyro to expand field coverage, trigger Hyperbloom/Burgeon, and maintain constant off-field Dendro application.",
+    "signatureWeapon": "Freedom-Sworn",
+    "bestWeapons": [
+      {
+        "name": "Sapwood Blade",
+        "rarity": 4,
+        "description": "BiS F2P Craftable: High ER secondary and drops Leaf of Consciousness for +120 EM to active characters on reaction.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/sapwood-blade.png"
+      },
+      {
+        "name": "Favonius Sword",
+        "rarity": 4,
+        "description": "Top battery sword: Meets the strict 200%+ ER threshold while fueling entire team's burst rotations.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/favonius-sword.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "F2P Fishing Sword: Supplies heavy ER and extra Crit Rate for Elemental Skill Razorgrass Blade.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+      },
+      {
+        "name": "Freedom-Sworn",
+        "rarity": 5,
+        "description": "Premium Support: Massive Elemental Mastery and team ATK% & Normal Attack buff triggers.",
+        "iconUrl": "/assets/weapons/freedom-sworn.png"
+      }
+    ],
+    "bestArtifacts": [
+      {
+        "name": "Deepwood Memories",
+        "count": 4,
+        "description": "Essential Dendro BiS: Shreds enemy Dendro RES by 30% for 8s on Skill/Burst hit, vastly scaling team Bloom and Spread DMG.",
+        "iconUrl": "/assets/artifacts/deepwood-memories.png"
+      },
+      {
+        "name": "Noblesse Oblige",
+        "count": 4,
+        "description": "Team ATK Support: +20% party ATK if another team member is already equipping 4pc Deepwood.",
+        "iconUrl": "/assets/artifacts/noblesse-oblige.png"
+      }
+    ],
+    "statPriorities": {
+      "sands": "Energy Recharge",
+      "goblet": "Dendro DMG Bonus or Elemental Mastery",
+      "circlet": "Crit Rate (for Favonius) or Crit DMG",
+      "substats": [
+        "Energy Recharge (200-220%)",
+        "Crit Rate",
+        "Elemental Mastery",
+        "Crit DMG",
+        "ATK%"
+      ],
+      "benchmarkEr": "200% - 220%",
+      "benchmarkCrCd": "55% / 120%"
+    },
+    "talentPriority": [
+      "Elemental Burst (Q)",
+      "Elemental Skill (E)",
+      "Normal Attack (NA)"
+    ],
+    "recommendedTeams": [
+      {
+        "name": "Hyperbloom Artillery Core",
+        "members": [
+          "Traveler (Dendro)",
+          "Xingqiu",
+          "Kuki Shinobu",
+          "Alhaitham"
+        ],
+        "notes": "Creates a relentless carpet of Dendro Cores with Xingqiu while Kuki triggers rapid 30k+ homing Hyperbloom strikes."
+      },
+      {
+        "name": "Nilou Bountiful Bloom",
+        "members": [
+          "Traveler (Dendro)",
+          "Nilou",
+          "Sangonomiya Kokomi",
+          "Nahida"
+        ],
+        "notes": "Hydro contact expands the Lea Lotus Lamp into an enormous lotus sphere, instantly detonating cascading Bountiful Cores."
+      }
+    ],
+    "ascensionMaterials": {
+      "bossDrop": "Majestic Hooked Beak",
+      "localSpecialty": "Rukkhashava Mushrooms",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
+    },
+    "talentMaterials": {
+      "bookName": "Teachings of Admonition / Ingenuity / Praxis",
+      "weeklyBossDrop": "Mudra of the Malefic General"
+    },
+    "proTips": [
+      "CAUTION: Touch Hydro or Electro to your Lea Lotus Lamp FIRST before any Pyro! Contacting Pyro immediately causes the lamp to explode and vanish prematurely.",
+      "Hydro transfigures the lamp into a larger radius; Electro increases its attack frequency. Both are ideal for Dendro reaction setups."
+    ]
+  },
+  {
+    "id": "traveler-hydro",
+    "name": "Traveler (Hydro)",
+    "title": "Fountain of Justice",
+    "rarity": 5,
+    "element": "hydro",
+    "weapon": "sword",
+    "region": "Fontaine",
+    "role": "Sub DPS",
+    "icon": "💧",
+    "avatarUrl": "/assets/characters/traveler-hydro/icon.png",
+    "cardUrl": "/assets/characters/traveler-hydro/card.png",
+    "splashUrl": "/assets/characters/traveler-hydro/splash.png",
+    "description": "Traveler graced by the tides of Fontaine. Unleashes pressurized torrents with rapid Aquacrest water jets and launches floating tide bubbles while toggling Fontaine's native Ousia alignment.",
+    "signatureWeapon": "Primordial Jade Cutter",
+    "bestWeapons": [
+      {
+        "name": "Primordial Jade Cutter",
+        "rarity": 5,
+        "description": "BiS Stat Stick: 44.1% Crit Rate and +20% HP bonus directly converting into bonus ATK.",
+        "iconUrl": "/assets/weapons/primordial-jade-cutter.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "Fontaine F2P BiS: High ER and boosts Skill Crit Rate by 16%, synergizing perfectly with Aquacrest Saber shots.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+      },
+      {
+        "name": "Favonius Sword",
+        "rarity": 4,
+        "description": "Team utility: Recharges Traveler's 80-cost Burst while providing team-wide white energy particles.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/favonius-sword.png"
+      },
+      {
+        "name": "Sacrificial Sword",
+        "rarity": 4,
+        "description": "Dual Casts: Enables double Aquacrest torrential casts for rapid Sourcewater Droplet production.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/sacrificial-sword.png"
+      }
+    ],
+    "bestArtifacts": [
+      {
+        "name": "Golden Troupe",
+        "count": 4,
+        "description": "BiS Skill DMG: Increases Elemental Skill DMG by up to 70%, buffing continuous Torrent Surge water jets.",
+        "iconUrl": "/assets/artifacts/golden-troupe.png"
+      },
+      {
+        "name": "Marechaussee Hunter",
+        "count": 4,
+        "description": "Synergy Set: Dewdrop firing consumes HP, quickly granting up to +36% free Crit Rate.",
+        "iconUrl": "/assets/artifacts/marechaussee-hunter.png"
+      }
+    ],
+    "statPriorities": {
+      "sands": "HP% or Energy Recharge",
+      "goblet": "Hydro DMG Bonus",
+      "circlet": "Crit Rate / Crit DMG",
+      "substats": [
+        "Crit Rate",
+        "Crit DMG",
+        "HP%",
+        "Energy Recharge (160-180%)",
+        "Elemental Mastery"
+      ],
+      "benchmarkEr": "160% - 180%",
+      "benchmarkCrCd": "60% / 130%+"
+    },
+    "talentPriority": [
+      "Elemental Skill (E)",
+      "Elemental Burst (Q)",
+      "Normal Attack (NA)"
+    ],
+    "recommendedTeams": [
+      {
+        "name": "Fontaine Ousia Hydro Engine",
+        "members": [
+          "Traveler (Hydro)",
+          "Furina",
+          "Xiangling",
+          "Bennett"
+        ],
+        "notes": "Sourcewater Droplet HP fluctuations grant Furina instant Fanfare points while enabling forward Vaporize triggers."
+      },
+      {
+        "name": "Electro-Charge Swirl Tides",
+        "members": [
+          "Traveler (Hydro)",
+          "Fischl",
+          "Beidou",
+          "Jean"
+        ],
+        "notes": "Torrent Surge triggers off-field Electro-Charged bolts from Oz and Stormbreaker alongside VV resistance shred from Jean."
+      }
+    ],
+    "ascensionMaterials": {
+      "bossDrop": "Artificed Spare Clockwork Component - Coppelius",
+      "localSpecialty": "Romaritime Flower",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
+    },
+    "talentMaterials": {
+      "bookName": "Teachings of Equity / Justice / Order",
+      "weeklyBossDrop": "Worldspan Fern"
+    },
+    "proTips": [
+      "Holding Aquacrest Saber (E) consumes Traveler's HP to fire higher damage Torrent Surges and creates Sourcewater Droplets on hit.",
+      "Picking up Sourcewater Droplets restores HP, counteracting Dewdrop consumption and triggering HP oscillation passives."
+    ]
+  },
+  {
+    "id": "traveler-pyro",
+    "name": "Traveler (Pyro)",
+    "title": "Pilgrim of the Sacred Flame",
+    "rarity": 5,
+    "element": "pyro",
+    "weapon": "sword",
+    "region": "Natlan",
+    "role": "Buffer",
+    "icon": "🔥",
+    "avatarUrl": "/assets/characters/traveler-pyro/icon.png",
+    "cardUrl": "/assets/characters/traveler-pyro/card.png",
+    "splashUrl": "/assets/characters/traveler-pyro/splash.png",
+    "description": "Traveler ignited by the fires of Natlan. Taps into the ancient power of Nightsoul's Blessing, unleashing Blazing Scorcher flame strikes and conferring huge party elemental damage buffs via the sacred Cinder City scrolls.",
+    "signatureWeapon": "Peak Patrol Song",
+    "bestWeapons": [
+      {
+        "name": "Peak Patrol Song",
+        "rarity": 5,
+        "description": "BiS Support: Massive DEF substat and provides team-wide elemental DMG bonuses upon Nightsoul triggers.",
+        "iconUrl": "/assets/weapons/peak-patrol-song.png"
+      },
+      {
+        "name": "Flute of Ezpitzal",
+        "rarity": 4,
+        "description": "BiS Natlan Craftable: Provides immense DEF% scaling and converts DEF into bonus Elemental Skill DMG.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/flute-of-ezpitzal.png"
+      },
+      {
+        "name": "Favonius Sword",
+        "rarity": 4,
+        "description": "F2P Battery: Ensures quick Burst recharge and battery capabilities for heavy Pyro carries.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/favonius-sword.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "Solid F2P option: Boosts Skill Crit Rate and ER after entering Nightsoul's Blessing.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+      }
+    ],
+    "bestArtifacts": [
+      {
+        "name": "Scroll of the Hero of Cinder City",
+        "count": 4,
+        "description": "BiS Support: Grants +40% Elemental DMG bonus to all party members for elements involved in Nightsoul reactions.",
+        "iconUrl": "/assets/artifacts/scroll-of-the-hero-of-cinder-city.png"
+      },
+      {
+        "name": "Obsidian Codex",
+        "count": 4,
+        "description": "BiS On-Field: Grants +15% DMG during Nightsoul and +40% Crit Rate upon consuming Nightsoul points.",
+        "iconUrl": "/assets/artifacts/obsidian-codex.png"
+      }
+    ],
+    "statPriorities": {
+      "sands": "DEF% or Energy Recharge",
+      "goblet": "Pyro DMG Bonus or DEF%",
+      "circlet": "Crit Rate / Crit DMG",
+      "substats": [
+        "Crit Rate",
+        "DEF%",
+        "Energy Recharge (140-160%)",
+        "Crit DMG",
+        "Elemental Mastery"
+      ],
+      "benchmarkEr": "140% - 160%",
+      "benchmarkCrCd": "60% / 120%+"
+    },
+    "talentPriority": [
+      "Elemental Skill (E)",
+      "Elemental Burst (Q)",
+      "Normal Attack (NA)"
+    ],
+    "recommendedTeams": [
+      {
+        "name": "Natlan Nightsoul Vanguard",
+        "members": [
+          "Traveler (Pyro)",
+          "Mavuika",
+          "Xilonen",
+          "Kinich"
+        ],
+        "notes": "Enters Nightsoul's Blessing to trigger Scroll of the Hero of Cinder City, granting a massive 40% DMG boost across Pyro and Dendro."
+      },
+      {
+        "name": "Vaporize Nightsoul Buffer",
+        "members": [
+          "Traveler (Pyro)",
+          "Mualani",
+          "Furina",
+          "Xilonen"
+        ],
+        "notes": "Applies Pyro aura while buffing Mualani's shark bites with +40% Hydro DMG from Cinder City scroll mechanics."
+      }
+    ],
+    "ascensionMaterials": {
+      "bossDrop": "Mark of the Binding Blessing",
+      "localSpecialty": "Saurian Claw Succulent",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
+    },
+    "talentMaterials": {
+      "bookName": "Teachings of Conflict / Contention / Kindling",
+      "weeklyBossDrop": "Denial and Judgment"
+    },
+    "proTips": [
+      "Triggering Nightsoul reactions with 4pc Scroll of the Hero of Cinder City provides a game-changing 40% elemental damage bonus to your whole party.",
+      "Scales strongly with DEF; craft and refine the Flute of Ezpitzal in Natlan for optimal F2P performance."
+    ]
+  },
+  {
+    "id": "traveler-cryo",
+    "name": "Traveler (Cryo)",
+    "title": "Frostbound Sovereign",
+    "rarity": 5,
+    "element": "cryo",
+    "weapon": "sword",
+    "region": "Snezhnaya",
+    "role": "Sub DPS",
+    "icon": "❄️",
+    "avatarUrl": "/assets/characters/traveler-cryo/icon.png",
+    "cardUrl": "/assets/characters/traveler-cryo/card.png",
+    "splashUrl": "/assets/characters/traveler-cryo/splash.png",
+    "description": "Traveler enveloped by the biting frost of Snezhnaya. Generates localized permafrost fields, freezing adversaries in their tracks and amplifying party Crit Rate through Cryo resonance.",
+    "signatureWeapon": "Mistsplitter Reforged",
+    "bestWeapons": [
+      {
+        "name": "Mistsplitter Reforged",
+        "rarity": 5,
+        "description": "BiS DPS: Massive Crit DMG and grants Cryo DMG bonus stacks upon dealing elemental damage.",
+        "iconUrl": "/assets/weapons/mistsplitter-reforged.png"
+      },
+      {
+        "name": "Finale of the Deep",
+        "rarity": 4,
+        "description": "BiS F2P Craftable: Grants hefty ATK% buffs and clears Bond of Life for additional flat ATK bonuses.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/finale-of-the-deep.png"
+      },
+      {
+        "name": "Fleuve Cendre Ferryman",
+        "rarity": 4,
+        "description": "Fontaine F2P: Grants Energy Recharge and +16% Skill Crit Rate for constant Cryo rotation uptime.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/fleuve-cendre-ferryman.png"
+      },
+      {
+        "name": "Favonius Sword",
+        "rarity": 4,
+        "description": "Support Option: High energy battery fueling off-field Cryo burst storms.",
+        "isF2P": true,
+        "iconUrl": "/assets/weapons/favonius-sword.png"
+      }
+    ],
+    "bestArtifacts": [
+      {
+        "name": "Blizzard Strayer",
+        "count": 4,
+        "description": "BiS Freeze DPS: +15% Cryo DMG, +20% Crit Rate against Cryo-affected enemies, and an extra +20% if frozen (+40% total).",
+        "iconUrl": "/assets/artifacts/blizzard-strayer.png"
+      },
+      {
+        "name": "Noblesse Oblige",
+        "count": 4,
+        "description": "Support Set: +20% Burst DMG and +20% ATK buff to all party members after casting Frost Burst.",
+        "iconUrl": "/assets/artifacts/noblesse-oblige.png"
+      }
+    ],
+    "statPriorities": {
+      "sands": "ATK% or Energy Recharge",
+      "goblet": "Cryo DMG Bonus",
+      "circlet": "Crit DMG",
+      "substats": [
+        "Crit DMG",
+        "ATK%",
+        "Energy Recharge (140-160%)",
+        "Crit Rate (low requirement with 4pc Blizzard Strayer)"
+      ],
+      "benchmarkEr": "140% - 160%",
+      "benchmarkCrCd": "35-45% / 180%+"
+    },
+    "talentPriority": [
+      "Elemental Burst (Q)",
+      "Elemental Skill (E)",
+      "Normal Attack (NA)"
+    ],
+    "recommendedTeams": [
+      {
+        "name": "Permafrost Absolute Zero",
+        "members": [
+          "Traveler (Cryo)",
+          "Furina",
+          "Kaedehara Kazuha",
+          "Escoffier"
+        ],
+        "notes": "Freezes targets permanently inside the blizzard storm, maximizing the +55% total Crit Rate bonus from Blizzard Strayer + Cryo Resonance."
+      },
+      {
+        "name": "Forward Melt Vanguard",
+        "members": [
+          "Traveler (Cryo)",
+          "Mavuika",
+          "Bennett",
+          "Xiangling"
+        ],
+        "notes": "Unleashes off-field Cryo hail storms that continuously enable 2.0x Forward Melt multipliers for Pyro carries."
+      }
+    ],
+    "ascensionMaterials": {
+      "bossDrop": "Crystalline Bloom",
+      "localSpecialty": "Snezhnayan Winter Rose",
+      "mobDrop": "Damaged / Stained / Ominous Mask",
+      "gem": "Brilliant Diamond"
+    },
+    "talentMaterials": {
+      "bookName": "Teachings of Frost / Glaze / Winter",
+      "weeklyBossDrop": "Shadow of the Warrior"
+    },
+    "proTips": [
+      "In Freeze teams, 4pc Blizzard Strayer + Cryo Resonance provides +55% Crit Rate, allowing you to prioritize pure Crit DMG and ATK% on artifact substats.",
+      "Pre-cast Frost Burst before deploying Pyro or Hydro carries to maintain persistent elemental application throughout rotation windows."
     ]
   }
 ];

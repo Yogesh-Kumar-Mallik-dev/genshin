@@ -1,0 +1,1 @@
+import{I as e,S as t,_ as n}from"./vue.runtime.esm-bundler-BvZ39CsU.js";var r={class:`user-page`},i=t({__name:`[id]`,setup(t){return(t,i)=>(e(),n(`div`,r))}});export{i as default};

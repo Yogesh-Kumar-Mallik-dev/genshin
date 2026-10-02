@@ -33,7 +33,7 @@ const MAP_ENGINES: Record<MapEngine, EngineConfig> = {
     badge: 'Open-Source Community Map',
     badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
     description: 'The world-standard open-source Genshin interactive map. Featuring multi-layer underground caves, verified player pins, and ad-free exploration.',
-    url: 'https://v3.yuanshen.site/'
+    url: '/map-client/index.html'
   },
   hoyolab: {
     id: 'hoyolab',

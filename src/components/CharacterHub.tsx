@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { CHARACTERS_DATA } from '@/data/characters';
 import { WEAPONS_DATA } from '@/data/weapons';
 import { CharacterBuild, ElementType, WeaponItem } from '@/types/genshin';
-import { Search, Star, Sword, Sparkles, Award, X, Users, Shield, BookOpen } from 'lucide-react';
+import { Search, Star, Sword, Sparkles, Award, X, Users, Shield, BookOpen, Image as ImageIcon, Eye } from 'lucide-react';
 
 const ELEMENT_DATA: Record<ElementType, { name: string; color: string; border: string; glow: string; iconUrl: string }> = {
   pyro: { name: 'Pyro', color: 'text-red-400', border: 'border-red-500/40', glow: 'glow-pyro', iconUrl: '/assets/elements/pyro.png' },
@@ -25,9 +25,14 @@ const WEAPON_TYPE_INFO: Record<string, { label: string; icon: string }> = {
   catalyst: { label: 'Catalyst', icon: '📖' }
 };
 
-const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
+const CharacterCardVisual: React.FC<{ char: CharacterBuild; artMode?: 'splash' | 'portrait' }> = ({
+  char,
+  artMode = 'splash'
+}) => {
   const [hasError, setHasError] = useState(false);
-  const src = char.cardUrl || char.avatarUrl;
+  const src = artMode === 'splash'
+    ? (char.splashUrl || char.cardUrl || char.avatarUrl)
+    : (char.avatarUrl || char.cardUrl || char.splashUrl);
 
   if (hasError || !src) {
     return (
@@ -44,7 +49,9 @@ const CharacterCardVisual: React.FC<{ char: CharacterBuild }> = ({ char }) => {
       src={src}
       alt={char.name}
       fill
-      className="object-cover object-top group-hover:scale-105 transition-transform duration-300"
+      className={`transition-transform duration-500 ease-out group-hover:scale-110 ${
+        artMode === 'splash' ? 'object-cover object-center' : 'object-cover object-top'
+      }`}
       unoptimized
       onError={() => setHasError(true)}
     />
@@ -128,7 +135,9 @@ const WeaponModalVisual: React.FC<{ weapon: WeaponItem }> = ({ weapon }) => {
 export const CharacterHub: React.FC = () => {
   const [viewMode, setViewMode] = useState<'characters' | 'weapons'>('characters');
 
-  // Character filters
+  // Character filters & display settings
+  const [cardArtMode, setCardArtMode] = useState<'splash' | 'portrait'>('splash');
+  const [characterModalTab, setCharacterModalTab] = useState<'build' | 'splash'>('build');
   const [selectedElement, setSelectedElement] = useState<string>('all');
   const [selectedWeapon, setSelectedWeapon] = useState<string>('all');
   const [selectedRole, setSelectedRole] = useState<string>('all');
@@ -216,7 +225,6 @@ export const CharacterHub: React.FC = () => {
     return matchesType && matchesRarity && matchesSearch;
   });
 
-  // Find characters in CHARACTERS_DATA that have activeWeapon as a recommended weapon
   const weaponBeneficiaries = activeWeapon
     ? CHARACTERS_DATA.filter((c) =>
         c.bestWeapons.some((bw) =>
@@ -236,14 +244,14 @@ export const CharacterHub: React.FC = () => {
           <div className="max-w-2xl space-y-2">
             <div className="flex items-center space-x-2 text-amber-400 text-xs font-semibold uppercase tracking-wider">
               <Sparkles className="w-4 h-4" />
-              <span>KeqingMains Standard Theorycrafting & Armory</span>
+              <span>Official Teyvat Database • KeqingMains Standard</span>
             </div>
             <h2 className="text-2xl md:text-3xl font-black text-slate-100 tracking-tight">
-              {viewMode === 'characters' ? 'Character Builds & Theorycraft' : 'Teyvat Weapons Armory'}
+              {viewMode === 'characters' ? 'Character Builds & Official Splash Art' : 'Teyvat Weapons Armory'}
             </h2>
             <p className="text-sm text-slate-300">
               {viewMode === 'characters'
-                ? `Theorycrafted weapon rankings, optimal artifact sets, substat benchmarks, and synergistic teams covering all 122 playable characters across all 8 official regions (Mondstadt, Liyue, Inazuma, Sumeru, Fontaine, Natlan, Nod-Krai, and Snezhnaya).`
+                ? `Theorycrafted weapon rankings, optimal artifact sets, substat benchmarks, and full official Wish Splash Arts covering all 122 playable characters across all 8 official regions.`
                 : `Comprehensive database of all 252 official weapons across all 5 classes (Swords, Claymores, Polearms, Bows, and Catalysts) with Lv. 90 Base ATK, substats, passives, and character synergies.`}
             </p>
           </div>
@@ -283,15 +291,47 @@ export const CharacterHub: React.FC = () => {
         <div className="space-y-6">
           {/* Filter and Search Bar */}
           <div className="bg-slate-900/90 backdrop-blur-md border border-slate-800 rounded-xl p-4 space-y-4">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search characters by name, title, or region (e.g. Furina, Neuvillette, Inazuma)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 transition"
-              />
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search characters by name, title, or region (e.g. Furina, Neuvillette, Inazuma)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-amber-400 transition"
+                />
+              </div>
+
+              {/* Card Style Switcher (Splash Art vs Portrait) */}
+              <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 self-start sm:self-auto flex-shrink-0">
+                <span className="text-[11px] font-semibold text-slate-400 px-2 flex items-center space-x-1">
+                  <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Display:</span>
+                </span>
+                <button
+                  onClick={() => setCardArtMode('splash')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
+                    cardArtMode === 'splash'
+                      ? 'bg-amber-500 text-slate-950 shadow-md'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  <span>Splash Art</span>
+                </button>
+                <button
+                  onClick={() => setCardArtMode('portrait')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center space-x-1 ${
+                    cardArtMode === 'portrait'
+                      ? 'bg-amber-500 text-slate-950 shadow-md'
+                      : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                  }`}
+                >
+                  <Eye className="w-3 h-3" />
+                  <span>Portrait</span>
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
@@ -391,7 +431,10 @@ export const CharacterHub: React.FC = () => {
               return (
                 <div
                   key={char.id}
-                  onClick={() => setActiveCharacter(char)}
+                  onClick={() => {
+                    setActiveCharacter(char);
+                    setCharacterModalTab('build');
+                  }}
                   className="group cursor-pointer rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col justify-between border border-slate-800 hover:border-amber-500/50 relative bg-slate-900"
                 >
                   {/* Card Thumbnail Area with Authentic Rarity Gradient */}
@@ -415,9 +458,9 @@ export const CharacterHub: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Character Avatar/Card Image */}
+                    {/* Character Visual (Splash Art or Portrait) */}
                     <div className="relative w-full h-full">
-                      <CharacterCardVisual char={char} />
+                      <CharacterCardVisual char={char} artMode={cardArtMode} />
                     </div>
 
                     {/* Stars overlay at bottom of artwork */}
@@ -612,35 +655,34 @@ export const CharacterHub: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* CHARACTER BUILD INSPECTOR MODAL */}
+      {/* CHARACTER BUILD & SPLASH ART INSPECTOR MODAL */}
       {/* ========================================================================= */}
       {activeCharacter && (
         <div
           onClick={(e) => {
             if (e.target === e.currentTarget) setActiveCharacter(null);
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/80 backdrop-blur-md overflow-hidden animate-fadeIn"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 md:p-8 bg-black/85 backdrop-blur-md overflow-hidden animate-fadeIn"
         >
-          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
-            {/* Header Hero with Splash Art backdrop */}
+          <div className="bg-slate-900 border border-amber-500/40 rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden text-slate-200">
+            {/* Header Hero with Ambient Splash Art Backdrop */}
             <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 p-5 sm:p-6 border-b border-slate-800 flex-shrink-0">
-              {/* Ambient Splash Image */}
               {activeCharacter.splashUrl && (
-                <div className="absolute right-0 -top-10 -bottom-10 w-2/3 opacity-30 pointer-events-none overflow-hidden mask-gradient-to-l">
+                <div className="absolute right-0 -top-12 -bottom-12 w-3/4 opacity-35 pointer-events-none overflow-hidden mask-gradient-to-l">
                   <Image
                     src={activeCharacter.splashUrl}
                     alt={activeCharacter.name}
                     fill
-                    className="object-cover object-center"
+                    className="object-contain object-right"
                     unoptimized
                   />
                 </div>
               )}
 
-              <div className="relative z-10 flex items-start justify-between">
+              <div className="relative z-10 flex items-start justify-between gap-4">
                 <div className="flex items-center space-x-4">
                   {/* Avatar Icon */}
-                  <div className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-xl ${
+                  <div className={`relative w-20 h-20 rounded-2xl overflow-hidden border-2 shadow-xl flex-shrink-0 ${
                     activeCharacter.rarity === 5
                       ? 'border-amber-400 bg-gradient-to-b from-[#bd772b] to-[#804a14]'
                       : 'border-purple-400 bg-gradient-to-b from-[#644686] to-[#452b61]'
@@ -674,227 +716,298 @@ export const CharacterHub: React.FC = () => {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setActiveCharacter(null)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  {/* Modal Tab Switcher */}
+                  <div className="flex items-center bg-slate-950/80 p-1 rounded-xl border border-slate-800 shadow">
+                    <button
+                      onClick={() => setCharacterModalTab('build')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                        characterModalTab === 'build'
+                          ? 'bg-amber-500 text-slate-950 shadow-md'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      <Award className="w-3.5 h-3.5" />
+                      <span>Build</span>
+                    </button>
+                    <button
+                      onClick={() => setCharacterModalTab('splash')}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center space-x-1.5 ${
+                        characterModalTab === 'splash'
+                          ? 'bg-amber-500 text-slate-950 shadow-md'
+                          : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Splash Art</span>
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={() => setActiveCharacter(null)}
+                    className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Modal Body with smooth internal scroll */}
-            <div className="p-5 sm:p-6 space-y-6 flex-1 overflow-y-auto overscroll-contain">
-              {/* Description */}
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800">
-                {activeCharacter.description}
-              </p>
+            {/* Modal Body: Theorycraft Build View */}
+            {characterModalTab === 'build' && (
+              <div className="p-5 sm:p-6 space-y-6 flex-1 overflow-y-auto overscroll-contain">
+                {/* Description */}
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                  {activeCharacter.description}
+                </p>
 
-              {/* Weapons & Artifacts Showcase */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Weapons */}
-                <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-2">
-                    <Sword className="w-4 h-4" />
-                    <span>Best Weapons (Ranked)</span>
-                  </h4>
+                {/* Weapons & Artifacts Showcase */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Weapons */}
+                  <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-2">
+                      <Sword className="w-4 h-4" />
+                      <span>Best Weapons (Ranked)</span>
+                    </h4>
 
-                  <div className="space-y-2">
-                    {activeCharacter.bestWeapons.map((w, idx) => (
-                      <div key={idx} className="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-                        {/* Weapon Thumbnail */}
-                        <div className={`relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border ${
-                          w.rarity === 5
-                            ? 'border-amber-500/50 bg-gradient-to-b from-[#bd772b] to-[#804a14]'
-                            : w.rarity === 4
-                            ? 'border-purple-500/50 bg-gradient-to-b from-[#644686] to-[#452b61]'
-                            : 'border-blue-500/50 bg-gradient-to-b from-[#3d607a] to-[#253949]'
-                        }`}>
-                          {w.iconUrl ? (
-                            <Image
-                              src={w.iconUrl}
-                              alt={w.name}
-                              fill
-                              className="object-contain p-0.5"
-                              unoptimized
-                            />
-                          ) : (
-                            <span className="text-lg flex items-center justify-center h-full">🗡️</span>
-                          )}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs text-slate-100 truncate flex items-center space-x-1.5">
-                              <span>{idx === 0 ? '👑' : ''} {w.name}</span>
-                              {w.isF2P && (
-                                <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-semibold">
-                                  F2P
-                                </span>
-                              )}
-                            </span>
-                            <span className="text-[10px] text-amber-400 font-bold">{w.rarity}★</span>
+                    <div className="space-y-2">
+                      {activeCharacter.bestWeapons.map((w, idx) => (
+                        <div key={idx} className="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                          {/* Weapon Thumbnail */}
+                          <div className={`relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border ${
+                            w.rarity === 5
+                              ? 'border-amber-500/50 bg-gradient-to-b from-[#bd772b] to-[#804a14]'
+                              : w.rarity === 4
+                              ? 'border-purple-500/50 bg-gradient-to-b from-[#644686] to-[#452b61]'
+                              : 'border-blue-500/50 bg-gradient-to-b from-[#3d607a] to-[#253949]'
+                          }`}>
+                            {w.iconUrl ? (
+                              <Image
+                                src={w.iconUrl}
+                                alt={w.name}
+                                fill
+                                className="object-contain p-0.5"
+                                unoptimized
+                              />
+                            ) : (
+                              <span className="text-lg flex items-center justify-center h-full">🗡️</span>
+                            )}
                           </div>
-                          <p className="text-[11px] text-slate-400 leading-tight mt-0.5 line-clamp-2">
-                            {w.description}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Artifacts */}
-                <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-2">
-                    <Award className="w-4 h-4" />
-                    <span>Best Artifact Sets & Stats</span>
-                  </h4>
-
-                  <div className="space-y-2">
-                    {activeCharacter.bestArtifacts.map((art, idx) => (
-                      <div key={idx} className="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900 border border-slate-800">
-                        {/* Artifact Piece Thumbnail */}
-                        <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border border-amber-500/40 bg-gradient-to-b from-[#bd772b] to-[#804a14]">
-                          {art.iconUrl ? (
-                            <Image
-                              src={art.iconUrl}
-                              alt={art.name}
-                              fill
-                              className="object-contain p-0.5"
-                              unoptimized
-                            />
-                          ) : (
-                            <span className="text-lg flex items-center justify-center h-full">🌸</span>
-                          )}
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between">
-                            <span className="font-bold text-xs text-slate-100 truncate">{art.name}</span>
-                            <span className="text-[10px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded font-bold">
-                              {art.count}pc
-                            </span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-xs text-slate-100 truncate flex items-center space-x-1.5">
+                                <span>{idx === 0 ? '👑' : ''} {w.name}</span>
+                                {w.isF2P && (
+                                  <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1 py-0.2 rounded font-semibold">
+                                    F2P
+                                  </span>
+                                )}
+                              </span>
+                              <span className="text-[10px] text-amber-400 font-bold">{w.rarity}★</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 leading-tight mt-0.5 line-clamp-2">
+                              {w.description}
+                            </p>
                           </div>
-                          <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                            {art.description}
-                          </p>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Main Stats Grid */}
-                  <div className="pt-2 border-t border-slate-800 text-xs space-y-1.5">
-                    <span className="font-bold text-slate-300 text-[11px] uppercase tracking-wider block">
-                      Recommended Main Stats:
-                    </span>
-                    <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                      <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                        <span className="text-slate-500 block text-[9px] uppercase font-bold">Sands (Hourglass)</span>
-                        <span className="text-[11px] text-slate-200 font-semibold">{activeCharacter.statPriorities.sands}</span>
-                      </div>
-                      <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                        <span className="text-slate-500 block text-[9px] uppercase font-bold">Goblet (Chalice)</span>
-                        <span className="text-[11px] text-slate-200 font-semibold">{activeCharacter.statPriorities.goblet}</span>
-                      </div>
-                      <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
-                        <span className="text-slate-500 block text-[9px] uppercase font-bold">Circlet (Crown)</span>
-                        <span className="text-[11px] text-slate-200 font-semibold">{activeCharacter.statPriorities.circlet}</span>
-                      </div>
+                      ))}
                     </div>
                   </div>
-                </div>
-              </div>
 
-              {/* Substat Benchmarks & Talent Order */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Substats */}
-                <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                    Substat Priorities & Targets
-                  </h4>
-                  <div className="flex flex-wrap gap-1.5">
-                    {activeCharacter.statPriorities.substats.map((sub, i) => (
-                      <span key={i} className="bg-slate-800/90 text-slate-200 px-2 py-0.5 rounded text-xs border border-slate-700">
-                        {i + 1}. {sub}
+                  {/* Artifacts */}
+                  <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center space-x-2">
+                      <Award className="w-4 h-4" />
+                      <span>Best Artifact Sets & Stats</span>
+                    </h4>
+
+                    <div className="space-y-2">
+                      {activeCharacter.bestArtifacts.map((art, idx) => (
+                        <div key={idx} className="flex items-center space-x-3 p-2.5 rounded-xl bg-slate-900 border border-slate-800">
+                          {/* Artifact Piece Thumbnail */}
+                          <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 border border-amber-500/40 bg-gradient-to-b from-[#bd772b] to-[#804a14]">
+                            {art.iconUrl ? (
+                              <Image
+                                src={art.iconUrl}
+                                alt={art.name}
+                                fill
+                                className="object-contain p-0.5"
+                                unoptimized
+                              />
+                            ) : (
+                              <span className="text-lg flex items-center justify-center h-full">🌸</span>
+                            )}
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-xs text-slate-100 truncate">{art.name}</span>
+                              <span className="text-[10px] bg-sky-500/20 text-sky-300 px-1.5 py-0.5 rounded font-bold">
+                                {art.count}pc
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                              {art.description}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Main Stats Grid */}
+                    <div className="pt-2 border-t border-slate-800 text-xs space-y-1.5">
+                      <span className="font-bold text-slate-300 text-[11px] uppercase tracking-wider block">
+                        Recommended Main Stats:
                       </span>
-                    ))}
-                  </div>
-                  <div className="pt-2 text-xs space-y-1 text-slate-300">
-                    {activeCharacter.statPriorities.benchmarkEr && (
-                      <div><strong className="text-sky-300">Target ER:</strong> {activeCharacter.statPriorities.benchmarkEr}</div>
-                    )}
-                    {activeCharacter.statPriorities.benchmarkCrCd && (
-                      <div><strong className="text-amber-300">Target CR/CD:</strong> {activeCharacter.statPriorities.benchmarkCrCd}</div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Talent Leveling Priority */}
-                <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                    Talent Leveling Priority
-                  </h4>
-                  <div className="flex items-center space-x-2 text-xs pt-1">
-                    {activeCharacter.talentPriority.map((talent, idx) => (
-                      <React.Fragment key={idx}>
-                        <span className="bg-slate-900 border border-amber-500/30 px-3 py-1.5 rounded-lg text-slate-100 font-bold shadow">
-                          {talent}
-                        </span>
-                        {idx < activeCharacter.talentPriority.length - 1 && (
-                          <span className="text-amber-400 font-bold">&gt;</span>
-                        )}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Synergistic Teams */}
-              <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                  Recommended Synergistic Teams
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {activeCharacter.recommendedTeams.map((team, idx) => (
-                    <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
-                      <span className="text-xs font-bold text-slate-100 block">{team.name}</span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {team.members.map((member, mIdx) => (
-                          <span key={mIdx} className="bg-slate-800 text-amber-300 px-2 py-0.5 rounded text-xs border border-slate-700 font-medium">
-                            {member}
-                          </span>
-                        ))}
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                          <span className="text-slate-500 block text-[9px] uppercase font-bold">Sands (Hourglass)</span>
+                          <span className="text-[11px] text-slate-200 font-semibold">{activeCharacter.statPriorities.sands}</span>
+                        </div>
+                        <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                          <span className="text-slate-500 block text-[9px] uppercase font-bold">Goblet (Chalice)</span>
+                          <span className="text-[11px] text-slate-200 font-semibold">{activeCharacter.statPriorities.goblet}</span>
+                        </div>
+                        <div className="bg-slate-900 p-2 rounded-lg border border-slate-800">
+                          <span className="text-slate-500 block text-[9px] uppercase font-bold">Circlet (Crown)</span>
+                          <span className="text-[11px] text-slate-200 font-semibold">{activeCharacter.statPriorities.circlet}</span>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-slate-400 italic">{team.notes}</p>
                     </div>
-                  ))}
+                  </div>
+                </div>
+
+                {/* Substat Benchmarks & Talent Order */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Substats */}
+                  <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                      Substat Priorities & Targets
+                    </h4>
+                    <div className="flex flex-wrap gap-1.5">
+                      {activeCharacter.statPriorities.substats.map((sub, i) => (
+                        <span key={i} className="bg-slate-800/90 text-slate-200 px-2 py-0.5 rounded text-xs border border-slate-700">
+                          {i + 1}. {sub}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="pt-2 text-xs space-y-1 text-slate-300">
+                      {activeCharacter.statPriorities.benchmarkEr && (
+                        <div><strong className="text-sky-300">Target ER:</strong> {activeCharacter.statPriorities.benchmarkEr}</div>
+                      )}
+                      {activeCharacter.statPriorities.benchmarkCrCd && (
+                        <div><strong className="text-amber-300">Target CR/CD:</strong> {activeCharacter.statPriorities.benchmarkCrCd}</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Talent Leveling Priority */}
+                  <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                      Talent Leveling Priority
+                    </h4>
+                    <div className="flex items-center space-x-2 text-xs pt-1">
+                      {activeCharacter.talentPriority.map((talent, idx) => (
+                        <React.Fragment key={idx}>
+                          <span className="bg-slate-900 border border-amber-500/30 px-3 py-1.5 rounded-lg text-slate-100 font-bold shadow">
+                            {talent}
+                          </span>
+                          {idx < activeCharacter.talentPriority.length - 1 && (
+                            <span className="text-amber-400 font-bold">&gt;</span>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Synergistic Teams */}
+                <div className="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                    Recommended Synergistic Teams
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {activeCharacter.recommendedTeams.map((team, idx) => (
+                      <div key={idx} className="p-3 rounded-xl bg-slate-900 border border-slate-800 space-y-2">
+                        <span className="text-xs font-bold text-slate-100 block">{team.name}</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {team.members.map((member, mIdx) => (
+                            <span key={mIdx} className="bg-slate-800 text-amber-300 px-2 py-0.5 rounded text-xs border border-slate-700 font-medium">
+                              {member}
+                            </span>
+                          ))}
+                        </div>
+                        <p className="text-[11px] text-slate-400 italic">{team.notes}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Theorycrafter Pro Tips */}
+                <div className="bg-amber-950/20 border border-amber-500/30 p-4 rounded-xl space-y-2">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center space-x-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                    <span>Theorycrafter Pro-Tips</span>
+                  </h4>
+                  <ul className="space-y-1.5 text-xs text-slate-300">
+                    {activeCharacter.proTips.map((tip, idx) => (
+                      <li key={idx} className="flex items-start space-x-2">
+                        <span className="text-amber-400 font-bold">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
+            )}
 
-              {/* Theorycrafter Pro Tips */}
-              <div className="bg-amber-950/20 border border-amber-500/30 p-4 rounded-xl space-y-2">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center space-x-1.5">
-                  <Sparkles className="w-4 h-4 text-amber-400" />
-                  <span>Theorycrafter Pro-Tips</span>
-                </h4>
-                <ul className="space-y-1.5 text-xs text-slate-300">
-                  {activeCharacter.proTips.map((tip, idx) => (
-                    <li key={idx} className="flex items-start space-x-2">
-                      <span className="text-amber-400 font-bold">•</span>
-                      <span>{tip}</span>
-                    </li>
-                  ))}
-                </ul>
+            {/* Modal Body: High-Resolution Splash Art Showcase View */}
+            {characterModalTab === 'splash' && (
+              <div className="p-5 sm:p-6 space-y-6 flex-1 overflow-y-auto overscroll-contain flex flex-col items-center">
+                {activeCharacter.splashUrl ? (
+                  <div className="relative w-full aspect-[16/9] sm:aspect-[2/1] rounded-2xl overflow-hidden border border-amber-500/30 bg-gradient-to-b from-slate-950 via-slate-900 to-indigo-950 flex items-center justify-center shadow-2xl">
+                    <Image
+                      src={activeCharacter.splashUrl}
+                      alt={`${activeCharacter.name} Full Wish Splash Art`}
+                      fill
+                      className="object-contain p-2"
+                      unoptimized
+                    />
+                    <div className="absolute bottom-3 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 flex items-center space-x-2">
+                      <span className="text-xs font-black text-amber-400">{activeCharacter.name}</span>
+                      <span className="text-[10px] text-slate-400">Official Wish Art (2048x1024)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-12 text-center text-slate-400">
+                    Splash art not found for {activeCharacter.name}.
+                  </div>
+                )}
+
+                {/* Character Lore and Signature Details */}
+                <div className="w-full bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                      Signature Weapon: {activeCharacter.signatureWeapon}
+                    </span>
+                    <span className="text-xs text-slate-400 font-semibold">{activeCharacter.region} • {activeCharacter.role}</span>
+                  </div>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {activeCharacter.description}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Footer */}
-            <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex justify-end flex-shrink-0">
+            <div className="px-6 py-3 bg-slate-950 border-t border-slate-800 flex items-center justify-between flex-shrink-0">
+              <span className="text-[11px] text-slate-500 hidden sm:inline">
+                {activeCharacter.name} • {activeCharacter.title}
+              </span>
               <button
                 onClick={() => setActiveCharacter(null)}
-                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition"
+                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition ml-auto"
               >
                 Close Inspector
               </button>
@@ -1011,6 +1124,7 @@ export const CharacterHub: React.FC = () => {
                         onClick={() => {
                           setActiveWeapon(null);
                           setActiveCharacter(char);
+                          setCharacterModalTab('build');
                         }}
                         className="group/char cursor-pointer p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/50 transition flex items-center space-x-2.5"
                       >

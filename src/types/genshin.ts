@@ -112,3 +112,18 @@ export interface MapPin {
   description: string;
   count?: number;
 }
+
+export interface WeaponItem {
+  id: string;
+  name: string;
+  rarity: 1 | 2 | 3 | 4 | 5;
+  type: WeaponType;
+  baseAtk: string | number;
+  substatType: string;
+  substatValue: string;
+  passiveName?: string;
+  passiveDesc: string;
+  iconUrl: string;
+  obtainMethod?: string;
+  bestCharacters?: string[];
+}
